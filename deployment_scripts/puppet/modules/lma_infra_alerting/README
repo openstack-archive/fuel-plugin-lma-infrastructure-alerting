@@ -1,0 +1,48 @@
+LMA Infrastructure Alerting module for Puppet
+=============================================
+
+Description
+-----------
+
+Puppet module for configuring the Alerting system of the LMA
+(Logging, Monitoring and Alerting) toolchain.
+
+Usage
+-----
+
+To deploy Nagios server on a host to handle service status alerts
+reveived from the LMA collector.
+
+```puppet
+# Configure the common components of the collector service
+class {'lma_infra_alerting::nagios':
+  openstack_deployment_name => 'openstack-prod',
+  openstack_management_vip => '1.1.1.1',
+  password => 'supersecret',
+  services => ['nova'],
+  contact_email => 'foo@42.fr',
+  notify_critical => true,
+  notify_warning => false,
+}
+
+```
+
+Limitations
+-----------
+
+
+License
+-------
+
+Licensed under the terms of the Apache License, version 2.0.
+
+Contact
+-------
+
+Swann Croiset, <scroiset@mirantis.com>
+
+Support
+-------
+
+See the Contact section.
+

@@ -2,8 +2,8 @@ attributes:
   metadata:
     restrictions:
         - condition: "settings:lma_collector.influxdb_mode.value == 'disabled' and settings:lma_collector.elasticsearch_mode.value == 'disabled'"
-          action: "disable"
-          message: "Please enable Metrics and/or Events analytic in LMA Collector plugin to enable Nagios Alerting system"
+          action: "none"
+          message: "You should enable Metrics and/or Events analytic in LMA Collector plugin to feed the Nagios Alerting system"
 
   node_name:
     value: 'nagios'
