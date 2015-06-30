@@ -1,0 +1,35 @@
+# Plugin name
+name: lma_infrastructure_alerting
+# Human-readable name for your plugin
+title: The LMA Infrastructure Alerting Plugin
+# Plugin version
+version: '0.8.0'
+# Description
+description: Deploy tools to send alerts concerning the OpenStack infrastructure.
+# Required fuel version
+fuel_version: ['6.1']
+# Specify license of your plugin
+licenses: ['Apache License Version 2.0']
+# Specify author or company name
+authors: ['Mirantis Inc']
+# A link to the plugin's page
+homepage: https://github.com/stackforge/fuel-plugin-lma-infrastructure-alerting
+# Specify a group which your plugin implements, possible options:
+# network, storage, storage::cinder, storage::glance, hypervisor
+groups: ['monitoring']
+
+# The plugin is compatible with releases in the list
+releases:
+  - os: ubuntu
+    version: 2014.2-6.1
+    mode: ['ha', 'multinode']
+    deployment_scripts_path: deployment_scripts/
+    repository_path: repositories/ubuntu
+  - os: centos
+    version: 2014.2-6.1
+    mode: ['ha', 'multinode']
+    deployment_scripts_path: deployment_scripts/
+    repository_path: repositories/centos
+
+# Version of plugin package
+package_version: '2.0.0'
