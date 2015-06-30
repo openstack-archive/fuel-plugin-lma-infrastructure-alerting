@@ -1,3 +1,4 @@
+# TODO: check environment coherence
 # The following tasks are executed in the order they are declared
 - role: ['base-os']
   stage: post_deployment/8100
@@ -11,4 +12,12 @@
   stage: post_deployment/8100
   type: reboot
   parameters:
+    timeout: 600
+
+- role: ['base-os']
+  stage: post_deployment/8100
+  type: puppet
+  parameters:
+    puppet_manifest: puppet/manifests/nagios.pp
+    puppet_modules: puppet/modules
     timeout: 600
