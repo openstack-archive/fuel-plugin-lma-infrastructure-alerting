@@ -1,0 +1,57 @@
+attributes:
+  metadata:
+    restrictions:
+        - condition: "settings:lma_collector.influxdb_mode.value == 'disabled' and settings:lma_collector.elasticsearch_mode.value == 'disabled'"
+          action: "disable"
+          message: "Please enable Metrics and/or Events analytic in LMA Collector plugin to enable Nagios Alerting system"
+
+  node_name:
+    value: 'nagios'
+    label: "Alerting node name"
+    description: 'Label of the node running the Nagios Infrastructure Alerting plugin that is deployed in the environment.'
+    weight: 30
+    type: "text"
+
+  nagios_password:
+    value: 'r00tme'
+    label: 'Nagios HTTP password'
+    description: 'The password to access Nagios Web Interface (for username nagiosadmin)'
+    weight: 42
+    type: "password"
+    regex:
+      source: '\S'
+      error: "Invalid value"
+
+  email:
+    value: ''
+    label: 'Email address'
+    description: 'The recipient receiving alert notifications'
+    weight: 45
+    type: "text"
+    regex:
+      source: '[a-z0-9!#$%&*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.?)?[a-z0-9]?(?:[a-z0-9-]*[a-z0-9])?'
+      error: "Invalid Email"
+
+  notify_warning:
+      type: "checkbox"
+      weight: 50
+      value: true
+      label: "Receive WARNING notifications by email"
+
+  notify_critical:
+      type: "checkbox"
+      weight: 51
+      value: true
+      label: "Receive CRITICAL notifications by email"
+
+  notify_unknown:
+      type: "checkbox"
+      weight: 52
+      value: true
+      label: "Receive UNKNOWN notifications by email"
+
+  notify_recovery:
+      type: "checkbox"
+      weight: 53
+      value: true
+      label: "Receive RECOVERY notifications by email"
