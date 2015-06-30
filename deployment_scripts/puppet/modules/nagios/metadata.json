@@ -1,0 +1,25 @@
+{
+    "name": "nagios",
+    "version": "0.0.1",
+    "author": "Swann Croiset <scroiset@mirantis.com>",
+    "summary": "Puppet module for Nagios",
+    "license": "Apache License 2.0",
+    "source": "git://git.openstack.org/cgit/stackforge/fuel-plugin-infrastructure-alerting.git",
+    "project_page": "none",
+    "issues_url": "none",
+    "operatingsystem_support": [
+        {
+            "operatingsystem": "Ubuntu",
+            "operatingsystemrelease": ["14.04"]
+        },
+        {
+            "operatingsystem": "CentOS",
+            "operatingsystemrelease": ["6"]
+        }
+    ],
+    "description": "Puppet module for configuring Nagios server and Nagios CGI",
+    "dependencies": [
+        {"name": "puppetlabs/stdlib", "version_requirement": "4.x"},
+        {"name": "leinaddm/htpasswd", "version_requirement": ">= 0.0.3"}
+    ]
+}
