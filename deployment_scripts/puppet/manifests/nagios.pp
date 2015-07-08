@@ -45,4 +45,40 @@ if $plugin['node_name'] == hiera('user_node_name') {
     notify_recovery => $notify_recovery,
     notify_unknown => $notify_unknown,
   }
+
+  $nodes_hash = hiera('nodes', {})
+  $primary_controller_nodes = filter_nodes($nodes_hash,'role','primary-controller')
+  $controller_nodes = filter_nodes($nodes_hash,'role','controller')
+  $all_controller_nodes = concat($primary_controller_nodes, $controller_nodes)
+  $compute_nodes = filter_nodes($nodes_hash,'role','compute')
+  $cinder_nodes = filter_nodes($nodes_hash,'role','cinder')
+  $base_os_nodes = filter_nodes($nodes_hash,'role','base-os')
+  $all_nodes = {
+    'controller' => $all_controller_nodes,
+  }
+
+  if !empty($compute_nodes){
+    $all_nodes['compute'] = $compute_nodes
+  }
+  if !empty($cinder_nodes){
+    $all_nodes['cinder'] = $cinder_nodes
+  }
+  if !empty($base_os_nodes){
+    $all_nodes['base_os'] = $base_os_nodes
+  }
+
+  # configure Host
+  $hostgroups =  fuel_nodes_to_nagios_hostgroups($all_nodes)
+  class { 'lma_infra_alerting::nagios::hosts':
+    hosts => fuel_nodes_to_nagios_hosts($all_nodes, 'internal_address'),
+    hostgroups => $hostgroups,
+  }
+
+  # configure SSH checks (all ips)
+  class { 'lma_infra_alerting::nagios::check_ssh':
+    management_hostgroups => keys($hostgroups),
+    internal_hostgroups  => keys($hostgroups),
+    storage_hostgroups => keys($hostgroups),
+    public_hostgroups => 'controller',
+  }
 }
