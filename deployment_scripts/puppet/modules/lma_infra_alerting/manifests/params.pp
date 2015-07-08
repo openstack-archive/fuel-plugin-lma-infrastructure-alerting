@@ -30,6 +30,8 @@ class lma_infra_alerting::params {
   $nagios_generic_host_template = 'generic-host'
   $nagios_generic_service_template = 'generic-service'
 
+  $nagios_cmd_check_ssh = 'check_ssh'
+
   # Following service names must be coherent with lma_collector nagios output
   # plugin names.
   $openstack_core_services = [
