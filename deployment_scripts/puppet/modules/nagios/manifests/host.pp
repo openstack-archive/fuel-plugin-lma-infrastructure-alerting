@@ -29,6 +29,7 @@ define nagios::host (
   $properties = {},
   $defaults = {},
   $ensure = present,
+  $custom_vars = {},
 ){
 
   validate_hash($properties, $defaults)
@@ -59,8 +60,28 @@ define nagios::host (
     $opts['display_name'] = $name
   }
 
+  $final_params = merge($properties, $opts)
+  if ! empty($custom_vars){
+    # overide inheritence
+    $new_use = "custom-vars-${host_name}"
+    if $final_params['use']{
+      $original_use = $final_params['use']
+    }elsif $defaults['use']{
+      $original_use = $defaults['use']
+    }else{
+      $original_use = undef
+    }
+    $final_params['use'] = $new_use
+    nagios::object_custom_vars{ $host_name:
+      object_name => 'host',
+      variables => $custom_vars,
+      use => $original_use,
+      prefix => $prefix,
+    }
+  }
+
   $params = {
-    "${host_name}" => merge($properties, $opts),
+    "${host_name}" => $final_params,
   }
 
   create_resources(nagios_host, $params, $defaults)
