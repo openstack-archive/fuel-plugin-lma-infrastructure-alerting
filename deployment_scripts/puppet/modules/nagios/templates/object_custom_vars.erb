@@ -1,0 +1,11 @@
+define <%= @object_name %> {
+  register 0
+  name custom-vars-<%= @title %>
+  <% @variables.each do |k,v| -%>
+  <%- next if v.nil? or v == :undef -%>
+  <%= k %> <%= v %>
+  <% end -%>
+  <% if @use -%>
+  use <%= @use %>
+  <% end -%>
+}
