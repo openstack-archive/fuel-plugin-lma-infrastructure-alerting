@@ -1,0 +1,9 @@
+Verified+2: Jenkins
+Code-Review+2: Simon Pasquier <spasquier@mirantis.com>
+Workflow+1: Swann Croiset <scroiset@mirantis.com>
+Code-Review+1: Irina <ipovolotskaya@mirantis.com>
+Submitted-by: Jenkins
+Submitted-at: Thu, 09 Jul 2015 15:45:56 +0000
+Reviewed-on: https://review.openstack.org/197005
+Project: stackforge/fuel-plugin-lma-infrastructure-alerting
+Branch: refs/heads/master
