@@ -37,6 +37,7 @@ if $storage_options['objects_ceph']{
   $services['openstack.swift.status'] = true
 }
 
+
 if $plugin['node_name'] == hiera('user_node_name') {
   class { 'lma_infra_alerting':
     openstack_deployment_name => $env_id,
@@ -50,5 +51,64 @@ if $plugin['node_name'] == hiera('user_node_name') {
     notify_critical => $notify_critical,
     notify_recovery => $notify_recovery,
     notify_unknown => $notify_unknown,
+  }
+
+  $nodes_hash = hiera('nodes', {})
+  $primary_controller_nodes = filter_nodes($nodes_hash,'role','primary-controller')
+  $controller_nodes = filter_nodes($nodes_hash,'role','controller')
+  $all_controller_nodes = concat($primary_controller_nodes, $controller_nodes)
+  $compute_nodes = filter_nodes($nodes_hash,'role','compute')
+  $cinder_nodes = filter_nodes($nodes_hash,'role','cinder')
+  $base_os_nodes = filter_nodes($nodes_hash,'role','base-os')
+  $all_nodes = {
+    'controller' => $all_controller_nodes,
+  }
+
+  if !empty($compute_nodes){
+    $all_nodes['compute'] = $compute_nodes
+  }
+  if !empty($cinder_nodes){
+    $all_nodes['cinder'] = $cinder_nodes
+  }
+  if !empty($base_os_nodes){
+    $all_nodes['base-os'] = $base_os_nodes
+  }
+
+  class { 'lma_infra_alerting::nagios::hosts':
+    hosts => $all_nodes,
+    host_name_key => 'name',
+    host_address_key => 'internal_address',
+    host_display_name_keys => ['name', 'user_node_name'],
+    host_alias_keys => ['name', 'user_node_name'],
+    host_group_key => 'role',
+    host_custom_vars_keys => ['internal_address', 'private_address',
+                              'public_address', 'storage_address',
+                              'fqdn', 'role'],
+  }
+
+
+  # Nodes have private IPs only with GRE segmentation
+  $network_config = hiera('quantum_settings')
+  $segmentation_type = $network_config['L2']['segmentation_type']
+  $private_network = false
+  if $segmentation_type == 'gre' {
+    $private_hostgroups = true
+  }
+
+  # Configure SSH checks
+  lma_infra_alerting::nagios::check_ssh { 'management':
+    hostgroups => keys($all_nodes),
+  }
+
+  lma_infra_alerting::nagios::check_ssh { 'storage':
+    hostgroups => keys($all_nodes),
+    custom_var_address => 'storage_address',
+  }
+
+  if $private_network {
+    lma_infra_alerting::nagios::check_ssh { 'private':
+      hostgroups => keys($all_nodes),
+      custom_var_address => 'private_address',
+    }
   }
 }

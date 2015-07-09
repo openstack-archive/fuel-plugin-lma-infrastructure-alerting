@@ -19,7 +19,7 @@ class nagios::params {
 
   # plugins
   $nagios_plugin_package = 'nagios-plugins'
-  $nagios_pluigin_dir = '/usr/lib/nagios/plugins'
+  $nagios_plugin_dir = '/usr/lib/nagios/plugins'
 
   # CGI
   $nagios_cgi_package = 'nagios3-cgi'
