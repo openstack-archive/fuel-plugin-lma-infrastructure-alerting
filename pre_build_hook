@@ -54,11 +54,11 @@ download_packages \
     http://mirrors.kernel.org/ubuntu/pool/main/w/whois/whois_5.1.1_amd64.deb
 
 
-rm -rf "${MODULES_DIR:?}"/{stdlib,htpasswd}
-mkdir -p "${MODULES_DIR}"/{stdlib,htpasswd}
+rm -rf "${MODULES_DIR:?}"/{openstack,stdlib,htpasswd}
+mkdir -p "${MODULES_DIR}"/{openstack,stdlib,htpasswd}
 
 wget -qO- "${FUEL_LIB_TARBALL_URL}" | \
     tar -C "${MODULES_DIR}" --strip-components=3 -zxvf - \
-    fuel-library-${FUEL_LIB_VERSION}/deployment/puppet/stdlib
+    fuel-library-${FUEL_LIB_VERSION}/deployment/puppet/{openstack,stdlib}
 
 wget -qO- "${HTPASSWD_TARBALL_URL}" | tar -C "${MODULES_DIR}/htpasswd" --strip-components=1 -xz
