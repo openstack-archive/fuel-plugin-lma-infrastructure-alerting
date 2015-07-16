@@ -6,9 +6,9 @@ Overview
 
 The `LMA Infrastructure Alerting` plugin is composed of several services
 running on a node (base-os role). It provides the alerting functionality for
-the OpenStack Infrastructure inside the `LMA toolchain` [1]_.
+the OpenStack Infrastructure inside the LMA toolchain.
 
-.. [1] The LMA toolchain is currently composed of these Fuel plugins:
+The LMA toolchain is currently composed of these Fuel plugins:
 
         * [LMA collector Plugin](https://github.com/stackforge/fuel-plugin-lma-collector)
         * [InfluxDB-Grafana Plugin](https://github.com/stackforge/fuel-plugin-influxdb-grafana)
@@ -20,8 +20,8 @@ Requirements
 | Requirement                               | Version/Comment  |
 | ----------------------------------------- | -----------------|
 | Mirantis OpenStack compatility            | 6.1 or higher    |
-| LMA Collector Fuel plugin                 | 0.7 or higher    |
-| InfluxDB-Grafana Fuel plugin (optional)   | 0.7 or higher    |
+| LMA Collector Fuel plugin                 | 0.8 or higher    |
+| InfluxDB-Grafana Fuel plugin (optional)   | 0.8 or higher    |
 
 Recommendations
 ---------------
@@ -49,13 +49,13 @@ To install the LMA Infrastructure Alerting plugin, follow these steps:
    Fuel Master node yet.
 
    ```
-   scp lma_infrastructure_alerting-0.7-0.7.0-0.noarch.rpm root@<the Fuel Master node IP address>:
+   scp lma_infrastructure_alerting-0.8-0.8.0-0.noarch.rpm root@<the Fuel Master node IP address>:
    ```
 
 3. Install the plugin using the `fuel` command line:
 
    ```
-   fuel plugins --install lma_infrastructure_alerting-0.7-0.7.0-0.noarch.rpm
+   fuel plugins --install lma_infrastructure_alerting-0.8-0.8.0-0.noarch.rpm
    ```
 
 4. Verify that the plugin is installed correctly:
