@@ -6,9 +6,9 @@ Overview
 
 The `LMA Infrastructure Alerting` plugin is composed of several services
 running on a node (base-os role). It provides the alerting functionality for
-the OpenStack Infrastructure inside the `LMA toolchain` [1]_.
+the OpenStack Infrastructure inside the `LMA toolchain` [[1](#id1)].
 
-.. [1] The LMA toolchain is currently composed of these Fuel plugins:
+<a name="id1">[1]</a> The LMA toolchain is currently composed of these Fuel plugins:
 
         * [LMA collector Plugin](https://github.com/stackforge/fuel-plugin-lma-collector)
         * [InfluxDB-Grafana Plugin](https://github.com/stackforge/fuel-plugin-influxdb-grafana)
