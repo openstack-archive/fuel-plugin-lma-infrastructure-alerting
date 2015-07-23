@@ -8,7 +8,8 @@ HTPASSWD_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/leinaddm-htpasswd
 # This is the commit id for the current stable/6.1 branch
 FUEL_LIB_COMMIT="be44e9ea792fe4314ac8c1b7596742ceb5163f61"
 FUEL_LIB_TARBALL_URL="https://github.com/stackforge/fuel-library/archive/${FUEL_LIB_COMMIT}.tar.gz"
-
+APACHE_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/puppetlabs-apache-1.4.0.tar.gz"
+CONCAT_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/puppetlabs-concat-1.2.3.tar.gz"
 
 function download_packages {
     while [ $# -gt 0 ]; do
@@ -55,11 +56,13 @@ download_packages \
     http://mirrors.kernel.org/ubuntu/pool/main/w/whois/whois_5.1.1_amd64.deb
 
 
-rm -rf "${MODULES_DIR:?}"/{openstack,stdlib,htpasswd}
-mkdir -p "${MODULES_DIR}"/{openstack,stdlib,htpasswd}
+rm -rf "${MODULES_DIR:?}"/{openstack,stdlib,htpasswd,apache,concat}
+mkdir -p "${MODULES_DIR}"/{openstack,stdlib,htpasswd,apache,concat}
 
 wget -qO- "${FUEL_LIB_TARBALL_URL}" | \
     tar -C "${MODULES_DIR}" --strip-components=3 -zxvf - \
     fuel-library-${FUEL_LIB_COMMIT}/deployment/puppet/{openstack,stdlib}
 
 wget -qO- "${HTPASSWD_TARBALL_URL}" | tar -C "${MODULES_DIR}/htpasswd" --strip-components=1 -xz
+wget -qO- "${APACHE_TARBALL_URL}" | tar -C "${MODULES_DIR}/apache" --strip-components=1 -xz
+wget -qO- "${CONCAT_TARBALL_URL}" | tar -C "${MODULES_DIR}/concat" --strip-components=1 -xz

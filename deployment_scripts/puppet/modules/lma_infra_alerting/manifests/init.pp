@@ -18,7 +18,6 @@
 class lma_infra_alerting (
   $openstack_management_vip = undef,
   $openstack_deployment_name = '',
-  $user = $lma_infra_alerting::params::nagios_http_user,
   $password = $lma_infra_alerting::params::nagios_http_password,
   $additional_services = [],
   $contact_email = $lma_infra_alerting::params::nagios_contact_email,
@@ -38,7 +37,6 @@ class lma_infra_alerting (
 
   # Install and configure nagios server
   class { 'lma_infra_alerting::nagios':
-    http_user => $user,
     http_password => $password,
   }
 
