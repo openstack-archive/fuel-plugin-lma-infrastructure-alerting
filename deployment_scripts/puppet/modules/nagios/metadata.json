@@ -19,6 +19,7 @@
     ],
     "description": "Puppet module for configuring Nagios server and Nagios CGI",
     "dependencies": [
+        {"name": "puppetlabs/apache", "version_requirement": "1.5.0"},
         {"name": "puppetlabs/stdlib", "version_requirement": "4.x"},
         {"name": "leinaddm/htpasswd", "version_requirement": ">= 0.0.3"}
     ]
