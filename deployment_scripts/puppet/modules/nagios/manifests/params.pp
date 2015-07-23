@@ -24,9 +24,10 @@ class nagios::params {
   # CGI
   $nagios_cgi_package = 'nagios3-cgi'
   $cgi_htpasswd_file = '/etc/nagios3/htpasswd.users'
-  $apache_service_name = 'apache2'
   $cgi_user = 'nagiosadmin'
   $cgi_password = undef
+  $cgi_http_port = '80'
+  $apache_vhost_config_tpl = 'apache_vhost_ubuntu.conf.erb'
 
   # Nagios server configurations
   $nagios_debug = false

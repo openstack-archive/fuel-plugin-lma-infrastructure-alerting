@@ -37,7 +37,6 @@ if $storage_options['objects_ceph']{
   $services['openstack.swift.status'] = true
 }
 
-
 if $plugin['node_name'] == hiera('user_node_name') {
   class { 'lma_infra_alerting':
     openstack_deployment_name => $env_id,
