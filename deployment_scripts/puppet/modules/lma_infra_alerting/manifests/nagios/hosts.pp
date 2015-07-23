@@ -53,12 +53,16 @@ class lma_infra_alerting::nagios::hosts (
       active_checks_enabled => 1,
       passive_checks_enabled => 0,
       use => $lma_infra_alerting::params::nagios_generic_host_template,
+      require => Class['nagios'],
     }
   }
 
   $hg_default = {
     prefix => $lma_infra_alerting::params::nagios_config_filename_prefix,
     ensure => $ensure,
+    defaults => {
+      require => Class['nagios'],
+    },
   }
 
   create_resources(nagios::hostgroup, $nagios_hostgroups, $hg_default)

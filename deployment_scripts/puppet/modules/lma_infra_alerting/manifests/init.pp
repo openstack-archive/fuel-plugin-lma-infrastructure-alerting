@@ -20,6 +20,7 @@ class lma_infra_alerting (
   $openstack_deployment_name = '',
   $user = $lma_infra_alerting::params::nagios_http_user,
   $password = $lma_infra_alerting::params::nagios_http_password,
+  $http_port = 80,
   $additional_services = [],
   $contact_email = $lma_infra_alerting::params::nagios_contact_email,
   $notify_warning = true,
@@ -40,6 +41,7 @@ class lma_infra_alerting (
   class { 'lma_infra_alerting::nagios':
     http_user => $user,
     http_password => $password,
+    http_port => $http_port,
   }
 
   # Configure services

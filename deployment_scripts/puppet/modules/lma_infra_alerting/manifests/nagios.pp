@@ -20,6 +20,7 @@
 class lma_infra_alerting::nagios (
   $http_user = $lma_infra_alerting::params::nagios_http_user,
   $http_password = $lma_infra_alerting::params::nagios_http_password,
+  $http_port = 80,
 ) inherits lma_infra_alerting::params {
 
   class { '::nagios':
@@ -40,7 +41,9 @@ class lma_infra_alerting::nagios (
   }
 
   class { '::nagios::cgi':
-    cgi_user => $http_user,
-    cgi_password => $http_password,
+    user      => $http_user,
+    password  => $http_password,
+    http_port => $http_port,
+    require   => Class[nagios],
   }
 }

@@ -17,61 +17,65 @@
 # Install and configure Nagios web interface
 #
 class nagios::cgi (
-  $cgi_user = $nagios::params::cgi_user,
-  $cgi_password = $nagios::params::cgi_password,
-  $cgi_htpasswd_file = $nagios::params::cgi_htpasswd_file,
-){
+  $user = $nagios::params::cgi_user,
+  $password = $nagios::params::cgi_password,
+  $htpasswd_file = $nagios::params::cgi_htpasswd_file,
+  $http_port = $nagios::params::cgi_http_port,
+  $vhost_listen_ip = '*',
+) inherits nagios::params {
 
-  include nagios::params
-  #TODO: use apache puppet module
-  $apache_service_name = $nagios::params::apache_service_name
+
+  ## Configure apache
+  class { 'apache':
+    default_confd_files => false,
+    default_vhost       => false,
+    # be good citizen
+    mpm_module          => 'prefork',
+    default_mods        => ['php', 'cgi'],
+    purge_configs       => false,
+    manage_group        => false,
+    manage_user         => false,
+  }
+  apache::listen { $http_port: }
+
+  # Template uses these variables: http_port, vhost_listen_ip, cgi_htpasswd_file
+  apache::custom_config { 'nagios':
+    content => template("nagios/${nagios::params::apache_vhost_config_tpl}"),
+  }
 
   $package_name = $nagios::params::nagios_cgi_package
   package { $package_name:
-    ensure => present,
-  }
-
-  # Configure apache
-  # TODO http port and vhost
-  package {$apache_service_name:
-    ensure => present,
-  }
-
-  service {$apache_service_name:
-    ensure => running,
-    require => Package[$apache_service_name],
+    ensure  => present,
+    require => Class[apache],
   }
 
   # TODO: update cgi config to allow this specific user to access UI
-  htpasswd { $cgi_user:
+  htpasswd { $user:
     # TODO randomize salt?
-    cryptpasswd => ht_md5($cgi_password, 'salt'),
-    target      => $cgi_htpasswd_file,
-  #  notify => Service[$apache_service_name],
+    cryptpasswd => ht_md5($password, 'salt'),
+    target      => $htpasswd_file,
     require => Package[$package_name],
   }
 
-  # TODO: CentOS compatibility
-  $apache_user = 'www-data'
+  # Fix a permission issue with Ubuntu
+  # to allow using external commands through the web UI
+  if $::osfamily == 'Debian' {
+    $apache_user = $apache::user
+    user { $apache_user:
+      groups => 'nagios',
+      require => Class[apache],
+    }
+    file { '/var/lib/nagios3/rw':
+      ensure => directory,
+      mode => '0650',
+      require => Package[$package_name],
+    }
 
-  user { $apache_user:
-    groups => 'nagios',
-    require => Package[$apache_service_name],
-  }
-
-  # fix a permission issue with Ubuntu
-  # TODO: CentOS compatibility
-  file { '/var/lib/nagios3/rw':
-    ensure => directory,
-    mode => '0650',
-    require => Package[$package_name],
-  }
-
-  file { $cgi_htpasswd_file:
-    owner => root,
-    group => $apache_user,
-    mode  => '0640',
-    require => Htpasswd[$cgi_user],
+    file { $cgi_htpasswd_file:
+      owner => root,
+      group => $apache_user,
+      mode  => '0640',
+      require => Htpasswd[$user],
+    }
   }
 }
-

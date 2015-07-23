@@ -37,14 +37,23 @@ if $storage_options['objects_ceph']{
   $services['openstack.swift.status'] = true
 }
 
+$user_node_name = hiera('user_node_name')
+if $plugin['node_name'] == $user_node_name {
+  $elasticsearch_kibana = hiera('elasticsearch_kibana', undef)
+  if $elasticsearch_kibana and $elasticsearch_kibana['node_name'] == $user_node_name{
+    $http_port = 8000
+  } else {
+    $http_port = 80
+  }
 
-if $plugin['node_name'] == hiera('user_node_name') {
   class { 'lma_infra_alerting':
     openstack_deployment_name => $env_id,
     openstack_management_vip => $management_vip,
     additional_services => keys($services),
     # UI password
     password => $password,
+    # TODO: cohexist with elasticsearch
+    http_port => $http_port,
     # notifications options
     contact_email => $email,
     notify_warning => $notify_warning,
