@@ -5,8 +5,9 @@ MODULES_DIR="${ROOT}"/deployment_scripts/puppet/modules
 RPM_REPO="${ROOT}"/repositories/centos/
 DEB_REPO="${ROOT}"/repositories/ubuntu/
 HTPASSWD_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/leinaddm-htpasswd-0.0.3.tar.gz"
-FUEL_LIB_VERSION="6.0"
-FUEL_LIB_TARBALL_URL="https://github.com/stackforge/fuel-library/archive/${FUEL_LIB_VERSION}.tar.gz"
+# This is the commit id for the current stable/6.1 branch
+FUEL_LIB_COMMIT="be44e9ea792fe4314ac8c1b7596742ceb5163f61"
+FUEL_LIB_TARBALL_URL="https://github.com/stackforge/fuel-library/archive/${FUEL_LIB_COMMIT}.tar.gz"
 
 
 function download_packages {
@@ -59,6 +60,6 @@ mkdir -p "${MODULES_DIR}"/{openstack,stdlib,htpasswd}
 
 wget -qO- "${FUEL_LIB_TARBALL_URL}" | \
     tar -C "${MODULES_DIR}" --strip-components=3 -zxvf - \
-    fuel-library-${FUEL_LIB_VERSION}/deployment/puppet/{openstack,stdlib}
+    fuel-library-${FUEL_LIB_COMMIT}/deployment/puppet/{openstack,stdlib}
 
 wget -qO- "${HTPASSWD_TARBALL_URL}" | tar -C "${MODULES_DIR}/htpasswd" --strip-components=1 -xz
