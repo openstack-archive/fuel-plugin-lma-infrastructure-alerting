@@ -19,16 +19,23 @@
 
 class lma_infra_alerting::nagios::contact(
   $ensure = present,
-  $email = $lma_infra_alerting::params::nagios_contact_email,
+  $send_to = $lma_infra_alerting::params::nagios_contact_email,
   $notify_warning = true,
   $notify_critical = true,
   $notify_recovery = true,
   $notify_unknown = true,
   $notify_flapping = false,
   $notify_schedule  = false,
+  $smtp_tls = true,
+  $send_from = undef,
+  $smtp_host = undef,
+  $smtp_auth = undef,
+  $smtp_user = under,
+  $smtp_password = undef,
 
 ) inherits lma_infra_alerting::params{
-  validate_string($email)
+
+  validate_string($send_to)
 
   $contact_groups = $lma_infra_alerting::params::nagios_contactgroup
   nagios::contactgroup { $contact_groups:
@@ -75,13 +82,19 @@ class lma_infra_alerting::nagios::contact(
     $_host_notify_options = join($host_notify_options, ',')
   }
 
-  $alias = regsubst($email, '@', '_AT_')
+  $alias = regsubst($send_to, '@', '_AT_')
   $contact_name = "${contact_groups}_${alias}"
   nagios::contact { $contact_name:
     ensure => $ensure,
     prefix => $lma_infra_alerting::params::nagios_config_filename_prefix,
+    send_from => $send_from,
+    smtp_tls => $smtp_tls,
+    smtp_auth => $smtp_auth,
+    smtp_host => $smtp_host,
+    smtp_user => $smtp_user,
+    smtp_password => $smtp_password,
     properties => {
-      email => $email,
+      email => $send_to,
       alias => $alias,
       contactgroups => $contact_groups,
       service_notification_options => $_service_notify_options,

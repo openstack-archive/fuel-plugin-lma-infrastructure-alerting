@@ -21,11 +21,27 @@ define nagios::contact (
   $prefix = '',
   $onefile = true,
   $properties = {},
+  $send_from = 'nagios@localhost.localdomain',
+  $smtp_tls = true,
+  $smtp_auth = 'none',
+  $smtp_host = '127.0.0.1:25',
+  $smtp_user = undef,
+  $smtp_password = undef,
   $ensure = present,
   $defaults = {},
 ){
 
   validate_hash($properties, $defaults)
+  if ( $smtp_auth != 'none' and $smtp_auth != 'plain' and $smtp_auth != 'login' and $smtp_auth != 'cram-md5'){
+    fail('$smtp_auth parameter must be one of: none, plain, login or cram-md5')
+  }
+
+  if $smtp_auth == 'none' {
+    $_smtp_auth = false
+  } else {
+    $_smtp_auth = $smtp_auth
+  }
+
   $opts = {}
 
   # default decent properties
@@ -47,7 +63,35 @@ define nagios::contact (
   }
 
   if $properties['service_notification_commands'] == undef {
-    $opts['service_notification_commands'] = $nagios::params::service_notification_commands
+    if $_smtp_auth {
+      $opts['service_notification_commands'] = $nagios::params::service_notification_command_by_smtp
+      $command_filename = "${path}/cmd_notify-service-by-smtp-with-long-service-output.cfg"
+      if ! defined(File[$command_filename]){
+        file {$command_filename:
+          ensure => present,
+          content => template('nagios/notify-by-smtp.cfg.erb'),
+          owner => 'root',
+          group => 'root',
+          mode => '0644',
+          require => Package[$nagios::params::package_mailx_smtp],
+        }
+      }
+      if ! defined(Package[$nagios::params::package_mailx_smtp]){
+        package { $nagios::params::package_mailx_smtp:
+          ensure => present,
+        }
+      }
+
+    } else {
+      $opts['service_notification_commands'] = $nagios::params::service_notification_command
+      file {"${path}/cmd_notify-service-by-email-with-long-service-output.cfg":
+        ensure => present,
+        source => 'puppet:///modules/nagios/cmd_notify_service_by_email.cfg',
+        owner => 'root',
+        group => 'root',
+        mode => '0644',
+      }
+    }
   }
   if is_array($properties['service_notification_commands']) {
     $opts['service_notification_commands'] = join($properties['service_notification_commands'], ',')

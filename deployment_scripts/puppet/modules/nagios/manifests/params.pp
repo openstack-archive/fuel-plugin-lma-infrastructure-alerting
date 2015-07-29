@@ -48,6 +48,9 @@ class nagios::params {
   $host_notification_period = '24x7'
   $service_notification_options = 'w,u,c,r'
   $host_notification_options = 'd,r'
-  $service_notification_commands = ['notify-service-by-email-with-long-service-output']
+  $service_notification_command = ['notify-service-by-email-with-long-service-output']
+
+  $package_mailx_smtp = 'heirloom-mailx'
+  $service_notification_command_by_smtp = ['notify-service-by-smtp-with-long-service-output']
   $host_notification_commands = ['notify-host-by-email']
 }
