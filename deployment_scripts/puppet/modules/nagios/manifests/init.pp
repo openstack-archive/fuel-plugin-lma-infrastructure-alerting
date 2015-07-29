@@ -52,16 +52,6 @@ class nagios(
     ensure => present,
   }
 
-  file {"${config_dir}/cmd_notify-service-by-email-with-long-service-output.cfg":
-    ensure => present,
-    source => 'puppet:///modules/nagios/cmd_notify_service_by_email.cfg',
-    owner => 'root',
-    group => 'root',
-    mode => '0644',
-    require => Package[$service_name],
-  }
-
-  # TODO enable external_command (option + chmod)
   $passive_service_check = bool2num($accept_passive_service_checks)
   $passive_host_check = bool2num($accept_passive_host_checks)
   $service_checks = bool2num($execute_service_checks)
@@ -99,4 +89,3 @@ class nagios(
     notify => Class['nagios::server_service'],
   }
 }
-
