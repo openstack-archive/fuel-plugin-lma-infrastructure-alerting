@@ -53,7 +53,8 @@ download_packages \
     http://mirrors.kernel.org/ubuntu/pool/main/n/ntdb/python-ntdb_1.0-2ubuntu1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/t/tdb/python-tdb_1.2.12-1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/s/samba/python-samba_4.1.6+dfsg-1ubuntu2.14.04.7_amd64.deb\
-    http://mirrors.kernel.org/ubuntu/pool/main/w/whois/whois_5.1.1_amd64.deb
+    http://mirrors.kernel.org/ubuntu/pool/main/w/whois/whois_5.1.1_amd64.deb\
+    http://mirrors.kernel.org/ubuntu/pool/universe/h/heirloom-mailx/heirloom-mailx_12.5-4_amd64.deb
 
 
 rm -rf "${MODULES_DIR:?}"/{openstack,stdlib,htpasswd,apache,concat}

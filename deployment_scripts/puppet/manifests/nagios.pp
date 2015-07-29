@@ -18,7 +18,13 @@ $env_id = hiera('deployment_id')
 
 $plugin = hiera('lma_infrastructure_alerting')
 $password = $plugin['nagios_password']
-$email = $plugin['email']
+$send_to = $plugin['send_to']
+$send_from = $plugin['send_from']
+$smtp_host = $plugin['smtp_host']
+$smtp_auth = $plugin['smtp_auth']
+$smtp_user = $plugin['smtp_user']
+$smtp_password = $plugin['smtp_password']
+
 $notify_warning = $plugin['notify_warning']
 $notify_critical = $plugin['notify_critical']
 $notify_unknown = $plugin['notify_unknown']
@@ -45,11 +51,20 @@ if $plugin['node_name'] == hiera('user_node_name') {
     # UI password
     password => $password,
     # notifications options
-    contact_email => $email,
+  }
+
+  class { 'lma_infra_alerting::nagios::contact':
+    send_to => $send_to,
+    send_from => $send_from,
+    smtp_host => $smtp_host,
+    smtp_auth => $smtp_auth,
+    smtp_user => $smtp_user,
+    smtp_password => $smtp_password,
     notify_warning => $notify_warning,
     notify_critical => $notify_critical,
     notify_recovery => $notify_recovery,
     notify_unknown => $notify_unknown,
+    require => Class['lma_infra_alerting'],
   }
 
   $nodes_hash = hiera('nodes', {})

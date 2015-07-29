@@ -20,11 +20,6 @@ class lma_infra_alerting (
   $openstack_deployment_name = '',
   $password = $lma_infra_alerting::params::nagios_http_password,
   $additional_services = [],
-  $contact_email = $lma_infra_alerting::params::nagios_contact_email,
-  $notify_warning = true,
-  $notify_critical = true,
-  $notify_recovery = true,
-  $notify_unknown = true,
 ) inherits lma_infra_alerting::params {
 
   validate_array($additional_services)
@@ -46,15 +41,5 @@ class lma_infra_alerting (
     hostname => $vhostname,
     services => $all_openstack_services,
     require => Class['lma_infra_alerting::nagios'],
-  }
-
-  # Configure contacts
-  class { 'lma_infra_alerting::nagios::contact':
-    email => $contact_email,
-    notify_warning => $notify_warning,
-    notify_critical => $notify_critical,
-    notify_recovery => $notify_recovery,
-    notify_unknown => $notify_unknown,
-    require => Class['lma_infra_alerting::nagios::service_status'],
   }
 }
