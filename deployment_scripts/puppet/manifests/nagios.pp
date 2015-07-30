@@ -50,7 +50,6 @@ if $plugin['node_name'] == hiera('user_node_name') {
     additional_services => keys($services),
     # UI password
     password => $password,
-    # notifications options
   }
 
   class { 'lma_infra_alerting::nagios::contact':
@@ -130,6 +129,50 @@ if $plugin['node_name'] == hiera('user_node_name') {
       hostgroups => keys($all_nodes),
       custom_var_address => 'private_address',
       require  => Class[lma_infra_alerting],
+    }
+  }
+
+  # Configure Grafana and InfluxDB checks
+  $influxdb_grafana = hiera('influxdb_grafana', {})
+  $influxdb_node_name = $influxdb_grafana['node_name']
+  $influxdb_nodes = filter_nodes(hiera('nodes'), 'user_node_name', $influxdb_node_name)
+  if ! empty($influxdb_nodes){
+    lma_infra_alerting::nagios::check_http { 'Grafana':
+       host_name => $influxdb_nodes[0]['name'],
+       port => $lma_infra_alerting::params::grafana_port,
+       url => '/login',
+       custom_var_address => 'internal_address',
+       string_expected_in_content => 'grafana',
+    }
+    lma_infra_alerting::nagios::check_http { 'InfluxDB':
+       host_name => $influxdb_nodes[0]['name'],
+       port => $lma_infra_alerting::params::influxdb_port,
+       url => '/ping',
+       custom_var_address => 'internal_address',
+       string_expected_in_status => '204 No Content',
+       string_expected_in_header => 'X-Influxdb-Version',
+    }
+  }
+
+  # Configure Elasticsearch and Kibana checks
+  $es_kibana = hiera('elasticsearch_kibana', {})
+  $es_node_name = $es_kibana['node_name']
+  $es_kibana_nodes = filter_nodes(hiera('nodes'), 'user_node_name', $es_node_name)
+  if ! empty($es_kibana_nodes){
+    lma_infra_alerting::nagios::check_http { 'Kibana':
+       host_name => $es_kibana_nodes[0]['name'],
+       port => $lma_infra_alerting::params::kibana_port,
+       url => '/',
+       custom_var_address => 'internal_address',
+       string_expected_in_content => 'Kibana 3',
+    }
+
+    lma_infra_alerting::nagios::check_http { 'Elasticsearch':
+       host_name => $es_kibana_nodes[0]['name'],
+       port => $lma_infra_alerting::params::elasticserach_port,
+       url => '/',
+       custom_var_address => 'internal_address',
+       string_expected_in_content => '"status" : 200',
     }
   }
 }
