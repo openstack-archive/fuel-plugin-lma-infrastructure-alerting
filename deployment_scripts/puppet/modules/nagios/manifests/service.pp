@@ -89,7 +89,7 @@ define nagios::service (
     nagios::command { $_check_command:
       prefix => "${prefix}services_",
       properties => {
-        command_line => "${nagios::params::nagios_plugin_dir}/check_dummy 3 'No data recieved since at least ${timeout_freshness} seconds'",
+        command_line => "${nagios::params::nagios_plugin_dir}/check_dummy 3 'No data received for at least ${timeout_freshness} seconds'",
       }
     }
   }else{
