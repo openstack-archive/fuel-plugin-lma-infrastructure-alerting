@@ -81,4 +81,10 @@ class lma_infra_alerting::params {
   # lma_collector::params::nagios_hostname_service_status.
   # The numeric prefix is used to orderer the display in Nagios UI
   $nagios_openstack_hostname_prefix = '00-openstack-services'
+
+  ## TCP ports of LMA backends and dashboards
+  $influxdb_port = 8086
+  $grafana_port = 8000
+  $elasticserach_port = 9200
+  $kibana_port = 80
 }
