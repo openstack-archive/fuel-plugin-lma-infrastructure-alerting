@@ -11,31 +11,17 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-#
-# Class: nagios::server_service
-#
-# Manage the Nagios daemon
-#
-# Example:
-# myresource { 'foo':
-#   notify => Class['nagios::server_service']
-#}
-#
-class nagios::server_service(
-  $service_name = $nagios::params::nagios_service_name,
-  $service_ensure = 'running',
-  $service_enable = true,
-  $service_manage = true,
-) inherits nagios::params {
+require 'spec_helper'
 
-  validate_bool($service_enable)
-  validate_bool($service_manage)
+describe 'lma_infra_alerting' do
+    let(:facts) do
+        {:kernel => 'Linux', :operatingsystem => 'Ubuntu',
+         :osfamily => 'Debian', :operatingsystemrelease => '12.4',
+         :concat_basedir => '/tmp'}
+    end
 
-  if $service_manage {
-    service {$service_name:
-      ensure  => $service_ensure,
-      require => Package[$service_name],
-      enable  => $service_enable,
-    }
-  }
-}
+    describe 'with defaults' do
+        it { should contain_class('nagios') }
+        it { should create_class('nagios::cgi') }
+    end
+end

@@ -57,26 +57,26 @@ class nagios::cgi (
         # TODO randomize salt?
         cryptpasswd => ht_md5($password, 'salt'),
         target      => $htpasswd_file,
-        require => Package[$package_name],
+        require     => Package[$package_name],
       }
 
       # Fix a permission issue with Ubuntu
       # to allow using external commands through the web UI
       $apache_user = $apache::user
       user { $apache_user:
-        groups => 'nagios',
+        groups  => 'nagios',
         require => Class[apache],
       }
       file { '/var/lib/nagios3/rw':
-        ensure => directory,
-        mode => '0650',
+        ensure  => directory,
+        mode    => '0650',
         require => Package[$package_name],
       }
 
-      file { $cgi_htpasswd_file:
-        owner => root,
-        group => $apache_user,
-        mode  => '0640',
+      file { $htpasswd_file:
+        owner   => root,
+        group   => $apache_user,
+        mode    => '0640',
         require => Htpasswd[$user],
       }
     }
@@ -86,6 +86,9 @@ class nagios::cgi (
         cryptpasswd => ht_md5($password, 'salt'),
         target      => $htpasswd_file,
       }
+    }
+    default: {
+      fail('OS Familly not supported!')
     }
   }
 }

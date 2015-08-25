@@ -1,2 +1,4 @@
 *.rpm
 .build
+Gemfile.lock
+.tox

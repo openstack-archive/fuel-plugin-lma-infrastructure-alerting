@@ -42,8 +42,8 @@ define nagios::object_custom_vars(
   }
 
   file { "${path}/${prefix}tpl_${object_name}_${name}_custom_vars.cfg":
-    ensure => $ensure,
+    ensure  => $ensure,
     content => template('nagios/object_custom_vars.erb'),
-    mode => '0644',
+    mode    => '0644',
   }
 }

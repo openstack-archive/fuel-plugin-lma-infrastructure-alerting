@@ -45,26 +45,25 @@ if $storage_options['objects_ceph']{
 
 if $plugin['node_name'] == hiera('user_node_name') {
   class { 'lma_infra_alerting':
-    openstack_deployment_name => $env_id,
-    openstack_management_vip => $management_vip,
-    additional_services => keys($services),
+    openstack_deployment_name  => $env_id,
+    openstack_management_vip   => $management_vip,
+    additional_services        => keys($services),
     # UI password
-    password => $password,
-    # notifications options
+    password                   => $password,
   }
 
   class { 'lma_infra_alerting::nagios::contact':
-    send_to => $send_to,
-    send_from => $send_from,
-    smtp_host => $smtp_host,
-    smtp_auth => $smtp_auth,
-    smtp_user => $smtp_user,
-    smtp_password => $smtp_password,
-    notify_warning => $notify_warning,
+    send_to         => $send_to,
+    send_from       => $send_from,
+    smtp_host       => $smtp_host,
+    smtp_auth       => $smtp_auth,
+    smtp_user       => $smtp_user,
+    smtp_password   => $smtp_password,
+    notify_warning  => $notify_warning,
     notify_critical => $notify_critical,
     notify_recovery => $notify_recovery,
-    notify_unknown => $notify_unknown,
-    require => Class['lma_infra_alerting'],
+    notify_unknown  => $notify_unknown,
+    require         => Class['lma_infra_alerting'],
   }
 
   $nodes_hash = hiera('nodes', {})
@@ -93,14 +92,14 @@ if $plugin['node_name'] == hiera('user_node_name') {
   }
 
   class { 'lma_infra_alerting::nagios::hosts':
-    hosts => $all_nodes,
-    host_name_key => 'name',
-    host_address_key => 'internal_address',
+    hosts                  => $all_nodes,
+    host_name_key          => 'name',
+    host_address_key       => 'internal_address',
     host_display_name_keys => ['name', 'user_node_name'],
-    host_custom_vars_keys => ['internal_address', 'private_address',
+    host_custom_vars_keys  => ['internal_address', 'private_address',
                               'public_address', 'storage_address',
                               'fqdn', 'role'],
-    require  => Class[lma_infra_alerting],
+    require                => Class[lma_infra_alerting],
   }
 
 
@@ -116,20 +115,20 @@ if $plugin['node_name'] == hiera('user_node_name') {
   # Configure SSH checks
   lma_infra_alerting::nagios::check_ssh { 'management':
     hostgroups => keys($all_nodes),
-    require  => Class[lma_infra_alerting],
+    require    => Class[lma_infra_alerting],
   }
 
   lma_infra_alerting::nagios::check_ssh { 'storage':
-    hostgroups => keys($all_nodes),
+    hostgroups         => keys($all_nodes),
     custom_var_address => 'storage_address',
-    require  => Class[lma_infra_alerting],
+    require            => Class[lma_infra_alerting],
   }
 
   if $private_network {
     lma_infra_alerting::nagios::check_ssh { 'private':
-      hostgroups => keys($all_nodes),
+      hostgroups         => keys($all_nodes),
       custom_var_address => 'private_address',
-      require  => Class[lma_infra_alerting],
+      require            => Class[lma_infra_alerting],
     }
   }
 }

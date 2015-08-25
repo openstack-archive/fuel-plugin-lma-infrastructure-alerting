@@ -87,7 +87,7 @@ define nagios::service (
     $final_properties = merge($properties, $opts)
     $timeout_freshness = $final_properties['freshness_threshold'] * $final_properties['max_check_attempts']
     nagios::command { $_check_command:
-      prefix => "${prefix}services_",
+      prefix     => "${prefix}services_",
       properties => {
         command_line => "${nagios::params::nagios_plugin_dir}/check_dummy 3 'No data received for at least ${timeout_freshness} seconds'",
       }
@@ -104,10 +104,10 @@ define nagios::service (
 
   if ! defined(File[$target]){
     file { $target:
-      ensure => $ensure,
-      mode => '0644',
+      ensure  => $ensure,
+      mode    => '0644',
       require => Nagios_Service[$service_name],
-      notify => Class['nagios::server_service'],
+      notify  => Class['nagios::server_service'],
     }
   }
 }

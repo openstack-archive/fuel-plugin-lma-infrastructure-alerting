@@ -37,7 +37,7 @@ define nagios::contactgroup (
   if ! defined(File[$target]){
     file { $target:
       ensure => $ensure,
-      mode => '0644',
+      mode   => '0644',
       notify => Class['nagios::server_service'],
     }
   }

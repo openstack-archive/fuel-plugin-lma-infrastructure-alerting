@@ -66,8 +66,8 @@ class nagios(
   $external_command = bool2num($check_external_commands)
 
   augeas{ $main_config:
-    incl => $main_config,
-    lens => 'nagioscfg.lns',
+    incl    => $main_config,
+    lens    => 'nagioscfg.lns',
     changes => [
         "set interval_length ${interval_length}",
         "set accept_passive_service_checks ${passive_service_check}",
@@ -86,6 +86,6 @@ class nagios(
         "set check_external_commands ${external_command}",
         "set command_check_interval  ${command_check_interval}",
         ],
-    notify => Class['nagios::server_service'],
+    notify  => Class['nagios::server_service'],
   }
 }

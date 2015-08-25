@@ -55,10 +55,10 @@ define nagios::command (
 
   if ! defined(File[$target]){
     file { $target:
-      ensure => $ensure,
-      mode => '0644',
+      ensure  => $ensure,
+      mode    => '0644',
       require => Nagios_Command[$name],
-      notify => Class['nagios::server_service'],
+      notify  => Class['nagios::server_service'],
     }
   }
 }

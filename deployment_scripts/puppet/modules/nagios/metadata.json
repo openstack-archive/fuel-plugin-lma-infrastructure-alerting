@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "author": "Swann Croiset <scroiset@mirantis.com>",
     "summary": "Puppet module for Nagios",
-    "license": "Apache License 2.0",
+    "license": "Apache-2.0",
     "source": "git://git.openstack.org/cgit/stackforge/fuel-plugin-infrastructure-alerting.git",
     "project_page": "none",
     "issues_url": "none",
@@ -21,6 +21,7 @@
     "dependencies": [
         {"name": "puppetlabs/apache", "version_requirement": "1.5.0"},
         {"name": "puppetlabs/stdlib", "version_requirement": "4.x"},
+        {"name": "puppetlabs/concat", "version_requirement": "1.2.3"},
         {"name": "leinaddm/htpasswd", "version_requirement": ">= 0.0.3"}
     ]
 }

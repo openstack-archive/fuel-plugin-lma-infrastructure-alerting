@@ -37,9 +37,9 @@ class lma_infra_alerting (
 
   # Configure services
   class { 'lma_infra_alerting::nagios::service_status':
-    ip => $openstack_management_vip,
+    ip       => $openstack_management_vip,
     hostname => $vhostname,
     services => $all_openstack_services,
-    require => Class['lma_infra_alerting::nagios'],
+    require  => Class['lma_infra_alerting::nagios'],
   }
 }

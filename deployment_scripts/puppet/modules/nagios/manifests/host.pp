@@ -74,9 +74,9 @@ define nagios::host (
     $final_params['use'] = $new_use
     nagios::object_custom_vars{ $host_name:
       object_name => 'host',
-      variables => $custom_vars,
-      use => $original_use,
-      prefix => $prefix,
+      variables   => $custom_vars,
+      use         => $original_use,
+      prefix      => $prefix,
     }
   }
 
@@ -88,10 +88,10 @@ define nagios::host (
 
   if ! defined(File[$target]){
     file { $target:
-      ensure => $properties['ensure'],
-      mode => '0644',
+      ensure  => $properties['ensure'],
+      mode    => '0644',
       require => Nagios_Host[$host_name],
-      notify => Class['nagios::server_service'],
+      notify  => Class['nagios::server_service'],
     }
   }
 }

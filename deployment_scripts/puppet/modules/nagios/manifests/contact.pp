@@ -60,7 +60,7 @@ define nagios::contact (
   }
 
   if is_array($properties['contactgroups']){
-    $opts['contactgroups'] = join($contact_groups, ',')
+    $opts['contactgroups'] = join($properties['contactgroups'], ',')
   }else{
     $opts['contactgroups'] = $properties['contactgroups']
   }
@@ -71,11 +71,11 @@ define nagios::contact (
       $command_filename = "${path}/cmd_notify-service-by-smtp-with-long-service-output.cfg"
       if ! defined(File[$command_filename]){
         file {$command_filename:
-          ensure => present,
+          ensure  => present,
           content => template('nagios/notify-by-smtp.cfg.erb'),
-          owner => 'root',
-          group => 'root',
-          mode => '0644',
+          owner   => 'root',
+          group   => 'root',
+          mode    => '0644',
           require => Package[$nagios::params::package_mailx_smtp],
         }
       }
@@ -90,9 +90,9 @@ define nagios::contact (
       file {"${path}/cmd_notify-service-by-email-with-long-service-output.cfg":
         ensure => present,
         source => 'puppet:///modules/nagios/cmd_notify_service_by_email.cfg',
-        owner => 'root',
-        group => 'root',
-        mode => '0644',
+        owner  => 'root',
+        group  => 'root',
+        mode   => '0644',
       }
     }
   }
@@ -128,7 +128,7 @@ define nagios::contact (
   if ! defined(File[$target]){
     file { $target:
       ensure => $ensure,
-      mode => '0644',
+      mode   => '0644',
       notify => Class['nagios::server_service'],
     }
   }

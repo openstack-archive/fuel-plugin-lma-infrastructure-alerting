@@ -26,18 +26,18 @@ class lma_infra_alerting::nagios (
   class { '::nagios':
     # Mandatory parameters for LMA requirements
     accept_passive_service_checks => $lma_infra_alerting::params::nagios_accept_passive_service_checks,
-    enable_notifications => $lma_infra_alerting::params::nagios_enable_notifications,
-    check_service_freshness => $lma_infra_alerting::params::nagios_check_service_freshness,
-    check_external_commands => $lma_infra_alerting::params::nagios_check_external_commands,
-    command_check_interval => $lma_infra_alerting::params::nagios_command_check_interval,
-    interval_length => $lma_infra_alerting::params::nagios_interval_length,
+    enable_notifications          => $lma_infra_alerting::params::nagios_enable_notifications,
+    check_service_freshness       => $lma_infra_alerting::params::nagios_check_service_freshness,
+    check_external_commands       => $lma_infra_alerting::params::nagios_check_external_commands,
+    command_check_interval        => $lma_infra_alerting::params::nagios_command_check_interval,
+    interval_length               => $lma_infra_alerting::params::nagios_interval_length,
 
     # Not required to set these parameters but either usefull or better for LMA
-    accept_passive_host_checks => $lma_infra_alerting::params::nagios_accept_passive_host_checks,
-    use_syslog => $lma_infra_alerting::params::nagios_use_syslog,
-    enable_flap_detection => $lma_infra_alerting::params::nagios_enable_flap_detection,
-    debug_level => $lma_infra_alerting::params::nagios_debug_level,
-    process_performance_data => $lma_infra_alerting::params::nagios_process_performance_data,
+    accept_passive_host_checks    => $lma_infra_alerting::params::nagios_accept_passive_host_checks,
+    use_syslog                    => $lma_infra_alerting::params::nagios_use_syslog,
+    enable_flap_detection         => $lma_infra_alerting::params::nagios_enable_flap_detection,
+    debug_level                   => $lma_infra_alerting::params::nagios_debug_level,
+    process_performance_data      => $lma_infra_alerting::params::nagios_process_performance_data,
   }
 
   class { '::nagios::cgi':
