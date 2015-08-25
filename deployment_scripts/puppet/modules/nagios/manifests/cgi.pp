@@ -32,7 +32,7 @@ class nagios::cgi (
     default_vhost       => false,
     # prerequists for Nagios CGI
     mpm_module          => 'prefork',
-    default_mods        => ['php', 'cgi'],
+    default_mods        => ['php', 'cgi', 'authn_file', 'auth_basic', 'authz_user'],
     # allow to use the Puppet user resource later in the manifest
     manage_group        => false,
     manage_user         => false,
@@ -45,6 +45,7 @@ class nagios::cgi (
     content => template("nagios/${nagios::params::apache_vhost_config_tpl}"),
   }
 
+  $apache_user = $apache::user
   case $::osfamily {
     'Debian': {
       # Nagios CGI is provided by a dedicated package
@@ -62,7 +63,6 @@ class nagios::cgi (
 
       # Fix a permission issue with Ubuntu
       # to allow using external commands through the web UI
-      $apache_user = $apache::user
       user { $apache_user:
         groups  => 'nagios',
         require => Class[apache],
@@ -73,12 +73,6 @@ class nagios::cgi (
         require => Package[$package_name],
       }
 
-      file { $htpasswd_file:
-        owner   => root,
-        group   => $apache_user,
-        mode    => '0640',
-        require => Htpasswd[$user],
-      }
     }
     'Redhat': {
       htpasswd { $user:
@@ -90,5 +84,13 @@ class nagios::cgi (
     default: {
       fail('OS Familly not supported!')
     }
+  }
+
+  # Ensure read right for Apache
+  file { $htpasswd_file:
+    owner   => root,
+    group   => $apache_user,
+    mode    => '0640',
+    require => Htpasswd[$user],
   }
 }

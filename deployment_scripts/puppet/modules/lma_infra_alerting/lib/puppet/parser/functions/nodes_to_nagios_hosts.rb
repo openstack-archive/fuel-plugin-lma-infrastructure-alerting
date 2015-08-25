@@ -32,7 +32,9 @@ module Puppet::Parser::Functions
             result[name] = {
                 'properties' => {
                   'address' => ip,
-                  'hostgroups' => hash.select{|k,v| v.count{|n| n[name_key] == name} > 0 }.keys(),
+                  # Note: due to incompatible behavior between ruby 1.8.7 and 1.9.3
+                  # the select method return an Array or a Hash.
+                  'hostgroups' => Hash[hash.select{|k,v| v.count{|n| n[name_key] == name} > 0 }].keys(),
                   'display_name' => display_name,
                   'alias' => display_name,
                 },

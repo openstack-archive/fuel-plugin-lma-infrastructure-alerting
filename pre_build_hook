@@ -54,7 +54,35 @@ download_packages \
     http://mirrors.kernel.org/ubuntu/pool/main/t/tdb/python-tdb_1.2.12-1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/s/samba/python-samba_4.1.6+dfsg-1ubuntu2.14.04.7_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/w/whois/whois_5.1.1_amd64.deb\
-    http://mirrors.kernel.org/ubuntu/pool/universe/h/heirloom-mailx/heirloom-mailx_12.5-4_amd64.deb
+    http://mirrors.kernel.org/ubuntu/pool/universe/h/heirloom-mailx/heirloom-mailx_12.5-4_amd64.deb\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-3.5.1-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-common-3.5.1-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-bonding-1.4-3.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-cluster-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-dhcp-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-dig-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-disk-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-dns-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-dummy-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-fping-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-http-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-icmp-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-ifstatus-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-load-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-mailq-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-mysql-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-nagios-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-nrpe-2.15-2.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-ntp-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-ping-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-procs-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-smtp-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-snmp-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-ssh-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-tcp-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-swap-2.0.3-1.el6.x86_64.rpm\
+    http://dl.fedoraproject.org/pub/epel/6/x86_64/nagios-plugins-users-2.0.3-1.el6.x86_64.rpm
 
 
 rm -rf "${MODULES_DIR:?}"/{openstack,stdlib,htpasswd,apache,concat}
