@@ -35,13 +35,13 @@ define nagios::hostgroup (
   $opts = {}
 
   if is_array($properties['members']){
-    $opts['members'] = join($properties['members'], ',')
+    $opts['members'] = join(sort($properties['members']), ',')
   } elsif $properties['members']{
     $opts['members'] = $properties['members']
   }
 
   if is_array($properties['hostgroup_members']){
-    $opts['hostgroup_members'] = join($properties['hostgroup_members'], ',')
+    $opts['hostgroup_members'] = join(sort($properties['hostgroup_members']), ',')
   }elsif $properties['hostgroup_members']{
     $opts['hostgroup_members'] = $properties['hostgroup_members']
   }

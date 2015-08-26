@@ -60,7 +60,7 @@ define nagios::contact (
   }
 
   if is_array($properties['contactgroups']){
-    $opts['contactgroups'] = join($properties['contactgroups'], ',')
+    $opts['contactgroups'] = join(sort($properties['contactgroups']), ',')
   }else{
     $opts['contactgroups'] = $properties['contactgroups']
   }
@@ -97,13 +97,13 @@ define nagios::contact (
     }
   }
   if is_array($properties['service_notification_commands']) {
-    $opts['service_notification_commands'] = join($properties['service_notification_commands'], ',')
+    $opts['service_notification_commands'] = join(sort($properties['service_notification_commands']), ',')
   }
   if $properties['host_notification_commands'] == undef {
     $opts['host_notification_commands'] = $nagios::params::host_notification_commands
   }
   if is_array($properties['host_notification_commands']) {
-    $opts['host_notification_commands'] = join($properties['host_notification_commands'], ',')
+    $opts['host_notification_commands'] = join(sort($properties['host_notification_commands']), ',')
   }
 
   if $onefile {
