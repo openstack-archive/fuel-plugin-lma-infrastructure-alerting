@@ -1,0 +1,36 @@
+# ************************************
+# Vhost template in module nagios
+# Managed by Puppet
+# ************************************
+
+<VirtualHost <%= @vhost_listen_ip %>:<%= @http_port %>>
+  ServerName nagios
+
+  DocumentRoot "/usr/share/nagios/html"
+  # Alias for UI
+  ScriptAlias /nagios/cgi-bin /usr/lib64/nagios/cgi-bin/
+  # Alias for HTTP commands
+  ScriptAlias /cgi-bin /usr/lib64/nagios/cgi-bin/
+  # Aliases for static content
+  Alias /nagios /usr/share/nagios/html
+  <DirectoryMatch (/usr/lib64/nagios/cgi-bin/|/usr/share/nagios/html)>
+    Options FollowSymLinks
+    DirectoryIndex index.php index.html
+    AllowOverride AuthConfig
+    Order Allow,Deny
+    Allow From All
+    AuthName "Nagios Access"
+    AuthType Basic
+    AuthUserFile <%= @cgi_htpasswd_file %>
+    require valid-user
+  </DirectoryMatch>
+
+  <Directory /usr/lib64/nagios/cgi-bin/>
+   Options +ExecCGI
+
+  </Directory>
+  ErrorLog "/var/log/httpd/nagios_error.log"
+  ServerSignature Off
+  CustomLog "/var/log/httpd/nagios_access.log" combined
+</VirtualHost>
+

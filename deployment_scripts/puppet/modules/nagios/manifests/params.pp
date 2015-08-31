@@ -13,21 +13,44 @@
 #    under the License.
 #
 class nagios::params {
-  $config_dir = '/etc/nagios3/conf.d'
-  $main_conf_file = '/etc/nagios3/nagios.cfg'
-  $nagios_service_name = 'nagios3'
-
-  # plugins
-  $nagios_plugin_package = 'nagios-plugins'
-  $nagios_plugin_dir = '/usr/lib/nagios/plugins'
+  case $::osfamily {
+    'Debian': {
+      $config_dir = '/etc/nagios3/conf.d'
+      $main_conf_file = '/etc/nagios3/nagios.cfg'
+      $nagios_service_name = 'nagios3'
+      # plugins
+      $nagios_plugin_package = 'nagios-plugins'
+      $nagios_plugin_dir = '/usr/lib/nagios/plugins'
+      # CGI
+      $nagios_cgi_package = 'nagios3-cgi'
+      $cgi_htpasswd_file = '/etc/nagios3/htpasswd.users'
+      $apache_service_name = 'apache2'
+      $apache_vhost_config_tpl = 'apache_vhost_ubuntu.conf.erb'
+    }
+    'RedHat': {
+      $config_dir = '/etc/nagios/conf.d'
+      $main_conf_file = '/etc/nagios/nagios.cfg'
+      $nagios_service_name = 'nagios'
+      # plugins
+      $nagios_plugin_package = ['nagios-plugins-ping', 'nagios-plugins-load', 'nagios-plugins-users',
+                                'nagios-plugins-ssh', 'nagios-plugins-swap', 'nagios-plugins-disk',
+                                'nagios-plugins-procs', 'nagios-plugins-http']
+      $nagios_plugin_dir = '/usr/lib64/nagios/plugins/'
+      # CGI
+      $nagios_cgi_package = $nagios_service_name # CGI is provided by the same package
+      $cgi_htpasswd_file = '/etc/nagios/htpasswd'
+      $apache_service_name = 'httpd'
+      $apache_vhost_config_tpl = 'apache_vhost_centos.conf.erb'
+    }
+    default: {
+      fail("${::osfamily} not supported")
+    }
+  }
 
   # CGI
-  $nagios_cgi_package = 'nagios3-cgi'
-  $cgi_htpasswd_file = '/etc/nagios3/htpasswd.users'
   $cgi_user = 'nagiosadmin'
   $cgi_password = undef
   $cgi_http_port = '80'
-  $apache_vhost_config_tpl = 'apache_vhost_ubuntu.conf.erb'
 
   # Nagios server configurations
   $nagios_debug = false

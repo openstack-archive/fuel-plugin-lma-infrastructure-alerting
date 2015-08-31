@@ -86,6 +86,7 @@ class nagios(
         "set check_external_commands ${external_command}",
         "set command_check_interval  ${command_check_interval}",
         ],
+    require => Package[$service_name],
     notify  => Class['nagios::server_service'],
   }
 }

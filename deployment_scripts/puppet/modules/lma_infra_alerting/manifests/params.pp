@@ -47,6 +47,9 @@ class lma_infra_alerting::params {
   $nagios_debug_level = 0
   $nagios_process_performance_data = false
 
+  # required parameter for Hosts but not defined in the generic-host with CentOS
+  $nagios_default_max_check_attempts_host = 3
+
   ## Service statutes
   #
   # Following parameters check and retry intervals are the number of

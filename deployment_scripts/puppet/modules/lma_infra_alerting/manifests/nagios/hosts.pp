@@ -52,6 +52,7 @@ class lma_infra_alerting::nagios::hosts (
       contact_groups => $lma_infra_alerting::params::nagios_contactgroup,
       active_checks_enabled => 1,
       passive_checks_enabled => 0,
+      max_check_attempts => $lma_infra_alerting::params::nagios_default_max_check_attempts_host,
       use => $lma_infra_alerting::params::nagios_generic_host_template,
     }
   }
