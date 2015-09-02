@@ -1,3 +1,4 @@
+*.deb
 *.rpm
 .build
 Gemfile.lock
