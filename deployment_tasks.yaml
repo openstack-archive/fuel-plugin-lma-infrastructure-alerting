@@ -1,0 +1,34 @@
+- id: infrastructure_alerting
+  type: group
+  role: [infrastructure_alerting]
+  tasks:
+    - hiera
+    - globals
+    - logging
+    - netconfig
+  required_for: [deploy_end]
+  requires: [deploy_start]
+  parameters:
+    strategy:
+      type: parallel
+
+# Tasks
+#- id: infrastructure_alerting-firewall
+#  type: puppet
+#  role: [infrastructure_alerting]
+#  required_for: [post_deployment_end]
+#  requires: [post_deployment_start]
+#  parameters:
+#    puppet_manifest: puppet/manifests/firewall.pp
+#    puppet_modules: /etc/puppet/modules
+#    timeout: 600
+#
+#- id: infrastructure_alerting-configure
+#  type: puppet
+#  role: [infrastructure_alerting]
+#  required_for: [post_deployment_end]
+#  requires: [post_deployment_start]
+#  parameters:
+#    puppet_manifest: puppet/manifests/nagios.pp
+#    puppet_modules: puppet/modules
+#    timeout: 600
