@@ -67,15 +67,18 @@ if $plugin['node_name'] == hiera('user_node_name') {
   }
 
   $nodes_hash = hiera('nodes', {})
-  $controller_nodes = hiera('controllers')
+  $primary_controller_nodes = filter_nodes($nodes_hash,'role','primary-controller')
+  $controller_nodes = filter_nodes($nodes_hash,'role','controller')
+  $all_controller_nodes = concat($primary_controller_nodes, $controller_nodes)
+
   $compute_nodes = filter_nodes($nodes_hash,'role','compute')
   $cinder_nodes = filter_nodes($nodes_hash,'role','cinder')
   $base_os_nodes = filter_nodes($nodes_hash,'role','base-os')
   $osd_nodes = filter_nodes($nodes_hash, 'role', 'ceph-osd')
 
   $all_nodes = {}
-  if !empty($controller_nodes){
-    $all_nodes['controller'] = $controller_nodes
+  if !empty($all_controller_nodes){
+    $all_nodes['controller'] = $all_controller_nodes
   }
 
   if !empty($compute_nodes){
