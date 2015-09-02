@@ -1,21 +1,13 @@
 attributes:
-  node_name:
-    value: 'alerting'
-    label: "Node name"
-    description: 'The name of the node where the plugin will be deployed.'
-    weight: 30
-    type: "text"
-    regex: &not_empty
-      source: '\S'
-      error: "Invalid value"
-
   nagios_password:
     value: 'r00tme'
     label: 'Nagios HTTP password'
     description: 'The password to access the Nagios Web Interface (username: "nagiosadmin")'
     weight: 42
     type: "password"
-    regex: *not_empty
+    regex:
+      source: '\S'
+      error: "Invalid value"
 
   send_to:
     value: ''

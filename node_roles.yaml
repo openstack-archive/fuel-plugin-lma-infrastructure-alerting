@@ -1,0 +1,6 @@
+infrastructure_alerting:
+  name: 'LMA Infrastructure Alerting'
+  description: 'Install services for the infrastructure alerting'
+  has_primary: false
+  public_ip_required: false
+  weight: 100

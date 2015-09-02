@@ -1,0 +1,13 @@
+- id: infrastructure_alerting
+  type: group
+  role: [infrastructure_alerting]
+  tasks:
+    - hiera
+    - globals
+    - logging
+    - netconfig
+  required_for: [deploy_end]
+  requires: [deploy_start]
+  parameters:
+    strategy:
+      type: parallel
