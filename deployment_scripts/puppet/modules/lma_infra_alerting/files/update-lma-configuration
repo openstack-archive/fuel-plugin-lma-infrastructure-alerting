@@ -1,0 +1,48 @@
+#!/bin/bash
+
+set -e
+
+PLUGIN_NAME=$1
+MANIFEST=$2
+CONFIG_DIR=$3
+EXTENSION_FILENAMES=$4
+PREFIX_FILENAMES=$5
+
+PUPPET=$(which puppet)
+PLUGIN_PUPPET_DIR=$(ls -d /etc/fuel/plugins/"$PLUGIN_NAME"*/puppet)
+LAST_CHECK=/var/cache/lma_last_nodes_yaml.md5sum
+NODES=/etc/hiera/nodes.yaml
+
+if [[ -z "$PLUGIN_NAME" || -z "$MANIFEST" ]]; then
+  cat << EOT
+  Usage: $0 <PLUGIN_NAME> <MANIFEST> [<CONFIG_DIR>] [<EXTENSION_FILENAMES>] [<PREFIX_FILENAMES>]
+
+  If $NODES has changed since the last run, apply the <MANIFEST> of the <PLUGIN_NAME>.
+  Before puppet apply, the script removes files inside <CONFIG_DIR> if directory exists.
+EOT
+  exit 1
+fi
+
+if [ ! -f "$NODES" ]; then
+    echo "missing $NODES file!"
+    exit 1
+fi
+
+if [ ! -f $LAST_CHECK ]; then
+    # First run
+    md5sum $NODES 2>/dev/null > $LAST_CHECK
+    exit 0
+fi
+
+set +e
+md5sum --status -c $LAST_CHECK
+result=$?
+set -e
+
+if [ $result -eq 1 ]; then
+  if [ -d "$CONFIG_DIR" ]; then
+    rm -f "$CONFIG_DIR"/"$PREFIX_FILENAMES"*"$EXTENSION_FILENAMES"
+  fi
+  $PUPPET apply --modulepath="$PLUGIN_PUPPET_DIR/modules/" "$PLUGIN_PUPPET_DIR/manifests/$MANIFEST"
+  md5sum $NODES > $LAST_CHECK
+fi

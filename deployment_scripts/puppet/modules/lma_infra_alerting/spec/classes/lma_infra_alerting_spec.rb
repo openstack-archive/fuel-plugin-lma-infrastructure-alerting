@@ -23,5 +23,7 @@ describe 'lma_infra_alerting' do
     describe 'with defaults' do
         it { should contain_class('nagios') }
         it { should create_class('nagios::cgi') }
+        it { should create_cron('update lma infra alerting') }
+        it { should create_file('/usr/local/bin/update-lma-configuration') }
     end
 end

@@ -90,4 +90,6 @@ class lma_infra_alerting::params {
   $grafana_port = 8000
   $elasticserach_port = 9200
   $kibana_port = 80
+
+  $update_configuration_script = '/usr/local/bin/update-lma-configuration'
 }
