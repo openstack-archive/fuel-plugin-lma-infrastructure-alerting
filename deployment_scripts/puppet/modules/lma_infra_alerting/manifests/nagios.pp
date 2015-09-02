@@ -23,6 +23,8 @@ class lma_infra_alerting::nagios (
   $http_port = $lma_infra_alerting::params::nagios_http_port,
 ) inherits lma_infra_alerting::params {
 
+  include nagios::params
+
   class { '::nagios':
     # Mandatory parameters for LMA requirements
     accept_passive_service_checks => $lma_infra_alerting::params::nagios_accept_passive_service_checks,
@@ -45,5 +47,24 @@ class lma_infra_alerting::nagios (
     password  => $http_password,
     http_port => $http_port,
     require   => Class[nagios],
+  }
+
+  $cron_bin = $lma_infra_alerting::params::update_configuration_script
+  file { $cron_bin:
+    ensure => file,
+    source => 'puppet:///modules/lma_infra_alerting/update-lma-configuration',
+    mode   => '0750',
+  }
+
+  $nagios_config_dir = $nagios::params::config_dir
+  $prefix = $lma_infra_alerting::params::nagios_config_filename_prefix
+  cron { 'update lma infra alerting':
+    ensure   => present,
+    command  => "/usr/bin/flock -n /tmp/lma.lock -c \"${cron_bin} lma_infrastructure_alerting\"",
+    minute   => '*',
+    hour     => '*',
+    month    => '*',
+    monthday => '*',
+    require  => File[$cron_bin],
   }
 }

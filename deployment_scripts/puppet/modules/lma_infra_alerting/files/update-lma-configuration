@@ -1,0 +1,57 @@
+#!/bin/bash
+
+set -e
+
+PLUGIN_NAME=$1
+
+MANIFEST=nagios.pp
+CONFIG_DIR=/etc/nagios3/conf.d
+PREFIX_FILENAMES=lma_
+EXTENSION_FILENAMES=.cfg
+PUPPET=$(which puppet)
+PLUGIN_PUPPET_DIR=$(ls -d /etc/fuel/plugins/"$PLUGIN_NAME"*/puppet)
+LAST_CHECK=/var/cache/lma_last_nodes_yaml.md5sum
+CURRENT_CHECK=/var/cache/lma_current_nodes_yaml.md5sum
+NODES=/etc/hiera/nodes.yaml
+
+if [[ -z "$PLUGIN_NAME" ]]; then
+  cat << EOT
+  Usage: $0 <PLUGIN_NAME>
+
+  If $NODES has changed since the last run, re-apply nagios manifest.
+  Before puppet apply, the script removes purge nagios configuration files.
+EOT
+  exit 1
+fi
+
+if [ ! -f "$NODES" ]; then
+    echo "missing $NODES file!"
+    exit 1
+fi
+
+if [ ! -f $LAST_CHECK ]; then
+    # First run
+    md5sum $NODES 2>/dev/null > $LAST_CHECK
+    exit 0
+fi
+
+md5sum $NODES > $CURRENT_CHECK
+set +e
+md5sum --status -c $LAST_CHECK
+result=$?
+set -e
+
+if [ $result -eq 1 ]; then
+  if [ -d "$CONFIG_DIR" ]; then
+    rm -f "$CONFIG_DIR"/"$PREFIX_FILENAMES"*"$EXTENSION_FILENAMES"
+  fi
+  $PUPPET apply --modulepath="$PLUGIN_PUPPET_DIR/modules/" "$PLUGIN_PUPPET_DIR/manifests/$MANIFEST"
+  set +e
+  md5sum --status -c $CURRENT_CHECK
+  result=$?
+  set -e
+  if [ $result -ne 1 ]; then
+    # OK, the $NODES file hasn't been modified during the puppet run
+    md5sum $NODES > $LAST_CHECK
+  fi
+fi
