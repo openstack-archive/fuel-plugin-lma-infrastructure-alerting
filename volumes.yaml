@@ -1,0 +1,5 @@
+volumes: []
+volumes_roles_mapping:
+  infrastructure_alerting:
+    - {allocate_size: "min", id: "os"}
+    - {allocate_size: "all", id: "logs"}
