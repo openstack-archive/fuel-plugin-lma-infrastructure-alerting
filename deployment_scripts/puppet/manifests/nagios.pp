@@ -94,44 +94,45 @@ if !empty($osd_nodes){
   $all_nodes['ceph-osd'] = $osd_nodes
 }
 
-class { 'lma_infra_alerting::nagios::hosts':
-  hosts                  => $all_nodes,
-  host_name_key          => 'name',
-  host_address_key       => 'internal_address',
-  host_display_name_keys => ['name', 'user_node_name'],
-  host_custom_vars_keys  => ['internal_address', 'private_address',
-                            'public_address', 'storage_address',
-                            'fqdn', 'role'],
-  require                => Class[lma_infra_alerting],
-}
+if !empty($all_nodes){  # allow to deploy one node with this plugin's role
+  class { 'lma_infra_alerting::nagios::hosts':
+    hosts                  => $all_nodes,
+    host_name_key          => 'name',
+    host_address_key       => 'internal_address',
+    host_display_name_keys => ['name', 'user_node_name'],
+    host_custom_vars_keys  => ['internal_address', 'private_address',
+                              'public_address', 'storage_address',
+                              'fqdn', 'role'],
+    require                => Class[lma_infra_alerting],
+  }
 
+  # Nodes have private IPs only with GRE segmentation
+  $network_config = hiera('quantum_settings')
+  $segmentation_type = $network_config['L2']['segmentation_type']
+  if $segmentation_type == 'gre' {
+    $private_network = true
+  } else {
+    $private_network = false
+  }
 
-# Nodes have private IPs only with GRE segmentation
-$network_config = hiera('quantum_settings')
-$segmentation_type = $network_config['L2']['segmentation_type']
-if $segmentation_type == 'gre' {
-  $private_network = true
-} else {
-  $private_network = false
-}
+  # Configure SSH checks
+  lma_infra_alerting::nagios::check_ssh { 'management':
+    hostgroups => keys($all_nodes),
+    require    => Class[lma_infra_alerting],
+  }
 
-# Configure SSH checks
-lma_infra_alerting::nagios::check_ssh { 'management':
-  hostgroups => keys($all_nodes),
-  require    => Class[lma_infra_alerting],
-}
-
-lma_infra_alerting::nagios::check_ssh { 'storage':
-  hostgroups         => keys($all_nodes),
-  custom_var_address => 'storage_address',
-  require            => Class[lma_infra_alerting],
-}
-
-if $private_network {
-  lma_infra_alerting::nagios::check_ssh { 'private':
+  lma_infra_alerting::nagios::check_ssh { 'storage':
     hostgroups         => keys($all_nodes),
-    custom_var_address => 'private_address',
+    custom_var_address => 'storage_address',
     require            => Class[lma_infra_alerting],
+  }
+
+  if $private_network {
+    lma_infra_alerting::nagios::check_ssh { 'private':
+      hostgroups         => keys($all_nodes),
+      custom_var_address => 'private_address',
+      require            => Class[lma_infra_alerting],
+    }
   }
 }
 
