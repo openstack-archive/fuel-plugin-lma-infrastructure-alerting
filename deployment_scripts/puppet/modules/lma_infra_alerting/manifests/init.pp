@@ -35,6 +35,15 @@ class lma_infra_alerting (
     http_password => $password,
   }
 
+  # Purge default configuration shipped by distribution
+  if !empty($lma_infra_alerting::params::nagios_distribution_configs_to_purge) {
+    file { $lma_infra_alerting::params::nagios_distribution_configs_to_purge:
+      ensure  => absent,
+      backup  => '.puppet-bak',
+      require => Class['lma_infra_alerting::nagios'],
+    }
+  }
+
   # Configure services
   class { 'lma_infra_alerting::nagios::service_status':
     ip       => $openstack_management_vip,
