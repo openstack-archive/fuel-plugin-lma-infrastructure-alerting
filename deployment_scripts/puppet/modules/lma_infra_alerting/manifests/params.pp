@@ -14,6 +14,8 @@
 #
 class lma_infra_alerting::params {
 
+  include nagios::params
+
   ## Default configuration of Nagios
   #
   $nagios_http_user = 'nagiosadmin'
@@ -49,6 +51,16 @@ class lma_infra_alerting::params {
 
   # required parameter for Hosts but not defined in the generic-host with CentOS
   $nagios_default_max_check_attempts_host = 3
+
+  case $::osfamily {
+    'Debian': {
+      $nagios_distribution_configs_to_purge = [
+        "${nagios::params::config_dir}/services_nagios2.cfg"]
+    }
+    default: {
+      $nagios_distribution_configs_to_purge = []
+    }
+  }
 
   ## Service statutes
   #
