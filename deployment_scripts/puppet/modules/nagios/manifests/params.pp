@@ -62,6 +62,8 @@ class nagios::params {
   $log_rotation_method = 'd'
   $max_concurrent_checks = 0 # no limit
 
+  $data_dir = '/var/nagios'
+
   # default Nagios contact
   $default_contact_groups = ['admins']
   $default_contact_email = 'root@localhost'

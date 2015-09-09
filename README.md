@@ -84,6 +84,16 @@ User Guide
     - The name of the node where the plugin is deployed.
     - The username and password to access Nagios web interface.
 
+### Disks partitioning
+The plugin uses:
+
+- 20% of the first disk for the operating system by honoring the range of
+  15GB minimum and 50GB maximum.
+- 20GB for Nagios data and logs (/var/nagios).
+- 10GB for /var/log.
+
+It is recommended to review the partitioning done by Fuel before the deployment
+and adapt it to your requirements.
 
 Testing
 -------
