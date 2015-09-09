@@ -84,6 +84,17 @@ User Guide
     - The name of the node where the plugin is deployed.
     - The username and password to access Nagios web interface.
 
+### Disks partitioning
+The plugin uses:
+
+- 20% of the first disk for the operating system by honoring the range of
+  15GB minimum and 50GB maximum.
+- 20GB for Nagios archives (/var/nagios).
+- 10GB for /var/log.
+
+Please note that this partitioning schema doesn't use all disks available,
+you should consider to adapt this default partioning logic before deploying the
+node, accordingly to your requirements.
 
 Testing
 -------

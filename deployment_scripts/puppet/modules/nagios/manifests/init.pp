@@ -36,6 +36,12 @@ class nagios(
   $additional_freshness_latency = $nagios::params::additional_freshness_latency,
   $check_external_commands = false,
   $command_check_interval = $nagios::params::command_check_interval,
+  $object_cache_file = $nagios::params::object_cache_file,
+  $status_file = $nagios::params::status_file,
+  $temp_file = $nagios::params::temp_file,
+  $log_file = $nagios::params::log_file,
+  $log_archive_path = $nagios::params::log_archive_path,
+
   $interval_length = $nagios::params::interval_length,
 ) inherits nagios::params {
 
@@ -65,6 +71,13 @@ class nagios(
   $host_freshness = bool2num($check_host_freshness)
   $external_command = bool2num($check_external_commands)
 
+  file { $log_archive_path:
+    ensure => present,
+    type   => directoy,
+    owner  => 'nagios',
+    notify => Class['nagios::server_service'],
+  }
+
   augeas{ $main_config:
     incl    => $main_config,
     lens    => 'nagioscfg.lns',
@@ -85,6 +98,11 @@ class nagios(
         "set service_freshness_check_interval ${service_freshness_check_interval}",
         "set check_external_commands ${external_command}",
         "set command_check_interval  ${command_check_interval}",
+        "set object_cache_file ${object_cache_file}",
+        "set status_file ${status_file}",
+        "set temp_file ${temp_file}",
+        "set log_file ${log_file}",
+        "set log_archive_path ${log_archive_path}",
         ],
     require => Package[$service_name],
     notify  => Class['nagios::server_service'],
