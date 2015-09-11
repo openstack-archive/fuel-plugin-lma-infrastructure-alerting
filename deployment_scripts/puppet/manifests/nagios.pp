@@ -73,6 +73,8 @@ $compute_nodes = filter_nodes($nodes_hash,'role','compute')
 $cinder_nodes = filter_nodes($nodes_hash,'role','cinder')
 $base_os_nodes = filter_nodes($nodes_hash,'role','base-os')
 $osd_nodes = filter_nodes($nodes_hash, 'role', 'ceph-osd')
+$influxdb_nodes = filter_nodes($nodes_hash, 'role', 'influxdb_grafana')
+$es_kibana_nodes = filter_nodes($nodes_hash, 'role', 'elasticsearch_kibana')
 
 $all_nodes = {}
 if !empty($all_controller_nodes){
@@ -91,6 +93,13 @@ if !empty($base_os_nodes){
 if !empty($osd_nodes){
   $all_nodes['ceph-osd'] = $osd_nodes
 }
+if !empty($influxdb_nodes){
+  $all_nodes['influxdb_grafana'] = $influxdb_nodes
+}
+if !empty($es_kibana_nodes){
+  $all_nodes['elasticsearch_kibana'] = $es_kibana_nodes
+}
+
 
 if !empty($all_nodes){  # allow to deploy one node with this plugin's role
   class { 'lma_infra_alerting::nagios::hosts':
@@ -135,9 +144,6 @@ if !empty($all_nodes){  # allow to deploy one node with this plugin's role
 }
 
 # Configure Grafana and InfluxDB checks
-$influxdb_grafana = hiera('influxdb_grafana', {})
-$influxdb_node_name = $influxdb_grafana['node_name']
-$influxdb_nodes = filter_nodes(hiera('nodes'), 'user_node_name', $influxdb_node_name)
 if ! empty($influxdb_nodes){
   lma_infra_alerting::nagios::check_http { 'Grafana':
     host_name                  => $influxdb_nodes[0]['name'],
@@ -157,9 +163,6 @@ if ! empty($influxdb_nodes){
 }
 
 # Configure Elasticsearch and Kibana checks
-$es_kibana = hiera('elasticsearch_kibana', {})
-$es_node_name = $es_kibana['node_name']
-$es_kibana_nodes = filter_nodes(hiera('nodes'), 'user_node_name', $es_node_name)
 if ! empty($es_kibana_nodes){
   lma_infra_alerting::nagios::check_http { 'Kibana':
     host_name                  => $es_kibana_nodes[0]['name'],
