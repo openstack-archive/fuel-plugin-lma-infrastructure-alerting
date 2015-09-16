@@ -54,6 +54,7 @@ class nagios::cgi (
         ensure  => present,
         require => Class[apache],
       }
+
       htpasswd { $user:
         # TODO randomize salt?
         cryptpasswd => ht_md5($password, 'salt'),
@@ -61,16 +62,20 @@ class nagios::cgi (
         require     => Package[$package_name],
       }
 
-      # Fix a permission issue with Ubuntu
-      # to allow using external commands through the web UI
+      # Fix a permission issue with Ubuntu to allow using external commands
+      # through the web UI
       user { $apache_user:
         groups  => 'nagios',
         require => Class[apache],
       }
+
+      # Apache needs to be restarted otherwise the CGI script won't have access
+      # to the Nagios FIFO file
       file { '/var/lib/nagios3/rw':
         ensure  => directory,
         mode    => '0650',
         require => Package[$package_name],
+        notify  => Class['apache::service']
       }
 
     }
