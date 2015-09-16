@@ -69,6 +69,7 @@ define nagios::contact (
     if $_smtp_auth {
       $opts['service_notification_commands'] = $nagios::params::service_notification_command_by_smtp
       $command_filename = "${path}/cmd_notify-service-by-smtp-with-long-service-output.cfg"
+      $smtp_password_escaped = regsubst($smtp_password, '\'', '\'"\'"\'', 'G')
       if ! defined(File[$command_filename]){
         file {$command_filename:
           ensure  => present,
