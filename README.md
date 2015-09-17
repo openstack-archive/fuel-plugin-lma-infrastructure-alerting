@@ -19,7 +19,7 @@ Requirements
 
 | Requirement                               | Version/Comment  |
 | ----------------------------------------- | -----------------|
-| Mirantis OpenStack compatility            | 6.1 or higher    |
+| Mirantis OpenStack compatility            | 7.0 or higher    |
 | LMA Collector Fuel plugin                 | 0.8 or higher    |
 | InfluxDB-Grafana Fuel plugin (optional)   | 0.8 or higher    |
 
@@ -36,10 +36,14 @@ server.
 This limitation is due to the missing ability of Fuel Plugin Framework to apply
 plugin tasks (puppet apply) when these operations occur.
 
+
 Installation Guide
 ==================
 
-To install the LMA Infrastructure Alerting plugin, follow these steps:
+LMA Infrastructure Alerting Plugin install from the RPM file
+------------------------------------------------------------
+
+To install the LMA Infrastructure Alerting Plugin from the RPM file of the plugin, follow these steps:
 
 1. Download the plugin from the [Fuel Plugins
    Catalog](https://software.mirantis.com/download-mirantis-openstack-fuel-plug-ins/).
@@ -64,9 +68,64 @@ To install the LMA Infrastructure Alerting plugin, follow these steps:
    fuel plugins
    ```
 
-Please refer to the [Fuel Plugins wiki](https://wiki.openstack.org/wiki/Fuel/Plugins)
-if you want to build the plugin by yourself, version 2.0.0 (or higher) of the Fuel
-Plugin Builder is required.
+LMA Infrastructure Alerting Plugin install from source
+------------------------------------------------------
+
+To install the LMA Infrastructure Alerting Plugin from source, you first need to prepare an
+environement to build the RPM file of the plugin.
+The recommended approach is to build the RPM file directly onto the Fuel Master
+node so that you won't have to copy that file later.
+
+**Prepare an environment for building the plugin on the Fuel Master Node**
+
+1. Install the standard Linux development tools:
+
+    ```
+    # yum install createrepo rpm rpm-build dpkg-devel
+    ```
+
+2. Install the Fuel Plugin Builder. To do that, you should first get pip:
+
+    ```
+    # easy_install pip
+    ```
+
+3. Then install the Fuel Plugin Builder (the `fpb` command line) with `pip`:
+
+    ```
+    # pip install fuel-plugin-builder
+    ```
+
+*Note: You may also have to build the Fuel Plugin Builder if the package version of the
+plugin is higher than package version supported by the Fuel Plugin Builder you get from `pypi`.
+In this case, please refer to the section "Preparing an environment for plugin development"
+of the [Fuel Plugins wiki](https://wiki.openstack.org/wiki/Fuel/Plugins) if you
+need further instructions about how to build the Fuel Plugin Builder.*
+
+4. Clone the LMA Infrastructure Alerting Plugin git repository:
+
+    ```
+    # git clone git@github.com:stackforge/fuel-plugin-lma-infrastructure-alerting.git 
+    ```
+
+5. Check that the plugin is valid:
+
+    ```
+    # fpb --check ./fuel-plugin-lma-infrastructure-alerting
+    ```
+
+6.  And finally, build the plugin:
+
+    ```
+    # fpb --build ./fuel-plugin-lma-infrastructure-alerting
+    ```
+
+7. Now you have created an RPM file that you can install using the steps described above:
+
+    ```
+    # ls ./fuel-plugin-lma-infrastructure-alerting/lma_infrastructure_alerting-0.8-0.8.0-1.noarch.rpm 
+    ./fuel-plugin-lma-infrastructure-alerting/lma_infrastructure_alerting-0.8-0.8.0-1.noarch.rpm
+    ```
 
 User Guide
 ==========
