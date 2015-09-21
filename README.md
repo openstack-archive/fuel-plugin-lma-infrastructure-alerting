@@ -75,14 +75,16 @@ User Guide
 ----------------------------------------------------
 
 1. Create a new environment with the Fuel UI wizard.
-2. Add a node with the "Operating System" role.
-3. Before applying changes or once changes applied, edit the name of the node by
-   clicking on "Untitled (xx:yy)" and modify it for "alerting".
-4. Click on the Settings tab of the Fuel web UI.
-5. Scroll down the page, select the "LMA Infrastructure Alerting Server plugin"
-   checkbox and fill-in the required fields.
-    - The name of the node where the plugin is deployed.
-    - The username and password to access Nagios web interface.
+2. Click on the Settings tab of the Fuel web UI.
+3. Scroll down the page, enable the "LMA Infrastructure Alerting Server plugin"
+   and fill-in the required fields.
+    - The password to access Nagios web interface.
+    - The recipient email address
+    - The sender email address
+    - The SMTP server IP and port
+    - Fill-in autentication parameters if enabled.
+
+4. Add one node with the "Infrastructure Alerting" role.
 
 ### Disks partitioning
 The plugin uses:
@@ -104,13 +106,13 @@ Once installed, you can check that Nagios is working by pointing your browser
 to this URL:
 
 ```
-http://<HOST>/nagios3/
+http://<HOST>:8001
 ```
 
 Where `HOST` is the IP address or the name of the node that runs the server.
 
-You should be able to login using the username and password entered for the
-configuration of the plugin.
+You should be able to login using the username *nagiosadmin* and password
+entered for the configuration of the plugin.
 
 Known issues
 ------------
