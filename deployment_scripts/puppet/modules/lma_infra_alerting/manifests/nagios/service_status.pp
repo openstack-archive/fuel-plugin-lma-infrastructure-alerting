@@ -15,7 +15,7 @@
 # Configure a Nagios host object and configure related services with passive
 # checks.
 #
-class lma_infra_alerting::nagios::service_status (
+define lma_infra_alerting::nagios::service_status (
   $ensure = present,
   $ip = undef,
   $hostname = undef,
