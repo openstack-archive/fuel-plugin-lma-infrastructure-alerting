@@ -25,7 +25,9 @@ class lma_infra_alerting (
   validate_array($additional_services)
 
   $nagios_openstack_vhostname = $lma_infra_alerting::params::nagios_openstack_hostname_prefix
+  $nagios_openstack_service_vhostname = $lma_infra_alerting::params::nagios_openstack_service_hostname_prefix
   $vhostname = "${nagios_openstack_vhostname}-env${$openstack_deployment_name}"
+  $vhostname_service = "${nagios_openstack_service_vhostname}-env${$openstack_deployment_name}"
 
   $core_openstack_services = $lma_infra_alerting::params::openstack_core_services
   $all_openstack_services = union($core_openstack_services, $additional_services)
@@ -44,10 +46,17 @@ class lma_infra_alerting (
     }
   }
 
-  # Configure services
-  class { 'lma_infra_alerting::nagios::service_status':
+  # Configure global OpenStack services status
+  lma_infra_alerting::nagios::service_status{ 'openstack_services':
     ip       => $openstack_management_vip,
     hostname => $vhostname,
+    services => prefix($all_openstack_services, $lma_infra_alerting::params::openstack_global_services_prefix),
+    require  => Class['lma_infra_alerting::nagios'],
+  }
+  # Configure OpenStack services status
+  lma_infra_alerting::nagios::service_status{ 'services':
+    ip       => $openstack_management_vip,
+    hostname => $vhostname_service,
     services => $all_openstack_services,
     require  => Class['lma_infra_alerting::nagios'],
   }
