@@ -83,19 +83,21 @@ class lma_infra_alerting::params {
   # Following service names must be coherent with the
   # nagios encoder plugin names.
   $openstack_core_services = [
-      'openstack.horizon.status',
-      'openstack.keystone.status',
-      'openstack.nova.status',
-      'openstack.glance.status',
-      'openstack.cinder.status',
-      'openstack.neutron.status',
-      'openstack.heat.status',
+      'horizon',
+      'keystone',
+      'nova',
+      'glance',
+      'cinder',
+      'neutron',
+      'heat',
   ]
+  $openstack_services_prefix = 'openstack.'
 
   # The hostname must match with
   # lma_collector::params::nagios_hostname_service_status.
   # The numeric prefix is used to orderer the display in Nagios UI
-  $nagios_openstack_hostname_prefix = '00-openstack-services'
+  $nagios_openstack_hostname_prefix = '00-openstack'
+  $nagios_openstack_service_hostname_prefix = '00-openstack-services'
 
   # TCP ports of LMA backends and dashboards
   $influxdb_port = 8086
