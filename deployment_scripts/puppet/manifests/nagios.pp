@@ -33,14 +33,14 @@ $notify_recovery = $plugin['notify_recovery']
 $ceilometer = hiera('ceilometer')
 $services = {}
 if $ceilometer['enabled'] {
-  $services['openstack.ceilometer.status'] = true
+  $services['ceilometer'] = true
 }
 
 $storage_options = hiera('storage')
 if $storage_options['objects_ceph']{
-  $services['openstack.radosgw.status'] = true
+  $services['radosgw'] = true
 }else{
-  $services['openstack.swift.status'] = true
+  $services['swift'] = true
 }
 
 class { 'lma_infra_alerting':
