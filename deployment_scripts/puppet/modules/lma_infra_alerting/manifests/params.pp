@@ -83,21 +83,24 @@ class lma_infra_alerting::params {
   # Following service/node names must be coherent with the
   # nagios encoder plugin names.
   $openstack_core_services = [
-      'horizon.status',
-      'keystone.status',
-      'nova.status',
-      'glance.status',
-      'cinder.status',
-      'neutron.status',
-      'heat.status',
+      'horizon',
+      'keystone',
+      'nova',
+      'glance',
+      'cinder',
+      'neutron',
+      'heat',
   ]
   $openstack_global_services_prefix = 'openstack.'
 
   $openstack_core_node_clusters = [
-      'controller.status',
-      'compute.status',
-      'storage.status',
+      'controller',
+      'compute',
+      'storage',
   ]
+
+  # All clusters (service and node) are suffixed by this string
+  $cluster_status_suffix = '.status'
 
   # The hostname must match with
   # lma_collector::params::nagios_hostname_service_status.
