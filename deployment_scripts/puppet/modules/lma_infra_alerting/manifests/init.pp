@@ -20,17 +20,22 @@ class lma_infra_alerting (
   $openstack_deployment_name = '',
   $password = $lma_infra_alerting::params::nagios_http_password,
   $additional_services = [],
+  $additional_node_clusters = [],
 ) inherits lma_infra_alerting::params {
 
   validate_array($additional_services)
 
   $nagios_openstack_vhostname = $lma_infra_alerting::params::nagios_openstack_hostname_prefix
   $nagios_openstack_service_vhostname = $lma_infra_alerting::params::nagios_openstack_service_hostname_prefix
+  $nagios_openstack_node_clusters_vhostname = $lma_infra_alerting::params::nagios_openstack_node_cluster_hostname_prefix
   $vhostname = "${nagios_openstack_vhostname}-env${$openstack_deployment_name}"
   $vhostname_service = "${nagios_openstack_service_vhostname}-env${$openstack_deployment_name}"
+  $vhostname_node = "${nagios_openstack_node_clusters_vhostname}-env${$openstack_deployment_name}"
 
   $core_openstack_services = $lma_infra_alerting::params::openstack_core_services
   $all_openstack_services = union($core_openstack_services, $additional_services)
+  $core_node_clusters = $lma_infra_alerting::params::openstack_core_node_clusters
+  $all_node_clusters = union($core_node_clusters, $additional_node_clusters)
 
   # Install and configure nagios server
   class { 'lma_infra_alerting::nagios':
@@ -58,6 +63,13 @@ class lma_infra_alerting (
     ip       => $openstack_management_vip,
     hostname => $vhostname_service,
     services => $all_openstack_services,
+    require  => Class['lma_infra_alerting::nagios'],
+  }
+  # Configure OpenStack cluster status
+  lma_infra_alerting::nagios::service_status{ 'nodes':
+    ip       => $openstack_management_vip,
+    hostname => $vhostname_node,
+    services => $all_node_clusters,
     require  => Class['lma_infra_alerting::nagios'],
   }
 }
