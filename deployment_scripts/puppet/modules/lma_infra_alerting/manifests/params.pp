@@ -90,6 +90,11 @@ class lma_infra_alerting::params {
       'cinder',
       'neutron',
       'heat',
+      'haproxy',
+      'apache',
+      'memcached',
+      'rabbitmq',
+      'mysql',
   ]
   $openstack_global_services_prefix = 'openstack.'
 
