@@ -61,9 +61,10 @@ class lma_infra_alerting (
 
   # Configure OpenStack cluster status
   lma_infra_alerting::nagios::service_status{ 'nodes':
-    ip       => $openstack_management_vip,
-    hostname => $vhostname_node,
-    services => suffix($all_node_clusters, $cluster_suffix),
-    require  => Class['lma_infra_alerting::nagios'],
+    ip                    => $openstack_management_vip,
+    hostname              => $vhostname_node,
+    services              => suffix($all_node_clusters, $cluster_suffix),
+    notifications_enabled => 0,
+    require               => Class['lma_infra_alerting::nagios'],
   }
 }
