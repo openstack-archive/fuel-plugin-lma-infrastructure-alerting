@@ -27,3 +27,4 @@ describe 'lma_infra_alerting::nagios::service_status' do
         it { should contain_nagios__service('b') }
     end
 end
+
