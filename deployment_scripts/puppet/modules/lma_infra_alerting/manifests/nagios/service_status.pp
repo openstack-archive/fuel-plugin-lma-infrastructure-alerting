@@ -19,6 +19,7 @@ define lma_infra_alerting::nagios::service_status (
   $ensure = present,
   $ip = undef,
   $hostname = undef,
+  $notifications_enabled = 1,
   $services = [],
 ){
 
@@ -51,6 +52,7 @@ define lma_infra_alerting::nagios::service_status (
       host_name              => $hostname,
       active_checks_enabled  => 0,
       process_perf_data      => 0,
+      notifications_enabled  => $notifications_enabled,
       passive_checks_enabled => 1,
       contact_groups         => $contact_group,
       max_check_attempts     => $lma_infra_alerting::params::nagios_max_check_attempts_service_status,
