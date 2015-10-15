@@ -13,7 +13,8 @@
 #    under the License.
 require 'spec_helper'
 
-describe 'lma_infra_alerting::nagios::service_status' do
+describe 'lma_infra_alerting::nagios::vhost_cluster_status' do
+    let(:title) { :footitle}
     let(:params) { {:ip => '1.2.3.4', :hostname => 'foohost',
                     :services => ['a', 'b'] } }
     let(:facts) do
@@ -23,6 +24,7 @@ describe 'lma_infra_alerting::nagios::service_status' do
 
     describe 'with 2 services' do
         it { should contain_nagios__host('foohost') }
+        it { should contain_lma_infra_alerting__nagios__services('footitle for foohost') }
         it { should contain_nagios__service('a') }
         it { should contain_nagios__service('b') }
     end
