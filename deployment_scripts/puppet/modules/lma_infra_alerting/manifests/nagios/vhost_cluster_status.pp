@@ -15,7 +15,7 @@
 # Configure a Nagios host object and configure related services with passive
 # checks.
 #
-define lma_infra_alerting::nagios::service_status (
+define lma_infra_alerting::nagios::vhost_cluster_status(
   $ensure = present,
   $ip = undef,
   $hostname = undef,
@@ -45,21 +45,11 @@ define lma_infra_alerting::nagios::service_status (
     }
   }
 
-  nagios::service { $services:
-    ensure     => $ensure,
-    prefix     => $lma_infra_alerting::params::nagios_config_filename_prefix,
-    properties => {
-      host_name              => $hostname,
-      active_checks_enabled  => 0,
-      process_perf_data      => 0,
-      notifications_enabled  => $notifications_enabled,
-      passive_checks_enabled => 1,
-      contact_groups         => $contact_group,
-      max_check_attempts     => $lma_infra_alerting::params::nagios_max_check_attempts_service_status,
-      check_interval         => $lma_infra_alerting::params::nagios_check_interval_service_status,
-      retry_interval         => $lma_infra_alerting::params::nagios_check_interval_service_status,
-      freshness_threshold    => $lma_infra_alerting::params::nagios_freshness_threshold_service_status,
-      use                    => $lma_infra_alerting::params::nagios_generic_service_template,
-    }
+  lma_infra_alerting::nagios::services { "${title} for ${hostname}":
+    ensure                => $ensure,
+    hostname              => $hostname,
+    notifications_enabled => $notifications_enabled,
+    contact_group         => $contact_group,
+    services              => $services,
   }
 }

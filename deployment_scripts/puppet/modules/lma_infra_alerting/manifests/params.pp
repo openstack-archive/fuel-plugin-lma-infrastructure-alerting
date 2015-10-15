@@ -68,6 +68,7 @@ class lma_infra_alerting::params {
   # "time units" to wait before scheduling a (re)check.
   # (see $nagios_interval_length)
   $nagios_check_interval_service_status = 1
+  $nagios_retry_interval_service_status = 1
   # Send notifications not before 2 check attempts (avoid flapping)
   $nagios_max_check_attempts_service_status = 2
   # Force an active check (to force UNKNOWN state) if LMA Collector doesn't
