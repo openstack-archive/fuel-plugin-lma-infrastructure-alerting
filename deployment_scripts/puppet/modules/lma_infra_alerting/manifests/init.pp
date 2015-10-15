@@ -19,21 +19,16 @@ class lma_infra_alerting (
   $openstack_management_vip = undef,
   $openstack_deployment_name = '',
   $password = $lma_infra_alerting::params::nagios_http_password,
-  $additional_services = [],
-  $additional_node_clusters = [],
+  $service_clusters = [],
+  $node_clusters = [],
 ) inherits lma_infra_alerting::params {
 
-  validate_array($additional_services)
+  validate_array($service_clusters, $node_clusters)
 
   $nagios_openstack_service_vhostname = $lma_infra_alerting::params::nagios_openstack_service_hostname_prefix
   $nagios_openstack_node_clusters_vhostname = $lma_infra_alerting::params::nagios_openstack_node_cluster_hostname_prefix
   $vhostname_service = "${nagios_openstack_service_vhostname}-env${$openstack_deployment_name}"
   $vhostname_node = "${nagios_openstack_node_clusters_vhostname}-env${$openstack_deployment_name}"
-
-  $core_openstack_services = $lma_infra_alerting::params::openstack_core_services
-  $all_openstack_services = union($core_openstack_services, $additional_services)
-  $core_node_clusters = $lma_infra_alerting::params::openstack_core_node_clusters
-  $all_node_clusters = union($core_node_clusters, $additional_node_clusters)
 
   $cluster_suffix = $lma_infra_alerting::params::cluster_status_suffix
 
@@ -51,20 +46,24 @@ class lma_infra_alerting (
     }
   }
 
-  # Configure global OpenStack services status
-  lma_infra_alerting::nagios::vhost_cluster_status{ 'global':
-    ip       => $openstack_management_vip,
-    hostname => $vhostname_service,
-    services => suffix($all_openstack_services, $cluster_suffix),
-    require  => Class['lma_infra_alerting::nagios'],
+  if ! empty($service_clusters){
+    # Configure global OpenStack services status
+    lma_infra_alerting::nagios::vhost_cluster_status{ 'global':
+      ip       => $openstack_management_vip,
+      hostname => $vhostname_service,
+      services => suffix($service_clusters, $cluster_suffix),
+      require  => Class['lma_infra_alerting::nagios'],
+    }
   }
 
-  # Configure OpenStack cluster status
-  lma_infra_alerting::nagios::vhost_cluster_status{ 'nodes':
-    ip                    => $openstack_management_vip,
-    hostname              => $vhostname_node,
-    services              => suffix($all_node_clusters, $cluster_suffix),
-    notifications_enabled => 0,
-    require               => Class['lma_infra_alerting::nagios'],
+  if ! empty($node_clusters){
+    # Configure OpenStack cluster status
+    lma_infra_alerting::nagios::vhost_cluster_status{ 'nodes':
+      ip                    => $openstack_management_vip,
+      hostname              => $vhostname_node,
+      services              => suffix($node_clusters, $cluster_suffix),
+      notifications_enabled => 0,
+      require               => Class['lma_infra_alerting::nagios'],
+    }
   }
 }

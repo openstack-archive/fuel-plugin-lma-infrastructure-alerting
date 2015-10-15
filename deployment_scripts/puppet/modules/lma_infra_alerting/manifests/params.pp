@@ -79,31 +79,6 @@ class lma_infra_alerting::params {
   $nagios_generic_host_template = 'generic-host'
   $nagios_generic_service_template = 'generic-service'
 
-  ## Important parameters to maintain coherent with the LMA Collector
-  #
-  # Following service/node names must be coherent with the
-  # nagios encoder plugin names.
-  $openstack_core_services = [
-      'horizon',
-      'keystone',
-      'nova',
-      'glance',
-      'cinder',
-      'neutron',
-      'heat',
-      'haproxy',
-      'apache',
-      'memcached',
-      'rabbitmq',
-      'mysql',
-  ]
-
-  $openstack_core_node_clusters = [
-      'controller',
-      'compute',
-      'storage',
-  ]
-
   # All clusters (service and node) are suffixed by this string
   $cluster_status_suffix = '.status'
 
