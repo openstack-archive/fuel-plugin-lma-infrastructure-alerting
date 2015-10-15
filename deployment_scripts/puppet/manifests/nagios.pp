@@ -125,20 +125,20 @@ if !empty($all_nodes){  # allow to deploy one node with this plugin's role
   # Configure SSH checks
   lma_infra_alerting::nagios::check_ssh { 'management':
     hostgroups => keys($all_nodes),
-    require    => Class[lma_infra_alerting],
+    require    => Class[lma_infra_alerting::nagios::hosts],
   }
 
   lma_infra_alerting::nagios::check_ssh { 'storage':
     hostgroups         => keys($all_nodes),
     custom_var_address => 'storage_address',
-    require            => Class[lma_infra_alerting],
+    require            => Class[lma_infra_alerting::nagios::hosts],
   }
 
   if $private_network {
     lma_infra_alerting::nagios::check_ssh { 'private':
       hostgroups         => keys($all_nodes),
       custom_var_address => 'private_address',
-      require            => Class[lma_infra_alerting],
+      require            => Class[lma_infra_alerting::nagios::hosts],
     }
   }
 }
@@ -151,6 +151,7 @@ if ! empty($influxdb_nodes){
     url                        => '/login',
     custom_var_address         => 'internal_address',
     string_expected_in_content => 'grafana',
+    require                    => Class[lma_infra_alerting::nagios::hosts],
   }
   lma_infra_alerting::nagios::check_http { 'InfluxDB':
     host_name                  => $influxdb_nodes[0]['name'],
@@ -159,6 +160,7 @@ if ! empty($influxdb_nodes){
     custom_var_address         => 'internal_address',
     string_expected_in_status  => '204 No Content',
     string_expected_in_headers => 'X-Influxdb-Version',
+    require                    => Class[lma_infra_alerting::nagios::hosts],
   }
 }
 
@@ -170,6 +172,7 @@ if ! empty($es_kibana_nodes){
     url                        => '/',
     custom_var_address         => 'internal_address',
     string_expected_in_content => 'Kibana 3',
+    require                    => Class[lma_infra_alerting::nagios::hosts],
   }
 
   lma_infra_alerting::nagios::check_http { 'Elasticsearch':
@@ -178,6 +181,7 @@ if ! empty($es_kibana_nodes){
     url                        => '/',
     custom_var_address         => 'internal_address',
     string_expected_in_content => '"status" : 200',
+    require                    => Class[lma_infra_alerting::nagios::hosts],
   }
 }
 
