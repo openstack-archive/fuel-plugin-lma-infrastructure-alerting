@@ -35,6 +35,7 @@ define nagios::hostgroup (
   $opts = {}
 
   if is_array($properties['members']){
+    notice($properties['members'])
     $opts['members'] = join(sort($properties['members']), ',')
   } elsif $properties['members']{
     $opts['members'] = $properties['members']

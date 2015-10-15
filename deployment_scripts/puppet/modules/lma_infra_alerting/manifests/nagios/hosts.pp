@@ -29,21 +29,27 @@ class lma_infra_alerting::nagios::hosts (
   $host_address_key = undef,
   $host_display_name_keys = [],
   $host_custom_vars_keys = [],
+  $role_name_key = undef,
+  $private_network = false,
+  $node_cluster_roles = [],
+  $node_cluster_alarms = [],
 ){
 
   include lma_infra_alerting::params
 
-  validate_hash($hosts)
   validate_string($host_name_key, $host_address_key)
-  validate_array($host_display_name_keys, $host_custom_vars_keys)
+  validate_array($hosts, $host_display_name_keys, $host_custom_vars_keys)
 
   $nagios_hosts = nodes_to_nagios_hosts(
                     $hosts,
                     $host_name_key,
                     $host_address_key,
                     $host_display_name_keys,
-                    $host_custom_vars_keys)
-  $nagios_hostgroups = nodes_to_nagios_hostgroups($hosts, $host_name_key)
+                    $host_custom_vars_keys,
+                    $role_name_key,
+                    $node_cluster_roles)
+#  $nagios_hostgroups = nodes_to_nagios_hostgroups($hosts, $host_name_key)
+  $nagios_hostgroups = nodes_to_nagios_hostgroups($hosts, $host_name_key, $role_name_key, $node_cluster_roles)
 
   $default = {
     ensure => $ensure,
@@ -64,4 +70,29 @@ class lma_infra_alerting::nagios::hosts (
 
   create_resources(nagios::hostgroup, $nagios_hostgroups, $hg_default)
   create_resources(nagios::host, $nagios_hosts, $default)
+  $afds_for_nodes = afds_to_nagios_services($hosts,
+                                            $host_name_key,
+                                            $role_name_key,
+                                            $node_cluster_roles,
+                                            $node_cluster_alarms,
+                                            'host')
+  create_resources(lma_infra_alerting::nagios::services, $afds_for_nodes,
+                    {'notifications_enabled' => 0})
+
+  # Configure SSH checks
+  lma_infra_alerting::nagios::check_ssh { 'management':
+    hostgroups => keys($nagios_hostgroups),
+  }
+
+  lma_infra_alerting::nagios::check_ssh { 'storage':
+    hostgroups         => keys($nagios_hostgroups),
+    custom_var_address => 'storage_address',
+  }
+
+  if $private_network {
+    lma_infra_alerting::nagios::check_ssh { 'private':
+      hostgroups         => keys($nagios_hostgroups),
+      custom_var_address => 'private_address',
+    }
+  }
 }
