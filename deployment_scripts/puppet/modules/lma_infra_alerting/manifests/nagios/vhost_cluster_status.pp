@@ -12,8 +12,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 #
-# Configure a Nagios host object and configure related services with passive
-# checks.
+# Configure a Nagios host object that represents a cluster of services or nodes.
+# The associated IP address is usually a VIP address and the associated
+# services are configured with passive checks only.
 #
 define lma_infra_alerting::nagios::vhost_cluster_status(
   $ensure = present,
@@ -36,7 +37,7 @@ define lma_infra_alerting::nagios::vhost_cluster_status(
     prefix     => $lma_infra_alerting::params::nagios_config_filename_prefix,
     properties => {
       host_name              => $hostname,
-      address                =>  $ip,
+      address                => $ip,
       contact_groups         => $contact_group,
       active_checks_enabled  => 1,
       passive_checks_enabled => 0,
