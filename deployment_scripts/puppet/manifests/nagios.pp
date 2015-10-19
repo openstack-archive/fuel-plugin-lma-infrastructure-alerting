@@ -30,23 +30,25 @@ $notify_critical = $plugin['notify_critical']
 $notify_unknown = $plugin['notify_unknown']
 $notify_recovery = $plugin['notify_recovery']
 
-$ceilometer = hiera('ceilometer')
-$services = {}
-if $ceilometer['enabled'] {
-  $services['ceilometer'] = true
+$lma_collector = hiera_hash('lma_collector', {})
+
+if $lma_collector['gse_cluster_global'] {
+  $service_clusters = keys($lma_collector['gse_cluster_global']['clusters'])
+}else{
+  $service_clusters = []
 }
 
-$storage_options = hiera('storage')
-if $storage_options['objects_ceph']{
-  $services['radosgw'] = true
+if $lma_collector['gse_cluster_node'] {
+  $node_clusters = keys($lma_collector['gse_cluster_node']['clusters'])
 }else{
-  $services['swift'] = true
+  $node_clusters = []
 }
 
 class { 'lma_infra_alerting':
   openstack_deployment_name => $env_id,
   openstack_management_vip  => $management_vip,
-  additional_services       => keys($services),
+  service_clusters          => $service_clusters,
+  node_clusters             => $node_clusters,
   password                  => $password,
 }
 
