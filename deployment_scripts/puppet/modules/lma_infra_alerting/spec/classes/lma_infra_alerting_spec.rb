@@ -20,10 +20,16 @@ describe 'lma_infra_alerting' do
          :concat_basedir => '/tmp'}
     end
 
-    describe 'with defaults' do
+    describe 'with global and node clusters' do
+        let(:params) do
+            {:global_clusters => ['nova', 'cinder', 'keystone'],
+             :node_clusters => ['controller', 'compute', 'storage']}
+        end
         it { should contain_class('nagios') }
         it { should create_class('nagios::cgi') }
         it { should create_cron('update lma infra alerting') }
         it { should create_file('/usr/local/bin/update-lma-configuration') }
+        it { should contain_lma_infra_alerting__nagios__vhost_cluster_status('global') }
+        it { should contain_lma_infra_alerting__nagios__vhost_cluster_status('nodes') }
     end
 end
