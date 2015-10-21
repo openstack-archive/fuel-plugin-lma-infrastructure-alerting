@@ -66,84 +66,45 @@ class { 'lma_infra_alerting::nagios::contact':
   require         => Class['lma_infra_alerting'],
 }
 
-$nodes_hash = hiera('nodes', {})
-$primary_controller_nodes = filter_nodes($nodes_hash,'role','primary-controller')
-$controller_nodes = filter_nodes($nodes_hash,'role','controller')
-$all_controller_nodes = concat($primary_controller_nodes, $controller_nodes)
-
-$compute_nodes = filter_nodes($nodes_hash,'role','compute')
-$cinder_nodes = filter_nodes($nodes_hash,'role','cinder')
-$base_os_nodes = filter_nodes($nodes_hash,'role','base-os')
-$osd_nodes = filter_nodes($nodes_hash, 'role', 'ceph-osd')
-$influxdb_nodes = filter_nodes($nodes_hash, 'role', 'influxdb_grafana')
-$es_kibana_nodes = filter_nodes($nodes_hash, 'role', 'elasticsearch_kibana')
-
-$all_nodes = {}
-if !empty($all_controller_nodes){
-  $all_nodes['controller'] = $all_controller_nodes
+if $lma_collector['node_cluster_roles'] {
+  $node_cluster_roles = $lma_collector['node_cluster_roles']
+} else {
+  $node_cluster_roles = []
+}
+if $lma_collector['node_cluster_alarms'] {
+  $node_cluster_alarms = $lma_collector['node_cluster_alarms']
+} else {
+  $node_cluster_alarms = []
 }
 
-if !empty($compute_nodes){
-  $all_nodes['compute'] = $compute_nodes
-}
-if !empty($cinder_nodes){
-  $all_nodes['cinder'] = $cinder_nodes
-}
-if !empty($base_os_nodes){
-  $all_nodes['base-os'] = $base_os_nodes
-}
-if !empty($osd_nodes){
-  $all_nodes['ceph-osd'] = $osd_nodes
-}
-if !empty($influxdb_nodes){
-  $all_nodes['influxdb_grafana'] = $influxdb_nodes
-}
-if !empty($es_kibana_nodes){
-  $all_nodes['elasticsearch_kibana'] = $es_kibana_nodes
+# The private network exists only when the GRE segmentation is used
+# FIXME(pasquier-s): should check for VxLAN too
+$network_config = hiera('quantum_settings')
+$segmentation_type = $network_config['L2']['segmentation_type']
+if $segmentation_type == 'gre' {
+  $private_network = true
+} else {
+  $private_network = false
 }
 
-
-if !empty($all_nodes){  # allow to deploy one node with this plugin's role
-  class { 'lma_infra_alerting::nagios::hosts':
-    hosts                  => $all_nodes,
-    host_name_key          => 'name',
-    host_address_key       => 'internal_address',
-    host_display_name_keys => ['name', 'user_node_name'],
-    host_custom_vars_keys  => ['internal_address', 'private_address',
-                              'public_address', 'storage_address',
-                              'fqdn', 'role'],
-    require                => Class[lma_infra_alerting],
-  }
-
-  # Nodes have private IPs only with GRE segmentation
-  $network_config = hiera('quantum_settings')
-  $segmentation_type = $network_config['L2']['segmentation_type']
-  if $segmentation_type == 'gre' {
-    $private_network = true
-  } else {
-    $private_network = false
-  }
-
-  # Configure SSH checks
-  lma_infra_alerting::nagios::check_ssh { 'management':
-    hostgroups => keys($all_nodes),
-    require    => Class[lma_infra_alerting::nagios::hosts],
-  }
-
-  lma_infra_alerting::nagios::check_ssh { 'storage':
-    hostgroups         => keys($all_nodes),
-    custom_var_address => 'storage_address',
-    require            => Class[lma_infra_alerting::nagios::hosts],
-  }
-
-  if $private_network {
-    lma_infra_alerting::nagios::check_ssh { 'private':
-      hostgroups         => keys($all_nodes),
-      custom_var_address => 'private_address',
-      require            => Class[lma_infra_alerting::nagios::hosts],
-    }
-  }
+$nodes = hiera('nodes', {})
+class { 'lma_infra_alerting::nagios::hosts':
+  hosts                  => $nodes,
+  host_name_key          => 'name',
+  host_address_key       => 'internal_address',
+  role_key               => 'role',
+  host_display_name_keys => ['name', 'user_node_name'],
+  host_custom_vars_keys  => ['internal_address', 'private_address',
+                            'public_address', 'storage_address',
+                            'fqdn', 'role'],
+  private_network        => $private_network,
+  node_cluster_roles     => $node_cluster_roles,
+  node_cluster_alarms    => $node_cluster_alarms,
+  require                => Class['lma_infra_alerting'],
 }
+
+$influxdb_nodes = filter_nodes($nodes, 'role', 'influxdb_grafana')
+$es_kibana_nodes = filter_nodes($nodes, 'role', 'elasticsearch_kibana')
 
 # Configure Grafana and InfluxDB checks
 if ! empty($influxdb_nodes){
@@ -153,7 +114,7 @@ if ! empty($influxdb_nodes){
     url                        => '/login',
     custom_var_address         => 'internal_address',
     string_expected_in_content => 'grafana',
-    require                    => Class[lma_infra_alerting::nagios::hosts],
+    require                    => Class['lma_infra_alerting::nagios::hosts'],
   }
   lma_infra_alerting::nagios::check_http { 'InfluxDB':
     host_name                  => $influxdb_nodes[0]['name'],
@@ -162,7 +123,7 @@ if ! empty($influxdb_nodes){
     custom_var_address         => 'internal_address',
     string_expected_in_status  => '204 No Content',
     string_expected_in_headers => 'X-Influxdb-Version',
-    require                    => Class[lma_infra_alerting::nagios::hosts],
+    require                    => Class['lma_infra_alerting::nagios::hosts'],
   }
 }
 
