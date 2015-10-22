@@ -15,8 +15,11 @@ require 'spec_helper'
 
 describe 'lma_infra_alerting::nagios::vhost_cluster_status' do
     let(:title) { :footitle}
-    let(:params) { {:ip => '1.2.3.4', :hostname => 'foohost',
-                    :services => ['a', 'b'] } }
+    let(:params) do {
+        :ip => '1.2.3.4', :hostname => 'foohost',
+        :services => ['a', 'b']
+    }
+    end
     let(:facts) do
         {:kernel => 'Linux', :operatingsystem => 'Ubuntu',
          :osfamily => 'Debian', :operatingsystemrelease => '12.4'}

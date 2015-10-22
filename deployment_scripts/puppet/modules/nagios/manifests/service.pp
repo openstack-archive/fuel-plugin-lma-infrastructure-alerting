@@ -26,6 +26,7 @@ define nagios::service (
   $path = $nagios::params::config_dir,
   $prefix = '',
   $onefile = true,
+  $service_description = undef,
   $properties = {},
   $defaults = {},
   $ensure = present,
@@ -35,28 +36,28 @@ define nagios::service (
   validate_string($properties['host_name'])
   $opts = {}
 
-  if is_array($properties['contact_groups']){
+  if is_array($properties['contact_groups']) {
     $opts['contact_groups'] = join(sort($properties['contact_groups']), ',')
-  }else{
+  } else {
     $opts['contact_groups'] = $properties['contact_groups']
   }
 
-  if is_array($properties['hostgroup_name']){
+  if is_array($properties['hostgroup_name']) {
     $opts['hostgroup_name'] = join(sort($properties['hostgroup_name']), ',')
-  }else{
+  } else {
     $opts['hostgroup_name'] = $properties['hostgroup_name']
   }
 
   if $onefile {
     $target = "${path}/${prefix}services.cfg"
-  }else{
+  } else {
     $target = "${path}/${prefix}service_${name}.cfg"
   }
   $opts['target'] = $target
   $opts['notify'] = Class['nagios::server_service']
   $opts['ensure'] = $ensure
 
-  if $properties['passive_checks_enabled']{
+  if $properties['passive_checks_enabled'] {
     # set default params for passive checks if not provided
     if $properties['max_check_attempts'] == undef {
       $opts['max_check_attempts'] = 1
@@ -64,7 +65,7 @@ define nagios::service (
     if $properties['check_freshness'] == undef {
       $opts['check_freshness'] = 1
     }
-  }else{
+  } else {
     if $properties['max_check_attempts'] == undef {
       $opts['max_check_attempts'] = 3
     }
@@ -77,12 +78,12 @@ define nagios::service (
   }
 
   if $properties['service_description'] == undef {
-    $opts['service_description'] = $name
+    $opts['service_description'] = $title
   }
 
   if $properties['check_command'] == undef {
-    # create default command to report UNKNOWN state
-    $_check_command = "return-unknown-${name}"
+    # create a dummy command to report the UNKNOWN state when no data is received
+    $_check_command = "return-unknown-${title}"
     $opts['check_command'] = $_check_command
     $final_properties = merge($properties, $opts)
     $timeout_freshness = $final_properties['freshness_threshold'] * $final_properties['max_check_attempts']
@@ -92,21 +93,18 @@ define nagios::service (
         command_line => "${nagios::params::nagios_plugin_dir}/check_dummy 3 'No data received for at least ${timeout_freshness} seconds'",
       }
     }
-  }else{
+  }
+  else {
     $final_properties = merge($properties, $opts)
   }
 
-  $service_name = "${properties[host_name]}_${name}"
-  $params = {
-    "${service_name}" => $final_properties,
-  }
-  create_resources(nagios_service, $params, $defaults)
+  create_resources(nagios_service, {"${title}" => $final_properties}, $defaults)
 
   if ! defined(File[$target]){
     file { $target:
       ensure  => $ensure,
       mode    => '0644',
-      require => Nagios_Service[$service_name],
+      require => Nagios_Service[$title],
       notify  => Class['nagios::server_service'],
     }
   }

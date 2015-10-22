@@ -22,7 +22,7 @@ define lma_infra_alerting::nagios::vhost_cluster_status(
   $hostname = undef,
   $notifications_enabled = 1,
   $services = [],
-){
+) {
 
   include lma_infra_alerting::params
 
