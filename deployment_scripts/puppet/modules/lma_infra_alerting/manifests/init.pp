@@ -12,37 +12,33 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 #
-# Configure Nagios server and Nagios CGI
-# Add services status monitoring and contact for notifications
+# Configure the Nagios server with the CGI service for passive checks.
+# Configure virtual hosts for monitoring the clusters of global services and nodes
 #
 class lma_infra_alerting (
   $openstack_management_vip = undef,
   $openstack_deployment_name = '',
   $password = $lma_infra_alerting::params::nagios_http_password,
-  $additional_services = [],
-  $additional_node_clusters = [],
+  $global_clusters = [],
+  $node_clusters = [],
 ) inherits lma_infra_alerting::params {
 
-  validate_array($additional_services)
+  validate_array($global_clusters, $node_clusters)
 
-  $nagios_openstack_service_vhostname = $lma_infra_alerting::params::nagios_openstack_service_hostname_prefix
-  $nagios_openstack_node_clusters_vhostname = $lma_infra_alerting::params::nagios_openstack_node_cluster_hostname_prefix
-  $vhostname_service = "${nagios_openstack_service_vhostname}-env${$openstack_deployment_name}"
-  $vhostname_node = "${nagios_openstack_node_clusters_vhostname}-env${$openstack_deployment_name}"
-
-  $core_openstack_services = $lma_infra_alerting::params::openstack_core_services
-  $all_openstack_services = union($core_openstack_services, $additional_services)
-  $core_node_clusters = $lma_infra_alerting::params::openstack_core_node_clusters
-  $all_node_clusters = union($core_node_clusters, $additional_node_clusters)
-
-  $cluster_suffix = $lma_infra_alerting::params::cluster_status_suffix
+  $vhostname_global = join([
+    $lma_infra_alerting::params::nagios_global_vhostname_prefix,
+    '-env', $openstack_deployment_name], '')
+  $vhostname_node = join([
+    $lma_infra_alerting::params::nagios_node_vhostname_prefix,
+    '-env', $openstack_deployment_name], '')
 
   # Install and configure nagios server
   class { 'lma_infra_alerting::nagios':
     http_password => $password,
   }
 
-  # Purge default configuration shipped by distribution
+  # Purge the default configuration shipped by the distribution before applying
+  # anything else
   if !empty($lma_infra_alerting::params::nagios_distribution_configs_to_purge) {
     file { $lma_infra_alerting::params::nagios_distribution_configs_to_purge:
       ensure  => absent,
@@ -51,20 +47,25 @@ class lma_infra_alerting (
     }
   }
 
-  # Configure global OpenStack services status
-  lma_infra_alerting::nagios::vhost_cluster_status{ 'global':
-    ip       => $openstack_management_vip,
-    hostname => $vhostname_service,
-    services => suffix($all_openstack_services, $cluster_suffix),
-    require  => Class['lma_infra_alerting::nagios'],
+  if ! empty($global_clusters) {
+    # Configure the virtual host for the global clusters
+    lma_infra_alerting::nagios::vhost_cluster_status{ 'global':
+      ip                    => $openstack_management_vip,
+      hostname              => $vhostname_global,
+      services              => $global_clusters,
+      notifications_enabled => 1,
+      require               => Class['lma_infra_alerting::nagios'],
+    }
   }
 
-  # Configure OpenStack cluster status
-  lma_infra_alerting::nagios::vhost_cluster_status{ 'nodes':
-    ip                    => $openstack_management_vip,
-    hostname              => $vhostname_node,
-    services              => suffix($all_node_clusters, $cluster_suffix),
-    notifications_enabled => 0,
-    require               => Class['lma_infra_alerting::nagios'],
+  if ! empty($node_clusters) {
+    # Configure the virtual host for the node clusters
+    lma_infra_alerting::nagios::vhost_cluster_status{ 'nodes':
+      ip                    => $openstack_management_vip,
+      hostname              => $vhostname_node,
+      services              => $node_clusters,
+      notifications_enabled => 0,
+      require               => Class['lma_infra_alerting::nagios'],
+    }
   }
 }
