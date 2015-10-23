@@ -65,10 +65,10 @@ define lma_infra_alerting::nagios::check_http(
   if $custom_var_address {
     $up_var= upcase($custom_var_address)
     $hostaddress = "\$_HOST${up_var}\$"
-    $check_command = "check_http_${name}_${custom_var_address}"
+    $check_command = "check_http_${title}_${custom_var_address}"
   } else {
     $hostaddress = '$HOSTADDRESS$'
-    $check_command = "check_http_${name}"
+    $check_command = "check_http_${title}"
   }
 
   nagios::command { $check_command:
@@ -78,7 +78,7 @@ define lma_infra_alerting::nagios::check_http(
     }
   }
 
-  nagios::service { "HTTP ${name}":
+  nagios::service { "HTTP ${title}":
     prefix     => $prefix,
     properties => {
       host_name     => $host_name,

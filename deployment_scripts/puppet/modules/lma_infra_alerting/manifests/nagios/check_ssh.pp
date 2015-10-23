@@ -33,9 +33,9 @@ define lma_infra_alerting::nagios::check_ssh(
   if $custom_var_address {
     # create custom command check_ssh with param using custom variable Host
     $var_name = upcase($custom_var_address)
-    $check_command = "check_ssh_${name}"
+    $check_command = "check_ssh_${title}"
     $command = {
-      "check_ssh_${name}" => {
+      "check_ssh_${title}" => {
         properties => {
           command_line => "${nagios::params::nagios_plugin_dir}/check_ssh '\$_HOST${var_name}\$'",
         }
@@ -47,7 +47,7 @@ define lma_infra_alerting::nagios::check_ssh(
   }
 
   $service_check = {
-    "SSH ${name} network" => {
+    "SSH ${title} network" => {
       properties => {
         hostgroup_name => $hostgroups,
         check_command => $check_command,
