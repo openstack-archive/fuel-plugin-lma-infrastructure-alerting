@@ -4,7 +4,7 @@
     "author": "Swann Croiset <scroiset@mirantis.com>",
     "summary": "Puppet module for alerting system of LMA toolchain",
     "license": "Apache-2.0",
-    "source": "git://git.openstack.org/cgit/stackforge/fuel-plugin-infrastructure-alerting.git",
+    "source": "git://git.openstack.org/cgit/openstack/fuel-plugin-infrastructure-alerting.git",
     "project_page": "none",
     "issues_url": "none",
     "operatingsystem_support": [

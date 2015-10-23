@@ -10,9 +10,9 @@ the OpenStack Infrastructure inside the LMA toolchain.
 
 The LMA toolchain is currently composed of these Fuel plugins:
 
-        * [LMA collector Plugin](https://github.com/stackforge/fuel-plugin-lma-collector)
-        * [InfluxDB-Grafana Plugin](https://github.com/stackforge/fuel-plugin-influxdb-grafana)
-        * [Elasticsearch-Kibana Plugin](https://github.com/stackforge/fuel-plugin-elasticsearch-kibana)
+        * [LMA collector Plugin](https://github.com/openstack/fuel-plugin-lma-collector)
+        * [InfluxDB-Grafana Plugin](https://github.com/openstack/fuel-plugin-influxdb-grafana)
+        * [Elasticsearch-Kibana Plugin](https://github.com/openstack/fuel-plugin-elasticsearch-kibana)
 
 Requirements
 ------------
@@ -105,7 +105,7 @@ need further instructions about how to build the Fuel Plugin Builder.*
 * 4. Clone the LMA Infrastructure Alerting Plugin git repository:
 
     ```
-    # git clone git@github.com:stackforge/fuel-plugin-lma-infrastructure-alerting.git
+    # git clone git@github.com:openstack/fuel-plugin-lma-infrastructure-alerting.git
     ```
 
 * 5. Check that the plugin is valid:
@@ -208,7 +208,7 @@ follow the [OpenStack development workflow](
 http://docs.openstack.org/infra/manual/developers.html#development-workflow).
 
 Patch reviews take place on the [OpenStack gerrit](
-https://review.openstack.org/#/q/status:open+project:stackforge/fuel-plugin-lma-infrastructure-alerting,n,z)
+https://review.openstack.org/#/q/status:open+project:openstack/fuel-plugin-lma-infrastructure-alerting,n,z)
 system.
 
 Contributors
