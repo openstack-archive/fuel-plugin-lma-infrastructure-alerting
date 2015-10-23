@@ -1,30 +1,14 @@
 #!/bin/bash
 set -eux
-ROOT="$(dirname "$(readlink -f "$0")")"
-MODULES_DIR="${ROOT}"/deployment_scripts/puppet/modules
-RPM_REPO="${ROOT}"/repositories/centos/
-DEB_REPO="${ROOT}"/repositories/ubuntu/
-HTPASSWD_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/leinaddm-htpasswd-0.0.3.tar.gz"
-# This is the commit id for the current stable/6.1 branch
-FUEL_LIB_COMMIT="be44e9ea792fe4314ac8c1b7596742ceb5163f61"
+
+. "$(dirname "$(readlink -f "$0")")"/functions.sh
+
+FUEL_LIB_COMMIT="7.0"
 FUEL_LIB_TARBALL_URL="https://github.com/openstack/fuel-library/archive/${FUEL_LIB_COMMIT}.tar.gz"
+HTPASSWD_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/leinaddm-htpasswd-0.0.3.tar.gz"
 APACHE_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/puppetlabs-apache-1.4.0.tar.gz"
 CONCAT_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/puppetlabs-concat-1.2.3.tar.gz"
-
-function download_packages {
-    while [ $# -gt 0 ]; do
-        FILENAME=$(basename "$1")
-        EXT=${FILENAME##*.}
-        case ${EXT} in
-            deb) REPO=$DEB_REPO;;
-            rpm) REPO=$RPM_REPO;;
-        esac
-
-        rm -f "$REPO"/"$FILENAME"
-        wget -qO - "$1" > "$REPO"/"$FILENAME"
-        shift
-    done
-}
+STDLIB_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/puppetlabs-stdlib-4.7.0.tar.gz"
 
 download_packages \
     http://mirrors.kernel.org/ubuntu/pool/main/t/talloc/libtalloc2_2.1.0-1_amd64.deb\
@@ -57,13 +41,12 @@ download_packages \
     http://mirrors.kernel.org/ubuntu/pool/universe/h/heirloom-mailx/heirloom-mailx_12.5-4_amd64.deb
 
 
-rm -rf "${MODULES_DIR:?}"/{openstack,stdlib,htpasswd,apache,concat}
-mkdir -p "${MODULES_DIR}"/{openstack,stdlib,htpasswd,apache,concat}
-
+rm -rf "${MODULES_DIR:?}"/{stdlib,htpasswd,apache,concat,openstack}
 wget -qO- "${FUEL_LIB_TARBALL_URL}" | \
     tar -C "${MODULES_DIR}" --strip-components=3 -zxvf - \
-    fuel-library-${FUEL_LIB_COMMIT}/deployment/puppet/{openstack,stdlib}
+    fuel-library-${FUEL_LIB_COMMIT}/deployment/puppet/openstack
 
-wget -qO- "${HTPASSWD_TARBALL_URL}" | tar -C "${MODULES_DIR}/htpasswd" --strip-components=1 -xz
-wget -qO- "${APACHE_TARBALL_URL}" | tar -C "${MODULES_DIR}/apache" --strip-components=1 -xz
-wget -qO- "${CONCAT_TARBALL_URL}" | tar -C "${MODULES_DIR}/concat" --strip-components=1 -xz
+download_puppet_module "htpasswd" "${HTPASSWD_TARBALL_URL}"
+download_puppet_module "apache" "${APACHE_TARBALL_URL}"
+download_puppet_module "concat" "${CONCAT_TARBALL_URL}"
+download_puppet_module "stdlib" "${STDLIB_TARBALL_URL}"
