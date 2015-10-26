@@ -20,16 +20,16 @@ It expects 5 arguments:
 1. An array of nodes, each node being described as a hash.
 2. The key containing the node's name.
 3. The key containing the node's role.
-4. The mapping between clusters and node's roles
-4. The mapping between cluster and the AFD alarms
+4. The mapping between AFD profiles and node's roles
+4. The mapping between AFD profiles and alarms
 
 *Examples:*
 
   $hash = afds_to_nagios_services(
     [{'name' => 'node-1', role => 'primary-controller'}, {'name' => 'node-2', role => 'controller'}],
     'name', 'role',
-    [{'control_nodes' => ['primary-controller', 'controller']}],
-    [{'control_nodes' => [{'cpu' => ['alarm1']}, {'fs' => ['alarm1']}]}]
+    {'control_nodes' => ['primary-controller', 'controller']},
+    {'control_nodes' => {'cpu' => ['alarm1'], 'fs' => ['alarm1']}}
   )
 
 Would return:
@@ -52,9 +52,9 @@ Would return:
     name_key = arguments[1]
     role_key = arguments[2]
     role_to_cluster = arguments[3]
-    raise(Puppet::ParseError, "arg3 isn't an array!") if ! role_to_cluster.is_a?(Array)
+    raise(Puppet::ParseError, "arg3 isn't a hash!") if ! role_to_cluster.is_a?(Hash)
     afds = arguments[4]
-    raise(Puppet::ParseError, "arg4 isn't an array!") if ! afds.is_a?(Array)
+    raise(Puppet::ParseError, "arg4 isn't a hash!") if ! afds.is_a?(Hash)
 
     result = {}
 
@@ -65,10 +65,8 @@ Would return:
         unless node_clusters.has_key?(node_name) then
             node_clusters[node_name] = Set.new([])
         end
-        role_to_cluster.each do |x|
-            x.each do |cluster, roles|
-                node_clusters[node_name] << cluster if roles.include?(node[role_key])
-            end
+        role_to_cluster.each do |cluster, roles|
+            node_clusters[node_name] << cluster if roles.include?(node[role_key])
         end
     end
 
@@ -78,12 +76,8 @@ Would return:
 
         node_services = {}
         clusters.each do |cluster|
-            afds.each do |x|
-                (x[cluster] || []).each do |y|
-                    y.keys.sort.each do |source|
-                        node_services["#{node}.#{cluster}.#{source}"] = "#{ cluster }.#{ source }".gsub(/\s+/, '_')
-                    end
-                end
+            (afds[cluster] || {}).keys.each do |source|
+                node_services["#{node}.#{cluster}.#{source}"] = "#{ cluster }.#{ source }".gsub(/\s+/, '_')
             end
         end
 
