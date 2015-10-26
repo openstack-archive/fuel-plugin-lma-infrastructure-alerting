@@ -80,25 +80,25 @@ describe 'afds_to_nagios_services' do
      "user_node_name" => "slave-02_compute_cinder"}
     ]
 
-    role_to_cluster = [
-        {"controller" => ["primary-controller", "controller"]},
-        {"compute" => ["compute"]},
-        {"storage" => ["cinder", "ceph-osd"]}
-    ]
-    afds = [
-        {"controller" => [
-            {"system" => ["cpu-critical-controller", "cpu-warning-controller"]},
-            {"fs" => ["fs-critical", "fs-warning"]}]},
-        {"compute" => [
-            {"system" => ["cpu-critical-compute", "cpu-warning-compute"]},
-            {"fs" => ["fs-critical", "fs-critical-compute", "fs-warning"]}]},
-        {"storage" => [
-            {"system" => ["cpu-critical-storage", "cpu-warning-storage"]},
-            {"fs" => ["fs-critical-storage", "fs-warning-storage"]}]},
-        {"default" => [
-            {"cpu" => ["cpu-critical-default"]},
-            {"fs" => ["fs-critical", "fs-warning"]}]}
-    ]
+    role_to_cluster = {
+        "controller" => ["primary-controller", "controller"],
+        "compute" => ["compute"],
+        "storage" => ["cinder", "ceph-osd"]
+    }
+    afds = {
+        "controller" => {
+            "system" => ["cpu-critical-controller", "cpu-warning-controller"],
+            "fs" => ["fs-critical", "fs-warning"]},
+        "compute" => {
+            "system" => ["cpu-critical-compute", "cpu-warning-compute"],
+            "fs" => ["fs-critical", "fs-critical-compute", "fs-warning"]},
+        "storage" => {
+            "system" => ["cpu-critical-storage", "cpu-warning-storage"],
+            "fs" => ["fs-critical-storage", "fs-warning-storage"]},
+        "default" => {
+            "cpu" => ["cpu-critical-default"],
+            "fs" => ["fs-critical", "fs-warning"]}
+    }
     describe 'with argumentss' do
         it { should run.with_params(all_nodes, 'name', 'role', role_to_cluster, afds).and_return(
            {"default checks for node-1" => {
