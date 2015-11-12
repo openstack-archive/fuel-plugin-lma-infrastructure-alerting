@@ -44,7 +44,16 @@ To configure your plugin, you need to follow these steps:
       :width: 800
       :align: center
 
-#. Please take into consideration the information on the disks partitioning.
+.. note:: Because of a bug with Fuel 7.0 (see bug `#1496328
+   <https://bugs.launchpad.net/fuel-plugins/+bug/1496328>`_), the UI won't let
+   you assign the *LMA Infrastructure Alerting* role if at least one node is already
+   assigned with one of the built-in roles.
+
+   To workaround this problem, you should either remove the already assigned built-in roles or use the Fuel CLI::
+
+       $ fuel --env <environment id> node set --node-id <node_id> --role=infrastructure_alerting
+
+6. Please take into consideration the information on the disks partitioning.
    By default, the LMA Infrastructure Alerting Plugin allocates:
 
     - 20% of the first available disk for the operating system by honoring a range of 15GB minimum and 50GB maximum.
