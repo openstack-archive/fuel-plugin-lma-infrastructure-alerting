@@ -149,6 +149,66 @@ There are also two *virtual* hosts representing the service and node clusters:
 These additional 2 entities offer the high-level view on the healthiness of the
 OpenStack environment.
 
+Configuring service checks on InfluxDB metrics
+----------------------------------------------
+
+You may want to configure additional service checks based on the metrics stored in
+the InfluxDB database. For instance, you want to be alerted when the memory
+used by InfluxDB reaches certain limits: the warning threshold will be at
+2GiB of RAM and the critical threshold at 3GiB.
+
+The next steps will show you how to implement these checks in the Nagios configuration:
+
+#. Connect to the *LMA Infrastructure Alerting* node.
+
+#. Install the Nagios plugin for querying InfluxDB::
+
+    [root@node-13 ~]# pip install influx-nagios-plugin
+
+#. Define the command and service check in the ``/etc/nagios3/conf.d/influxdb_services`` file::
+
+    # Replace <INFLUXDB_USER> and <INFLUXDB_PASSWORD> by the appropriate value for your deployment
+    define command {
+            command_line /usr/local/bin/check_influx -h localhost -u <INFLUXDB_USER> -p <INFLUXDB_PASSWORD> -d lma -q "$ARG1$" -w $ARG2$ -c $ARG3$
+            command_name check_influx
+    }
+
+    define service {
+        service_description InfluxDB memory
+        host                node-13
+        check_command       check_influx!select last(value) from lma_components_memory_rss where time > now() - 5m and service='influxd'!2147483648!3221225472:
+        use                 generic-service
+    }
+
+#. Check the Nagios configuration is valid::
+
+    [root@node-13 ~]# nagios3 -v /etc/nagios3/nagios.cfg
+
+       [snip]
+
+    Total Warnings: 0
+    Total Errors:   0
+
+    Things look okay - No serious problems were detected during the pre-flight check
+
+
+#. Restart the Nagios server::
+
+    [root@node-13 ~]# /etc/init.d/nagios3 restart
+
+#. Go the Nagios dashboard and verify that the service check has been added.
+
+
+From there, you can define additional service checks for different hosts or hostgroups using the same ``check_influx`` command. You just need to provide the 3 required arguments when defining the service checks:
+
+* A valid InfluxDB query that should return only one row with a single value. Check the `InfluxDB documentation <https://influxdb.com/docs/v0.9/query_language/index.html>`_ to learn how to use InfluxDB query language.
+
+* A range specification for the warning threshold.
+
+* A range specification for the critical threshold.
+
+.. _note: Threshold ranges are defined following the `Nagios format <https://nagios-plugins.org/doc/guidelines.html#THRESHOLDFORMAT>`_.
+
 Troubleshooting
 ---------------
 
