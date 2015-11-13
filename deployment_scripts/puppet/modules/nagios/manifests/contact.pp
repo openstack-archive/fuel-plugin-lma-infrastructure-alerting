@@ -77,6 +77,8 @@ define nagios::contact (
           owner   => 'root',
           group   => 'root',
           mode    => '0644',
+          # the deployer may modify the file to enable STARTTLS
+          replace => 'no',
           require => Package[$nagios::params::package_mailx_smtp],
         }
       }
