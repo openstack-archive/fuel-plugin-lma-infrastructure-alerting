@@ -209,6 +209,50 @@ From there, you can define additional service checks for different hosts or host
 
 .. _note: Threshold ranges are defined following the `Nagios format <https://nagios-plugins.org/doc/guidelines.html#THRESHOLDFORMAT>`_.
 
+Using an external SMTP server with STARTTLS
+-------------------------------------------
+
+If your SMTP server requires the use of STARTTLS, you need to make some
+manual adjustements to the Nagios configuration after the deployment of the
+environment has completed. To enable STARTTLS, you should have configured the SMTP
+Authentication method to use either to Plain, Login or CRAM-MD5 first.
+
+.. note:: Future versions of the LMA Infrastructure Alerting plugin will
+   support the configuration of STARTTLS from the Fuel UI.
+
+#. Login to the *LMA Infrastructure Alerting* node.
+
+#. Edit the
+   ``/etc/nagios3/conf.d/cmd_notify-service-by-smtp-with-long-service-output.cfg``
+   file to add the ``-S smtp-use-starttls`` option to the `mail` command. For
+   instance::
+
+    define command{
+       command_name    notify-service-by-smtp-with-long-service-output
+       command_line    /usr/bin/printf "%b" "***** Nagios *****\n\nNotification Type: $NOTIFICATIONTYPE$\n\nService: $SERVICEDESC$\nHost: $HOSTALIAS$\nAddress: $HOSTADDRESS$\nState: $SERVICESTATE$\n\nDate/Time: $LONGDATETIME$\n\nAdditional Info:\n\n$SERVICEOUTPUT$\n$LONGSERVICEOUTPUT$\n" | /usr/bin/mail -s "** $NOTIFICATIONTYPE$ Service Alert: $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$ **" -r 'nagios@localhost' \
+       -S smtp="smtp://<SMTP_HOST>" \
+       -S smtp-auth=<SMTP_AUTH_METHOD> \
+       -S smtp-auth-user='<SMTP_USER>' \
+       -S smtp-auth-password='<SMTP_PASSWORD>' \
+       -S smtp-use-starttls \
+       $CONTACTEMAIL$
+    }
+
+   .. note:: If the server certificate isn't present in the standard directory (eg
+     ``/etc/ssl/certs`` on Ubuntu), you can specify its location by adding the ``-S
+     ssl-ca-file=<FILE>`` option.
+
+     If you want to disable the verification of the SSL/TLS server
+     certificate altogether, you should add the ``-S ssl-verify=ignore`` option instead.
+
+#. Verify that the Nagios configuration is correct::
+
+    [root@node-13 ~]# nagios3 -v /etc/nagios3/nagios.cfg
+
+#. Restart the Nagios service::
+
+    [root@node-13 ~]# /etc/init.d/nagios3 restart
+
 Troubleshooting
 ---------------
 
