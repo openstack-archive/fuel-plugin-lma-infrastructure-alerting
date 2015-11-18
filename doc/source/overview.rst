@@ -3,9 +3,15 @@
 Overview
 ========
 
-The **LMA Infrastructure Alerting** plugin is used to install and configure
-Nagios which provides the alerting functionality for the OpenStack
-Infrastructure inside the LMA toolchain.
+The **LMA Infrastructure Alerting Plugin** is used to install and configure
+Nagios which provides the alerting and escalation functionalities of the LMA
+Toolchain.
+
+Nagios is a key component of the `LMA Toolchain project <https://launchpad.net/lma-toolchain>`_
+as shown in the figure below.
+
+.. image:: ../images/toolchain_map.png
+   :align: center
 
 .. _plugin_requirements:
 
@@ -28,4 +34,7 @@ Requirements
 Limitations
 -----------
 
-None so far.
+A current limitation of this plugin is that it not possible to display in the Fuel web UI,
+the URL where the Nagios interface can be reached when the deployment has completed.
+Instructions are provided in the :ref:`user_guide` about how you can
+obtain this URL using the `fuel` command line.
