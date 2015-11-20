@@ -78,10 +78,9 @@ if $lma_collector['node_cluster_alarms'] {
 }
 
 # The private network exists only when the GRE segmentation is used
-# FIXME(pasquier-s): should check for VxLAN too
 $network_config = hiera('quantum_settings')
 $segmentation_type = $network_config['L2']['segmentation_type']
-if $segmentation_type == 'gre' {
+if $segmentation_type == 'gre' or $segmentation_type == 'vxlan' {
   $private_network = true
 } else {
   $private_network = false
