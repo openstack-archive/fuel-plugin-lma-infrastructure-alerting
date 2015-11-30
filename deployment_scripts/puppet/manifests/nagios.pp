@@ -77,13 +77,12 @@ if $lma_collector['node_cluster_alarms'] {
   $node_cluster_alarms = []
 }
 
-# The private network exists only when the GRE segmentation is used
-# FIXME(pasquier-s): should check for VxLAN too
-$network_config = hiera('quantum_settings')
-$segmentation_type = $network_config['L2']['segmentation_type']
-if $segmentation_type == 'gre' {
-  $private_network = true
-} else {
+# The private network exists only with Neutron overlay networks
+if hiera('use_neutron', false) {
+  $neutron_config = hiera('quantum_settings')
+  $private_network = ($neutron_config['L2']['segmentation_type'] != 'vlan')
+}
+else {
   $private_network = false
 }
 
