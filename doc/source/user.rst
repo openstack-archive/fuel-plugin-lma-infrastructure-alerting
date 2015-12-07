@@ -51,7 +51,8 @@ To configure your plugin, you need to follow these steps:
 
       To workaround this problem, you should either remove the already assigned built-in roles or use the Fuel CLI::
 
-         $ fuel --env <environment id> node set --node-id <node_id> --role=infrastructure_alerting
+         $ fuel --env <environment id> node set --node-id /
+         <node_id> --role=infrastructure_alerting
 
 #. Please take into consideration the information on the disks partitioning.
    By default, the LMA Infrastructure Alerting Plugin allocates:
