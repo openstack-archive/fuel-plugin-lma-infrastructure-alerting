@@ -51,7 +51,8 @@ To configure your plugin, you need to follow these steps:
 
       To workaround this problem, you should either remove the already assigned built-in roles or use the Fuel CLI::
 
-         $ fuel --env <environment id> node set --node-id <node_id> --role=infrastructure_alerting
+         $ fuel --env <environment id> node set \
+         --node-id <node_id> --role=infrastructure_alerting
 
 #. Please take into consideration the information on the disks partitioning.
    By default, the LMA Infrastructure Alerting Plugin allocates:
@@ -169,15 +170,17 @@ usage threshold. The steps to define those alarms in Nagios would be as follow:
 
     # Replace <INFLUXDB_USER> and <INFLUXDB_PASSWORD> by the appropriate values for your deployment
     define command {
-            command_line /usr/local/bin/check_influx -h localhost -u <INFLUXDB_USER> -p <INFLUXDB_PASSWORD> -d lma -q "$ARG1$" -w $ARG2$ -c $ARG3$
-            command_name check_influx
+      command_line /usr/local/bin/check_influx \
+          -h localhost -u <INFLUXDB_USER> -p <INFLUXDB_PASSWORD> -d lma \
+          -q "$ARG1$" -w $ARG2$ -c $ARG3$
+      command_name check_influx
     }
 
     define service {
-        service_description Elasticsearch system CPU
-        host                node-13
-        check_command       check_influx!select max(value) from lma_components_cputime_syst where time > now() - 5m and service='elasticsearch' group by time(5m) limit 1!30!50:
-        use                 generic-service
+      service_description Elasticsearch system CPU
+      host          node-13
+      check_command check_influx!select max(value) from lma_components_cputime_syst where time > now() - 5m and service='elasticsearch' group by time(5m) limit 1!30!50:
+      use           generic-service
     }
 
 #. Verify that the Nagios configuration is valid::
@@ -228,14 +231,21 @@ Authentication method to use either to Plain, Login or CRAM-MD5 first.
    instance::
 
     define command{
-       command_name    notify-service-by-smtp-with-long-service-output
-       command_line    /usr/bin/printf "%b" "***** Nagios *****\n\nNotification Type: $NOTIFICATIONTYPE$\n\nService: $SERVICEDESC$\nHost: $HOSTALIAS$\nAddress: $HOSTADDRESS$\nState: $SERVICESTATE$\n\nDate/Time: $LONGDATETIME$\n\nAdditional Info:\n\n$SERVICEOUTPUT$\n$LONGSERVICEOUTPUT$\n" | /usr/bin/mail -s "** $NOTIFICATIONTYPE$ Service Alert: $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$ **" -r 'nagios@localhost' \
-       -S smtp="smtp://<SMTP_HOST>" \
-       -S smtp-auth=<SMTP_AUTH_METHOD> \
-       -S smtp-auth-user='<SMTP_USER>' \
-       -S smtp-auth-password='<SMTP_PASSWORD>' \
-       -S smtp-use-starttls \
-       $CONTACTEMAIL$
+      command_name    notify-service-by-smtp-with-long-service-output
+      command_line    /usr/bin/printf "%b" "***** Nagios *****\n\n"\
+        "Notification Type: $NOTIFICATIONTYPE$\n\n"\
+        "Service: $SERVICEDESC$\nHost: $HOSTALIAS$\nAddress: $HOSTADDRESS$\n"\
+        "State: $SERVICESTATE$\n\nDate/Time: $LONGDATETIME$\n\n"\
+        "Additional Info:\n\n$SERVICEOUTPUT$\n$LONGSERVICEOUTPUT$\n" | \
+        /usr/bin/mail -s "** $NOTIFICATIONTYPE$ "\
+        "Service Alert: $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$ **" \
+        -r 'nagios@localhost' \
+        -S smtp="smtp://<SMTP_HOST>" \
+        -S smtp-auth=<SMTP_AUTH_METHOD> \
+        -S smtp-auth-user='<SMTP_USER>' \
+        -S smtp-auth-password='<SMTP_PASSWORD>' \
+        -S smtp-use-starttls \
+        $CONTACTEMAIL$
     }
 
    .. note:: If the server certificate isn't present in the standard directory (eg
