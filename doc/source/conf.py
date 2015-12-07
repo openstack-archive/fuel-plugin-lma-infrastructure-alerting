@@ -22,6 +22,12 @@ html_theme = 'classic'
 html_static_path = ['_static']
 
 latex_documents = [
-  ('index', 'LMAInfrastructureAlerting.tex', u'The LMA Infrastructure Alerting plugin for Fuel Documentation',
+  ('index', 'LMAInfrastructureAlerting.tex',
+   u'The LMA Infrastructure Alerting plugin for Fuel Documentation',
    u'Mirantis Inc.', 'manual'),
-]
+  ]
+
+# make latex stop printing blank pages between sections
+# http://stackoverflow.com/questions/5422997/sphinx-docs-remove-blank-pages-from-generated-pdfs
+latex_elements = {'classoptions': ',openany,oneside', 'babel':
+                  '\\usepackage[english]{babel}'}
