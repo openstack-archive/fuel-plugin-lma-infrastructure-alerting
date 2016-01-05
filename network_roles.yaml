@@ -1,0 +1,11 @@
+- id: "infrastructure_alerting"
+  default_mapping: "management"
+  properties:
+    subnet: true
+    gateway: false
+    vip:
+       - name: "infrastructure_alerting_mgmt_vip"
+         namespace: "infrastructure_alerting"
+         alias: "infrastructure_alerting"
+         node_roles:
+           - "infrastructure_alerting"

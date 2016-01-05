@@ -5,14 +5,6 @@
   stage: post_deployment/8101
   type: puppet
   parameters:
-    puppet_manifest: puppet/manifests/firewall.pp
-    puppet_modules: /etc/puppet/modules
-    timeout: 600
-
-- role: [infrastructure_alerting]
-  stage: post_deployment/8101
-  type: puppet
-  parameters:
     puppet_manifest: puppet/manifests/nagios.pp
     puppet_modules: puppet/modules
     timeout: 600
