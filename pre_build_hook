@@ -41,10 +41,10 @@ download_packages \
     http://mirrors.kernel.org/ubuntu/pool/universe/h/heirloom-mailx/heirloom-mailx_12.5-4_amd64.deb
 
 
-rm -rf "${MODULES_DIR:?}"/{stdlib,htpasswd,apache,concat,openstack}
+rm -rf "${MODULES_DIR:?}"/{stdlib,htpasswd,apache,concat,l23network,osnailyfacter,cluster,corosync,pacemaker_wrappers,pacemaker,openstack}
 wget -qO- "${FUEL_LIB_TARBALL_URL}" | \
     tar -C "${MODULES_DIR}" --strip-components=3 -zxvf - \
-    fuel-library-${FUEL_LIB_COMMIT}/deployment/puppet/openstack
+    fuel-library-${FUEL_LIB_COMMIT}/deployment/puppet/{l23network,osnailyfacter,cluster,corosync,pacemaker_wrappers,pacemaker,openstack}
 
 download_puppet_module "htpasswd" "${HTPASSWD_TARBALL_URL}"
 download_puppet_module "apache" "${APACHE_TARBALL_URL}"

@@ -1,4 +1,4 @@
-#    Copyright 2015 Mirantis, Inc.
+#    Copyright 2016 Mirantis, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -12,30 +12,16 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 #
+$hiera_dir            = '/etc/hiera/plugins'
+$plugin_name          = 'lma_infrastructure_alerting'
 
-class {'::firewall':}
+$calculated_content = inline_template('
+---
+lma::corosync_roles:
+  - infrastructure_alerting
+')
 
-firewall { '113 corosync-input':
-  port   => 5404,
-  proto  => 'udp',
-  action => 'accept',
-}
-
-firewall { '114 corosync-output':
-  port   => 5405,
-  proto  => 'udp',
-  action => 'accept',
-}
-
-firewall { '300 nagios cgi':
-  # Important: must match the $lma_infra_alerting::params::nagios_http_port
-  port   => 8001,
-  proto  => 'tcp',
-  action => 'accept',
-}
-
-firewall { '999 drop all other requests':
-  proto  => 'all',
-  chain  => 'INPUT',
-  action => 'drop',
+file { "${hiera_dir}/${plugin_name}.yaml":
+  ensure  => file,
+  content => $calculated_content,
 }
