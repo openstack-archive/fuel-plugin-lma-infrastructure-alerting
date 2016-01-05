@@ -3,7 +3,7 @@ set -eux
 
 . "$(dirname "$(readlink -f "$0")")"/functions.sh
 
-FUEL_LIB_COMMIT="7.0"
+FUEL_LIB_COMMIT="stable/8.0"
 FUEL_LIB_TARBALL_URL="https://github.com/openstack/fuel-library/archive/${FUEL_LIB_COMMIT}.tar.gz"
 HTPASSWD_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/leinaddm-htpasswd-0.0.3.tar.gz"
 APACHE_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/puppetlabs-apache-1.4.0.tar.gz"
@@ -44,7 +44,7 @@ download_packages \
 rm -rf "${MODULES_DIR:?}"/{stdlib,htpasswd,apache,concat,openstack}
 wget -qO- "${FUEL_LIB_TARBALL_URL}" | \
     tar -C "${MODULES_DIR}" --strip-components=3 -zxvf - \
-    fuel-library-${FUEL_LIB_COMMIT}/deployment/puppet/openstack
+    fuel-library-${FUEL_LIB_COMMIT/\//-}/deployment/puppet/openstack
 
 download_puppet_module "htpasswd" "${HTPASSWD_TARBALL_URL}"
 download_puppet_module "apache" "${APACHE_TARBALL_URL}"
