@@ -38,8 +38,20 @@ firewall {'020 ssh':
   action => 'accept',
 }
 
+firewall { '113 corosync-input':
+  port   => 5404,
+  proto  => 'udp',
+  action => 'accept',
+}
+
+firewall { '114 corosync-input':
+  port   => 5405,
+  proto  => 'udp',
+  action => 'accept',
+}
+
 firewall { '300 nagios cgi':
-  # Important: must match the $lma_infra_alerting::params::nagios_http_port
+  # Important: it must match with $lma_infra_alerting::params::nagios_http_port
   port   => 8001,
   proto  => 'tcp',
   action => 'accept',
