@@ -44,6 +44,8 @@
     puppet_manifest: "puppet/manifests/cluster.pp"
     puppet_modules: "puppet/modules"
     timeout: 600
+  reexecute_on:
+    - deploy_changes
 
 - id: lma-alerting-vip
   type: puppet
