@@ -12,13 +12,17 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 #
-$hiera_dir            = '/etc/hiera/plugins'
-$plugin_name          = 'lma_infrastructure_alerting'
+$hiera_dir        = '/etc/hiera/plugins'
+$plugin_name      = 'lma_infrastructure_alerting'
+$network_metadata = hiera('network_metadata')
+$alerting_vip     = $network_metadata['vips']['infrastructure_alerting_mgmt_vip']['ipaddr']
 
 $calculated_content = inline_template('
 ---
 lma::corosync_roles:
   - infrastructure_alerting
+lma::infrastructure_alerting::vip: <%= @alerting_vip %>
+lma::infrastructure_alerting::vip_ns: infrastructure_alerting
 ')
 
 file { "${hiera_dir}/${plugin_name}.yaml":
