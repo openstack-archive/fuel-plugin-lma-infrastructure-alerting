@@ -102,8 +102,14 @@ class { 'lma_infra_alerting::nagios::hosts':
   require                => Class['lma_infra_alerting'],
 }
 
-$influxdb_nodes = filter_nodes($nodes, 'role', 'influxdb_grafana')
-$es_kibana_nodes = filter_nodes($nodes, 'role', 'elasticsearch_kibana')
+$influxdb_nodes = concat(
+  filter_nodes($nodes, 'role', 'influxdb_grafana'),
+  filter_nodes($nodes, 'role', 'primary-influxdb_grafana')
+)
+$es_kibana_nodes = concat(
+  filter_nodes($nodes, 'role', 'elasticsearch_kibana'),
+  filter_nodes($nodes, 'role', 'primary-elasticsearch_kibana')
+)
 
 # Configure Grafana and InfluxDB checks
 if ! empty($influxdb_nodes){
