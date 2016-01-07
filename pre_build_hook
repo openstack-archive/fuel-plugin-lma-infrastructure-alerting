@@ -15,13 +15,13 @@ download_packages \
     http://mirrors.kernel.org/ubuntu/pool/main/t/tevent/libtevent0_0.9.19-1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/l/ldb/libldb1_1.1.16-1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/n/ntdb/libntdb1_1.0-2ubuntu1_amd64.deb\
-    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/libwbclient0_4.1.6+dfsg-1ubuntu2.14.04.7_amd64.deb\
+    http://security.ubuntu.com/ubuntu/pool/main/s/samba/libwbclient0_4.1.6+dfsg-1ubuntu2.14.04.11_amd64.deb \
     http://mirrors.kernel.org/ubuntu/pool/main/l/ldb/python-ldb_1.1.16-1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/t/talloc/python-talloc_2.1.0-1_amd64.deb\
-    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/samba-common-bin_4.1.6+dfsg-1ubuntu2.14.04.7_amd64.deb\
-    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/samba-libs_4.1.6+dfsg-1ubuntu2.14.04.7_amd64.deb\
-    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/libsmbclient_4.1.6+dfsg-1ubuntu2.14.04.7_amd64.deb\
-    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/smbclient_4.1.6+dfsg-1ubuntu2.14.04.7_amd64.deb\
+    http://security.ubuntu.com/ubuntu/pool/main/s/samba/samba-common-bin_4.1.6+dfsg-1ubuntu2.14.04.11_amd64.deb \
+    http://security.ubuntu.com/ubuntu/pool/main/s/samba/samba-libs_4.1.6+dfsg-1ubuntu2.14.04.11_amd64.deb \
+    http://security.ubuntu.com/ubuntu/pool/main/s/samba/libsmbclient_4.1.6+dfsg-1ubuntu2.14.04.11_amd64.deb \
+    http://security.ubuntu.com/ubuntu/pool/main/s/samba/smbclient_4.1.6+dfsg-1ubuntu2.14.04.11_amd64.deb \
     http://mirrors.kernel.org/ubuntu/pool/main/n/nagios-plugins/nagios-plugins-common_1.5-3ubuntu1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/n/nagios-plugins/nagios-plugins-basic_1.5-3ubuntu1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/a/apache2/apache2-utils_2.4.7-1ubuntu4.5_amd64.deb\
@@ -36,7 +36,7 @@ download_packages \
     http://mirrors.kernel.org/ubuntu/pool/main/n/nagios3/nagios3_3.5.1-1ubuntu1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/n/ntdb/python-ntdb_1.0-2ubuntu1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/t/tdb/python-tdb_1.2.12-1_amd64.deb\
-    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/python-samba_4.1.6+dfsg-1ubuntu2.14.04.7_amd64.deb\
+    http://security.ubuntu.com/ubuntu/pool/main/s/samba/python-samba_4.1.6+dfsg-1ubuntu2.14.04.11_amd64.deb \
     http://mirrors.kernel.org/ubuntu/pool/main/w/whois/whois_5.1.1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/universe/h/heirloom-mailx/heirloom-mailx_12.5-4_amd64.deb
 
