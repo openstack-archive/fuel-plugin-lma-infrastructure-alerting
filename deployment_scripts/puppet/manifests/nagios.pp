@@ -102,21 +102,33 @@ class { 'lma_infra_alerting::nagios::hosts':
   require                => Class['lma_infra_alerting'],
 }
 
-$influxdb_nodes = filter_nodes($nodes, 'role', 'influxdb_grafana')
-$es_kibana_nodes = filter_nodes($nodes, 'role', 'elasticsearch_kibana')
+$influxdb_nodes = concat(
+  filter_nodes($nodes, 'role', 'influxdb_grafana'),
+  filter_nodes($nodes, 'role', 'primary-influxdb_grafana')
+)
+$es_kibana_nodes = concat(
+  filter_nodes($nodes, 'role', 'elasticsearch_kibana'),
+  filter_nodes($nodes, 'role', 'primary-elasticsearch_kibana')
+)
 
 # Configure Grafana and InfluxDB checks
 if ! empty($influxdb_nodes){
-  lma_infra_alerting::nagios::check_http { 'Grafana':
-    host_name                  => $influxdb_nodes[0]['name'],
+  $grafana_params = parseyaml(
+    inline_template("<%= a={}; @influxdb_nodes.each { |node| a.update({\"Grafana_#{node['name']}\" => {'host_name' => node['name'], 'service_description' => 'Grafana'}})}; a.to_yaml %>")
+  )
+  $grafana_defaults = {
     port                       => $lma_infra_alerting::params::grafana_port,
     url                        => '/login',
     custom_var_address         => 'internal_address',
     string_expected_in_content => 'grafana',
     require                    => Class['lma_infra_alerting::nagios::hosts'],
   }
-  lma_infra_alerting::nagios::check_http { 'InfluxDB':
-    host_name                  => $influxdb_nodes[0]['name'],
+  create_resources(lma_infra_alerting::nagios::check_http, $grafana_params, $grafana_defaults)
+
+  $influxdb_params = parseyaml(
+    inline_template("<%= a={}; @influxdb_nodes.each { |node| a.update({\"InfluxDB_#{node['name']}\" => {'host_name' => node['name'], 'service_description' => 'InfluxDB'}})}; a.to_yaml %>")
+  )
+  $influxdb_defaults = {
     port                       => $lma_infra_alerting::params::influxdb_port,
     url                        => '/ping',
     custom_var_address         => 'internal_address',
@@ -124,26 +136,32 @@ if ! empty($influxdb_nodes){
     string_expected_in_headers => 'X-Influxdb-Version',
     require                    => Class['lma_infra_alerting::nagios::hosts'],
   }
+  create_resources(lma_infra_alerting::nagios::check_http, $influxdb_params, $influxdb_defaults)
 }
 
 # Configure Elasticsearch and Kibana checks
 if ! empty($es_kibana_nodes){
-  lma_infra_alerting::nagios::check_http { 'Kibana':
-    host_name                  => $es_kibana_nodes[0]['name'],
+  $kibana_params = parseyaml(
+    inline_template("<%= a={}; @es_kibana_nodes.each { |node| a.update({\"Kibana_#{node['name']}\" => {'host_name' => node['name'], 'service_description' => 'Kibana'}})}; a.to_yaml %>")
+  )
+  $kibana_defaults = {
     port                       => $lma_infra_alerting::params::kibana_port,
     url                        => '/',
     custom_var_address         => 'internal_address',
     string_expected_in_content => 'Kibana 3',
     require                    => Class[lma_infra_alerting::nagios::hosts],
   }
+  create_resources(lma_infra_alerting::nagios::check_http, $kibana_params, $kibana_defaults)
 
-  lma_infra_alerting::nagios::check_http { 'Elasticsearch':
-    host_name                  => $es_kibana_nodes[0]['name'],
+  $es_params = parseyaml(
+    inline_template("<%= a={}; @es_kibana_nodes.each { |node| a.update({\"Elasticsearch_#{node['name']}\" => {'host_name' => node['name'], 'service_description' => 'Elasticsearch'}})}; a.to_yaml %>")
+  )
+  $es_defaults = {
     port                       => $lma_infra_alerting::params::elasticserach_port,
     url                        => '/',
     custom_var_address         => 'internal_address',
     string_expected_in_content => '"status" : 200',
     require                    => Class[lma_infra_alerting::nagios::hosts],
   }
+  create_resources(lma_infra_alerting::nagios::check_http, $es_params, $es_defaults)
 }
-
