@@ -11,21 +11,26 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-#
-$hiera_dir        = '/etc/hiera/plugins'
-$plugin_name      = 'lma_infrastructure_alerting'
-$network_metadata = hiera('network_metadata')
-$alerting_vip     = $network_metadata['vips']['infrastructure_alerting_mgmt_vip']['ipaddr']
 
-$calculated_content = inline_template('
----
-lma::corosync_roles:
-  - infrastructure_alerting
-lma::infrastructure_alerting::vip: <%= @alerting_vip %>
-lma::infrastructure_alerting::vip_ns: infrastructure_alerting
-')
+file { 'ocf-ns_apache':
+  ensure => present,
+  path   => '/usr/lib/ocf/resource.d/fuel/ocf-ns_apache',
+  source => 'puppet:///modules/lma_infra_alerting/ocf-ns_apache',
+  mode   => '0755',
+  owner  => 'root',
+  group  => 'root',
+}
 
-file { "${hiera_dir}/${plugin_name}.yaml":
-  ensure  => file,
-  content => $calculated_content,
+file { 'ocf-ns_nagios':
+  ensure => present,
+  path   => '/usr/lib/ocf/resource.d/fuel/ocf-ns_nagios',
+  source => 'puppet:///modules/lma_infra_alerting/ocf-ns_nagios',
+  mode   => '0755',
+  owner  => 'root',
+  group  => 'root',
+}
+
+# This is required so Apache and Nagios can bind to the VIP address
+sysctl::value { 'net.ipv4.ip_nonlocal_bind':
+  value => '1',
 }
