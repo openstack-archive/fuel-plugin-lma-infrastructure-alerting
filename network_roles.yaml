@@ -8,4 +8,5 @@
          namespace: "infrastructure_alerting"
          alias: "infrastructure_alerting"
          node_roles:
+           - "primary-infrastructure_alerting"
            - "infrastructure_alerting"
