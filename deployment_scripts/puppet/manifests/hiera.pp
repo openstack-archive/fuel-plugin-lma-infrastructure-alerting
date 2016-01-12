@@ -21,6 +21,7 @@ $calculated_content = inline_template('
 ---
 lma::corosync_roles:
   - infrastructure_alerting
+  - primary-infrastructure_alerting
 lma::infrastructure_alerting::vip: <%= @alerting_vip %>
 lma::infrastructure_alerting::vip_ns: infrastructure_alerting
 ')
