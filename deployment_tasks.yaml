@@ -1,7 +1,7 @@
-- id: infrastructure_alerting
+- id: primary-infrastructure_alerting
   type: group
-  role: [infrastructure_alerting]
-  tasks:
+  role: [primary-infrastructure_alerting]
+  tasks: &common_tasks
     - fuel_pkgs
     - hiera
     - globals
@@ -15,9 +15,19 @@
     strategy:
       type: one_by_one
 
+- id: infrastructure_alerting
+  type: group
+  role: [infrastructure_alerting]
+  tasks: *common_tasks
+  required_for: [deploy_end]
+  requires: [deploy_start, primary-infrastructure_alerting]
+  parameters:
+    strategy:
+      type: parallel
+
 - id: lma-alerting-hiera
   type: puppet
-  groups: [infrastructure_alerting]
+  groups: [primary-infrastructure_alerting, infrastructure_alerting]
   requires: [globals]
   required_for: [deploy_end]
   parameters:
@@ -27,7 +37,7 @@
 
 - id: lma-alerting-firewall
   type: puppet
-  groups: [infrastructure_alerting]
+  groups: [primary-infrastructure_alerting, infrastructure_alerting]
   requires: [netconfig]
   required_for: [deploy_end]
   parameters:
@@ -35,10 +45,22 @@
     puppet_modules: "puppet/modules"
     timeout: 120
 
+- id: lma-alerting-primary-cluster
+  type: puppet
+  groups: [primary-infrastructure_alerting]
+  requires: [lma-alerting-firewall, lma-alerting-hiera]
+  required_for: [deploy_end]
+  parameters:
+    puppet_manifest: "puppet/manifests/cluster.pp"
+    puppet_modules: "puppet/modules"
+    timeout: 600
+  reexecute_on:
+    - deploy_changes
+
 - id: lma-alerting-cluster
   type: puppet
   groups: [infrastructure_alerting]
-  requires: [lma-alerting-firewall, lma-alerting-hiera]
+  requires: [lma-alerting-firewall, lma-alerting-hiera, lma-alerting-primary-cluster]
   required_for: [deploy_end]
   parameters:
     puppet_manifest: "puppet/manifests/cluster.pp"
@@ -49,8 +71,8 @@
 
 - id: lma-alerting-vip
   type: puppet
-  groups: [infrastructure_alerting]
-  requires: [lma-alerting-cluster]
+  groups: [primary-infrastructure_alerting, infrastructure_alerting]
+  requires: [lma-alerting-primary-cluster, lma-alerting-cluster]
   required_for: [deploy_end]
   parameters:
     puppet_manifest: "puppet/modules/osnailyfacter/modular/virtual_ips/virtual_ips.pp"
