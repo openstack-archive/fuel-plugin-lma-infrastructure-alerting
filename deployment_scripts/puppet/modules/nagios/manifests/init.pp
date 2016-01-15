@@ -75,9 +75,9 @@ class nagios(
   $log_archive_path = "${data_dir}/archives"
 
   file { $data_dir:
-    ensure => directory,
-    owner  => 'nagios',
-    before => Package[$service_name],
+    ensure  => directory,
+    owner   => 'nagios',
+    require => Package[$service_name],
   }
 
   file { $cache_dir:
