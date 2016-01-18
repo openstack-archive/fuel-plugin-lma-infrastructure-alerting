@@ -77,14 +77,11 @@ if $lma_collector['node_cluster_alarms'] {
   $node_cluster_alarms = []
 }
 
-# The private network exists only with Neutron overlay networks
-if hiera('use_neutron', false) {
-  $neutron_config = hiera('quantum_settings')
-  $private_network = ($neutron_config['L2']['segmentation_type'] != 'vlan')
-}
-else {
-  $private_network = false
-}
+# Since MOS 8, the private (or mesh) network addresses aren't present in the
+# 'nodes' hash anymore. For now, the checks on this network are disabled until
+# we find a better way to resolve it.
+# See https://bugs.launchpad.net/lma-toolchain/+bug/1532869 for details.
+$private_network = false
 
 $nodes = hiera('nodes', {})
 class { 'lma_infra_alerting::nagios::hosts':
@@ -93,7 +90,7 @@ class { 'lma_infra_alerting::nagios::hosts':
   host_address_key       => 'internal_address',
   role_key               => 'role',
   host_display_name_keys => ['name', 'user_node_name'],
-  host_custom_vars_keys  => ['internal_address', 'private_address',
+  host_custom_vars_keys  => ['internal_address',
                             'public_address', 'storage_address',
                             'fqdn', 'role'],
   private_network        => $private_network,
