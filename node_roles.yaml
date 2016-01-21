@@ -11,3 +11,10 @@ infrastructure_alerting:
     - compute
     - cinder
     - ceph-osd
+  # 'update_required' is needed to make sure that the already deployed nodes
+  # are updated in the same run as the new nodes. The 'reexecute_on' stanza
+  # doesn't guarantee this since the reexecuted tasks are run after the new
+  # nodes are deployed.
+  update_required:
+    - primary-infrastructure_alerting
+    - infrastructure_alerting
