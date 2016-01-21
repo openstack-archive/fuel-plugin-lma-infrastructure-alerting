@@ -15,6 +15,16 @@
     strategy:
       type: one_by_one
 
+- id: infrastructure_alerting-cluster
+  type: group
+  role: [primary-infrastructure_alerting]
+  tasks: []
+  required_for: [deploy_end]
+  requires: [primary-infrastructure_alerting, infrastructure_alerting]
+  parameters:
+    strategy:
+      type: one_by_one
+
 - id: infrastructure_alerting
   type: group
   role: [infrastructure_alerting]
@@ -66,3 +76,16 @@
     puppet_manifest: "puppet/modules/osnailyfacter/modular/virtual_ips/virtual_ips.pp"
     puppet_modules: "puppet/modules"
     timeout: 600
+
+# This task needs to be reexecuted to reconfigure the no-quorum-policy every
+# time the cluster is scaled up or down
+- id: lma-alerting-enable-quorum
+  type: puppet
+  groups: [infrastructure_alerting-cluster]
+  required_for: [deploy_end]
+  parameters:
+    puppet_manifest: "puppet/manifests/enable_quorum.pp"
+    puppet_modules: "puppet/modules"
+    timeout: 120
+  reexecute_on:
+    - deploy_changes
