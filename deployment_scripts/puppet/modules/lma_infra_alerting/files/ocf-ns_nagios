@@ -136,7 +136,10 @@ service_validate() {
         return "$OCF_ERR_INSTALLED"
     fi
 
-    mkdir -p "$(dirname ${NAGIOS_PID_FILE})"
+    local nagios_dir
+    nagios_dir="$(dirname ${NAGIOS_PID_FILE})"
+    mkdir -p "$nagios_dir"
+    chown nagios:nagios "$nagios_dir"
 
     true
 }
