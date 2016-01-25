@@ -2,8 +2,9 @@
   type: group
   role: [primary-infrastructure_alerting]
   tasks: &common_tasks
-    - fuel_pkgs
     - hiera
+    - setup_repositories
+    - fuel_pkgs
     - globals
     - tools
     - logging
