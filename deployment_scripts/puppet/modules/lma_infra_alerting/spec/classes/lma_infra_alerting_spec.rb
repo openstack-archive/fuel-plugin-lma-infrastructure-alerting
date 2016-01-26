@@ -27,8 +27,6 @@ describe 'lma_infra_alerting' do
         end
         it { should contain_class('nagios') }
         it { should create_class('nagios::cgi') }
-        it { should create_cron('update lma infra alerting') }
-        it { should create_file('/usr/local/bin/update-lma-configuration') }
         it { should contain_lma_infra_alerting__nagios__vhost_cluster_status('global') }
         it { should contain_lma_infra_alerting__nagios__vhost_cluster_status('nodes') }
     end
