@@ -129,11 +129,19 @@ service_validate() {
         return "$OCF_ERR_INSTALLED"
     fi
 
-    ip netns pids "$OCF_RESKEY_ns" > /dev/null 2>&1
-    rc=$?
-    if [ $rc -ne 0 ]; then
-        ocf_log err "Namespace $OCF_RESKEY_ns doesn't exist or can't be accessed"
-        return "$OCF_ERR_INSTALLED"
+    if ! ip netns pids "$OCF_RESKEY_ns" > /dev/null 2>&1; then
+        # The network namespace needs to be created first
+        ocf_run ip netns add $OCF_RESKEY_ns
+        rc=$?
+        if [ $rc -ne 0 ]; then
+            ocf_log err "Namespace $OCF_RESKEY_ns can't be created (error=$rc)"
+            return "$OCF_ERR_INSTALLED"
+        fi
+        # This is required for Linux kernels >= 3.19. Previously the
+        # net.ipv4.ip_nonlocal_bind setting was global to all namespaces but
+        # starting with this version, it is per namespace.
+        ocf_run ${RUN_IN_NS} /sbin/sysctl -w net.ipv4.ip_nonlocal_bind=1
+        ocf_run ${RUN_IN_NS} ip link set up dev lo
     fi
 
     # Make sure that the Nagios run directory exists and has the appropriate ownership
@@ -187,12 +195,6 @@ service_start() {
         ocf_log info "${SERVICE_NAME} is already running"
         return "$OCF_SUCCESS"
     fi
-
-    # This is required for Linux kernels >= 3.19. Previously the
-    # net.ipv4.ip_nonlocal_bind setting was global to all namespaces but
-    # starting with this version, it is per namespace.
-    ocf_run ${RUN_IN_NS} /sbin/sysctl -w net.ipv4.ip_nonlocal_bind=1
-    ocf_run ${RUN_IN_NS} ip link set up dev lo
 
     if ! ocf_run  ${OCF_RESKEY_binary} -v ${OCF_RESKEY_config}; then
         ocf_log error "Nagios configuration is invalid"
