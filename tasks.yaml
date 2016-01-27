@@ -2,7 +2,7 @@
 # Priorities are important, this ensure that this plugin is deployed after
 # LMA Collector, InfluxDB and Elasticsearch.
 - role: [primary-infrastructure_alerting, infrastructure_alerting]
-  stage: post_deployment/8101
+  stage: post_deployment/8201
   type: puppet
   parameters:
     puppet_manifest: puppet/manifests/nagios.pp
@@ -10,7 +10,7 @@
     timeout: 600
 
 - role: [primary-infrastructure_alerting, infrastructure_alerting]
-  stage: post_deployment/8101
+  stage: post_deployment/8201
   type: puppet
   parameters:
     puppet_manifest: puppet/manifests/ha_services.pp
@@ -18,7 +18,7 @@
     timeout: 600
 
 - role: [primary-infrastructure_alerting]
-  stage: post_deployment/8101
+  stage: post_deployment/8201
   type: puppet
   parameters:
     puppet_manifest: puppet/manifests/nagios_dashboard_url.pp
