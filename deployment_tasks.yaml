@@ -67,3 +67,17 @@
     puppet_manifest: "puppet/modules/osnailyfacter/modular/virtual_ips/virtual_ips.pp"
     puppet_modules: "puppet/modules"
     timeout: 600
+
+# This task needs to be reexecuted to reconfigure the no-quorum-policy every
+# time the cluster is scaled up or down
+- id: lma-alerting-enable-quorum
+  type: puppet
+  role: [primary-infrastructure_alerting]
+  requires: [post_deployment_start]
+  required_for: [post_deployment_end]
+  parameters:
+    puppet_manifest: "puppet/manifests/enable_quorum.pp"
+    puppet_modules: "puppet/modules"
+    timeout: 120
+  reexecute_on:
+    - deploy_changes
