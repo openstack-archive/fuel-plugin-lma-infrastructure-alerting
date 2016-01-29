@@ -18,6 +18,8 @@ class nagios(
   $service_name = $nagios::params::nagios_service_name,
   $main_config = $nagios::params::main_conf_file,
   $use_syslog = true,
+  $log_external_commands = true,
+  $log_passive_checks = true,
   $log_rotation_method = $nagios::params::log_rotation_method,
   $accept_passive_service_checks = false,
   $accept_passive_host_checks = false,
@@ -59,6 +61,8 @@ class nagios(
   $service_checks = bool2num($execute_service_checks)
   $host_checks = bool2num($execute_host_checks)
   $syslog = bool2num($use_syslog)
+  $_log_external_commands = bool2num($log_external_commands)
+  $_log_passive_checks = bool2num($log_passive_checks)
   $notif = bool2num($enable_notifications)
   $event  = bool2num($enable_event_handlers)
   $flap = bool2num($enable_flap_detection)
@@ -102,6 +106,8 @@ class nagios(
         "set accept_passive_host_checks ${passive_host_check}",
         "set execute_host_checks ${host_checks}",
         "set use_syslog ${syslog}",
+        "set log_external_commands ${_log_external_commands}",
+        "set log_passive_checks ${_log_passive_checks}",
         "set enable_notifications ${notif}",
         "set enable_event_handlers ${event}",
         "set enable_flap_detection ${flap}",

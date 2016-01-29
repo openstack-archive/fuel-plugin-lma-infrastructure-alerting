@@ -37,6 +37,8 @@ class lma_infra_alerting::nagios (
     # Not required to set these parameters but either usefull or better for LMA
     accept_passive_host_checks    => $lma_infra_alerting::params::nagios_accept_passive_host_checks,
     use_syslog                    => $lma_infra_alerting::params::nagios_use_syslog,
+    log_external_commands         => $lma_infra_alerting::params::nagios_log_external_commands,
+    log_passive_checks            => $lma_infra_alerting::params::nagios_log_passive_checks,
     enable_flap_detection         => $lma_infra_alerting::params::nagios_enable_flap_detection,
     debug_level                   => $lma_infra_alerting::params::nagios_debug_level,
     process_performance_data      => $lma_infra_alerting::params::nagios_process_performance_data,
