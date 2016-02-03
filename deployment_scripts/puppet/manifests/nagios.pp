@@ -18,17 +18,29 @@ $env_id = hiera('deployment_id')
 
 $plugin = hiera('lma_infrastructure_alerting')
 $password = $plugin['nagios_password']
-$send_to = $plugin['send_to']
-$send_from = $plugin['send_from']
-$smtp_host = $plugin['smtp_host']
-$smtp_auth = $plugin['smtp_auth']
-$smtp_user = $plugin['smtp_user']
-$smtp_password = $plugin['smtp_password']
+if $notify_warning == false and
+  $notify_critical == false and
+  $notify_unknown == false and
+  $notify_recovery == false {
 
-$notify_warning = $plugin['notify_warning']
-$notify_critical = $plugin['notify_critical']
-$notify_unknown = $plugin['notify_unknown']
-$notify_recovery = $plugin['notify_recovery']
+  $send_to = undef
+  $send_from = undef
+  $smtp_host = undef
+  $smtp_auth = undef
+  $smtp_password = undef
+} else {
+  $send_to = $plugin['send_to']
+  $send_from = $plugin['send_from']
+  $smtp_host = $plugin['smtp_host']
+  $smtp_auth = $plugin['smtp_auth']
+  $smtp_user = $plugin['smtp_user']
+  $smtp_password = $plugin['smtp_password']
+
+  $notify_warning = $plugin['notify_warning']
+  $notify_critical = $plugin['notify_critical']
+  $notify_unknown = $plugin['notify_unknown']
+  $notify_recovery = $plugin['notify_recovery']
+}
 
 $lma_collector = hiera_hash('lma_collector', {})
 
