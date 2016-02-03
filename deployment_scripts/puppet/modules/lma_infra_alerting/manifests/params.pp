@@ -24,7 +24,6 @@ class lma_infra_alerting::params {
   $nagios_cmd_check_ssh = 'check_ssh'
 
   $nagios_contactgroup = 'openstack'
-  $nagios_contact_email = 'root@localhost'
 
   # All configuration files for nagios will be prepended with this prefix
   $nagios_config_filename_prefix = 'lma_'
