@@ -45,6 +45,8 @@ class lma_infra_alerting::params {
   # Following parameters are not mandatory but are usefull and better for LMA
   $nagios_accept_passive_host_checks = false
   $nagios_use_syslog = true
+  $nagios_log_external_commands = false
+  $nagios_log_passive_checks = false
   $nagios_enable_flap_detection = true
   $nagios_debug_level = 0
   $nagios_process_performance_data = false
