@@ -19,7 +19,7 @@
 
 class lma_infra_alerting::nagios::contact(
   $ensure = present,
-  $send_to = $lma_infra_alerting::params::nagios_contact_email,
+  $send_to = undef,
   $notify_warning = true,
   $notify_critical = true,
   $notify_recovery = true,
@@ -34,8 +34,6 @@ class lma_infra_alerting::nagios::contact(
   $contact_groups = $lma_infra_alerting::params::nagios_contactgroup,
 
 ) inherits lma_infra_alerting::params{
-
-  validate_string($send_to)
 
   nagios::contactgroup { $contact_groups:
     ensure => $ensure,
@@ -81,13 +79,19 @@ class lma_infra_alerting::nagios::contact(
     $_host_notify_options = join($host_notify_options, ',')
   }
 
-  $alias = regsubst($send_to, '@', '_AT_')
-  if is_array($contact_groups){
-    $_contact_groups_string = join($contact_groups, '_')
-  }else{
+  if $send_to {
+    $alias = regsubst($send_to, '@', '_AT_')
+    if is_array($contact_groups){
+      $_contact_groups_string = join($contact_groups, '_')
+    }else{
+      $_contact_groups_string = $contact_groups
+    }
+  } else {
+    $alias = 'noop'
     $_contact_groups_string = $contact_groups
   }
   $contact_name = "${_contact_groups_string}_${alias}"
+
   nagios::contact { $contact_name:
     ensure        => $ensure,
     prefix        => $lma_infra_alerting::params::nagios_config_filename_prefix,

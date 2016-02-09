@@ -9,37 +9,66 @@ attributes:
       source: '\S'
       error: "Invalid value"
 
+  notify_critical:
+    type: "checkbox"
+    weight: 43
+    value: true
+    label: "Receive CRITICAL notifications by email"
+
+  notify_warning:
+    type: "checkbox"
+    weight: 44
+    value: true
+    label: "Receive WARNING notifications by email"
+
+  notify_unknown:
+    type: "checkbox"
+    weight: 45
+    value: true
+    label: "Receive UNKNOWN notifications by email"
+
+  notify_recovery:
+    type: "checkbox"
+    weight: 46
+    value: true
+    label: "Receive RECOVERY notifications by email"
+
   send_to:
     value: ''
     label: 'The recipient email address'
     description: 'The recipient for the alert notifications'
-    weight: 43
+    weight: 47
     type: "text"
     regex: &email
       source: '[a-z0-9!#$%&*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.?)?[a-z0-9]?(?:[a-z0-9-]*[a-z0-9])?'
       error: "Invalid Email"
+    restrictions: &disable_notifications
+        - condition: "settings:lma_infrastructure_alerting.notify_critical.value == false and settings:lma_infrastructure_alerting.notify_warning.value == false and settings:lma_infrastructure_alerting.notify_unknown.value == false and settings:lma_infrastructure_alerting.notify_recovery.value == false"
+          action: "disable"
 
   send_from:
     value: ''
     label: 'The sender email address'
     description: ''
-    weight: 44
+    weight: 48
     type: "text"
     regex: *email
+    restrictions: *disable_notifications
 
   smtp_host:
     value: ''
     label: 'SMTP server IP and port'
     description: 'ie: 10.2.2.3:25'
-    weight: 45
+    weight: 49
     type: "text"
     regex:
       source: '^[a-zA-Z\d][a-zA-Z\d_\-.]+(:[0-9]+)?$'
       error: 'Invalid address or name'
+    restrictions: *disable_notifications
 
   smtp_auth:
     type: "radio"
-    weight: 47
+    weight: 50
     value: "none"
     label: "SMTP authentication method"
     values:
@@ -51,45 +80,24 @@ attributes:
         label: "Plain"
       - data: "cram-md5"
         label: "CRAMMD5"
+    restrictions: *disable_notifications
 
   smtp_user:
     value: ''
     label: 'SMTP user'
     description: ''
-    weight: 48
+    weight: 51
     type: "text"
     restrictions: &no_auth
         - condition: "settings:lma_infrastructure_alerting.smtp_auth.value == 'none'"
+          action: "disable"
+        - condition: "settings:lma_infrastructure_alerting.notify_critical.value == false and settings:lma_infrastructure_alerting.notify_warning.value == false and settings:lma_infrastructure_alerting.notify_unknown.value == false and settings:lma_infrastructure_alerting.notify_recovery.value == false"
           action: "disable"
 
   smtp_password:
     value: ''
     label: 'SMTP password'
     description: ''
-    weight: 49
+    weight: 52
     type: "password"
     restrictions: *no_auth
-
-  notify_critical:
-      type: "checkbox"
-      weight: 50
-      value: true
-      label: "Receive CRITICAL notifications by email"
-
-  notify_warning:
-      type: "checkbox"
-      weight: 51
-      value: true
-      label: "Receive WARNING notifications by email"
-
-  notify_unknown:
-      type: "checkbox"
-      weight: 52
-      value: true
-      label: "Receive UNKNOWN notifications by email"
-
-  notify_recovery:
-      type: "checkbox"
-      weight: 53
-      value: true
-      label: "Receive RECOVERY notifications by email"
