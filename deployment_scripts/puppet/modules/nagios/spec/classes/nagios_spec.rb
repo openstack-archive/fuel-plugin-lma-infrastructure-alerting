@@ -1,4 +1,4 @@
-#    Copyright 2015 Mirantis, Inc.
+#    Copyright 2016 Mirantis, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -13,24 +13,28 @@
 #    under the License.
 require 'spec_helper'
 
-describe 'lma_infra_alerting' do
+describe 'nagios' do
     let(:facts) do
         {:kernel => 'Linux', :operatingsystem => 'Ubuntu',
-         :osfamily => 'Debian', :operatingsystemrelease => '12.4',
+         :osfamily => 'Debian', :operatingsystemrelease => '14.4',
          :concat_basedir => '/tmp'}
     end
 
-    describe 'with global and node clusters' do
+    describe 'with default' do
+        it { should contain_package('nagios3') }
+        it { should contain_file('/var/nagios') }
+        it { should contain_file('/var/nagios/cache') }
+        it { should contain_file('/var/nagios/archives') }
+        it { should contain_augeas('/etc/nagios3/nagios.cfg') }
+    end
+
+    describe 'with files to purge' do
         let(:params) do
-            {:global_clusters => ['nova', 'cinder', 'keystone'],
-             :node_clusters => ['controller', 'compute', 'storage'],
-             :password => 'secrete'}
+            {:config_files_to_purge => ['foo.cfg']}
         end
-        it { should contain_class('nagios') }
-        it { should create_class('nagios::cgi') }
-        it { should create_cron('update lma infra alerting') }
-        it { should create_file('/usr/local/bin/update-lma-configuration') }
-        it { should contain_lma_infra_alerting__nagios__vhost_cluster_status('global') }
-        it { should contain_lma_infra_alerting__nagios__vhost_cluster_status('nodes') }
+
+        it { should contain_file(
+            '/etc/nagios3/conf.d/foo.cfg').with('ensure' => 'absent') }
     end
 end
+

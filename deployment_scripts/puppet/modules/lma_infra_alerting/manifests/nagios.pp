@@ -18,11 +18,12 @@
 #
 
 class lma_infra_alerting::nagios (
-  $http_user = $lma_infra_alerting::params::nagios_http_user,
-  $http_password = $lma_infra_alerting::params::nagios_http_password,
-  $http_port = $lma_infra_alerting::params::nagios_http_port,
-) inherits lma_infra_alerting::params {
+  $http_password,
+  $http_user,
+  $http_port
+) {
 
+  include lma_infra_alerting::params
   include nagios::params
 
   class { '::nagios':
@@ -42,6 +43,7 @@ class lma_infra_alerting::nagios (
     enable_flap_detection         => $lma_infra_alerting::params::nagios_enable_flap_detection,
     debug_level                   => $lma_infra_alerting::params::nagios_debug_level,
     process_performance_data      => $lma_infra_alerting::params::nagios_process_performance_data,
+    config_files_to_purge         => $lma_infra_alerting::params::nagios_distribution_configs_to_purge,
   }
 
   class { '::nagios::cgi':
