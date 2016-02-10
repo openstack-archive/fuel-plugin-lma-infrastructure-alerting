@@ -38,6 +38,7 @@ class nagios(
   $additional_freshness_latency = $nagios::params::additional_freshness_latency,
   $check_external_commands = false,
   $command_check_interval = $nagios::params::command_check_interval,
+  $config_files_to_purge = [],
   $data_dir = $nagios::params::data_dir,
 
   $interval_length = $nagios::params::interval_length,
@@ -45,6 +46,8 @@ class nagios(
 
   include nagios::params
   include nagios::server_service
+
+  validate_array($config_files_to_purge)
 
   $config_dir = $nagios::params::config_dir
 
@@ -70,7 +73,7 @@ class nagios(
   $service_freshness = bool2num($check_service_freshness)
   $host_freshness = bool2num($check_host_freshness)
   $external_command = bool2num($check_external_commands)
-  $cache_dir = "${data_dir}/cache/"
+  $cache_dir = "${data_dir}/cache"
   $object_cache_file = "${cache_dir}/objects.cache"
   $status_file = "${cache_dir}/status.dat"
   $temp_file = "${cache_dir}/nagios.tmp"
@@ -128,4 +131,14 @@ class nagios(
     require => Package[$service_name],
     notify  => Class['nagios::server_service'],
   }
+
+  if !empty($config_files_to_purge) {
+    $to_purge = prefix($config_files_to_purge, "${nagios::params::config_dir}/")
+    file { $to_purge:
+      ensure => absent,
+      backup => '.puppet-bak',
+      notify => Class['nagios::server_service'],
+    }
+  }
+
 }
