@@ -56,7 +56,11 @@ class lma_infra_alerting::params {
   case $::osfamily {
     'Debian': {
       $nagios_distribution_configs_to_purge = [
-        "${nagios::params::config_dir}/services_nagios2.cfg"]
+        "${nagios::params::config_dir}/services_nagios2.cfg",
+        "${nagios::params::config_dir}/localhost_nagios2.cfg",
+        "${nagios::params::config_dir}/hostgroups_nagios2.cfg",
+        "${nagios::params::config_dir}/extinfo_nagios2.cfg",
+        ]
     }
     default: {
       $nagios_distribution_configs_to_purge = []
