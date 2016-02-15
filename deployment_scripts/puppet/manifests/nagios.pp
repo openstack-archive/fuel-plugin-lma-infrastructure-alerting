@@ -106,6 +106,9 @@ class { 'lma_infra_alerting::nagios::hosts':
                             'public_address', 'storage_address',
                             'fqdn', 'role'],
   private_network        => $private_network,
+  # No service check for the storage network because there is no guarantee that
+  # the Nagios node has access to it.
+  storage_network        => false,
   node_cluster_roles     => $node_cluster_roles,
   node_cluster_alarms    => $node_cluster_alarms,
   require                => Class['lma_infra_alerting'],
