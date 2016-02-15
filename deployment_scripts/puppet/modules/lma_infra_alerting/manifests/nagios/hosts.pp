@@ -31,6 +31,7 @@ class lma_infra_alerting::nagios::hosts (
   $host_custom_vars_keys = [],
   $role_key = undef,
   $private_network = false,
+  $storage_network = false,
   $node_cluster_roles = [],
   $node_cluster_alarms = [],
 ){
@@ -81,9 +82,11 @@ class lma_infra_alerting::nagios::hosts (
     hostgroups => keys($nagios_hostgroups),
   }
 
-  lma_infra_alerting::nagios::check_ssh { 'storage':
-    hostgroups         => keys($nagios_hostgroups),
-    custom_var_address => 'storage_address',
+  if $storage_network {
+    lma_infra_alerting::nagios::check_ssh { 'storage':
+      hostgroups         => keys($nagios_hostgroups),
+      custom_var_address => 'storage_address',
+    }
   }
 
   if $private_network {
