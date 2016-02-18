@@ -26,7 +26,7 @@ Catalog, you need to follow these steps:
     [root@fuel ~]# fuel plugins --list
     id | name                        | version | package_version
     ---|-----------------------------|---------|----------------
-    1  | lma_infrastructure_alerting | 0.9.0   | 3.0.0
+    1  | lma_infrastructure_alerting | 0.9.0   | 4.0.0
 
 LMA Infrastructure Alerting Fuel Plugin install from source
 -----------------------------------------------------------
@@ -64,7 +64,7 @@ if you need further instructions about how to build the Fuel Plugin Builder.
 4. Clone the plugin git repository::
 
     [root@home ~] git clone \
-    git@github.com:openstack/fuel-plugin-lma-infrastructure-alerting.git
+    https://github.com/openstack/fuel-plugin-lma-infrastructure-alerting.git
 
 5. Check that the plugin is valid::
 
@@ -90,5 +90,5 @@ List of software components installed by the plugin
 +===========+=============================================+
 | Nagios    | v3.5.1 for Ubuntu (64-bit)                  |
 +-----------+---------------------------------------------+
-| Apache    | Version coming from the Ubuntu distribution |
+| Apache    | Version coming with the Ubuntu distribution |
 +-----------+---------------------------------------------+
