@@ -10,66 +10,67 @@ Plugin configuration
 
 To configure your plugin, you need to follow these steps:
 
-#. `Create a new environment <http://docs.mirantis.com/openstack/fuel/fuel-7.0/user-guide.html#launch-wizard-to-create-new-environment>`_
+1. `Create a new environment <http://docs.mirantis.com/openstack/fuel/fuel-8.0/user-guide.html#launch-wizard-to-create-new-environment>`_
    with the Fuel web user interface.
 
-#. Click on the Settings tab of the Fuel web UI.
+#. Click the **Settings** tab and select the **Other** category.
 
-#. Scroll down the page and select the LMA Infrastructure Alerting Plugin in the left column.
-   The LMA Infrastructure Alerting Plugin settings screen should appear as shown below.
+#. Scroll down through the settings until you find the **LMA Infrastructure Alerting
+   Plugin** section. You should see a page like this.
 
    .. image:: ../images/lma_infrastructure_alerting_settings.png
       :width: 800
       :align: center
 
-#. Select the LMA Infrastructure Alerting Plugin checkbox and fill-in the required fields.
+#. Check the *LMA Infrastructure Alerting Plugin* box and fill-in the required fields
+   as indicated below.
 
-   * Change the nagiosadmin password (optional).
+   a. Change the Nagios web interface password (recommended).
+   #. Check the boxes corresponding to the type of notification you would.
+      like to be alerted for by email (*CRITICAL*, *WARNING*, *UNKNOWN*, *RECOVERY*).
+   #. Specify the recipient email address for the alerts.
+   #. Specify the sender email address for the alerts.
+   #. Specify the SMTP server address and port.
+   #. Specify the SMTP authentication method.
+   #. Specify the SMTP username and password (required if the authentication method isn't *None*).
 
-   * Specify the recipient email address for the alerts.
+#. When you are done with the settings, scroll down to the bottom of the page and click
+   the **Save Settings** button.
 
-   * Specify the sender email address for the alerts.
-
-   * Specify the SMTP server address and port.
-
-   * Specify the SMTP authentication method.
-
-   * Specify the SMTP username and password (required if the authentication method isn't 'None').
-
-   * Specify which types of notification should be sent by email.
-
-#. Assign the *LMA Infrastructure Alerting* role to a node as shown in the figure below.
+#. Click the *Nodes* tab and assign the *LMA Infrastructure Alerting* role to nodes
+   as shown below. You can see in this example that the *Infrastructure_Alerting*
+   role is assigned to three different nodes along with the *Elasticsearch_Kibana* role
+   and the *InfluxDB_Grafana* role. This means that the three plugins of the LMA toolchain
+   can be installed on the same nodes.
 
    .. image:: ../images/lma_infrastructure_alerting_role.png
       :width: 800
       :align: center
 
-   .. note:: Because of a bug with Fuel 7.0 (see bug `#1496328
-      <https://bugs.launchpad.net/fuel-plugins/+bug/1496328>`_), the UI won't let
-      you assign the *LMA Infrastructure Alerting* role if at least one node is already
-      assigned with one of the built-in roles.
+   .. note:: You can assign the *Infrastructure_Alerting* role up to three nodes.
+      Nagios clustering for high availability requires that you assign
+      the *Infrastructure_Alerting* role to at least three nodes. Note also that
+      it is possible to add or remove a node with the *Infrastructure_Alerting*
+      role after deployment.
 
-      To workaround this problem, you should either remove the already assigned built-in roles or use the Fuel CLI::
+#. Clik on **Apply Changes**.
 
-         $ fuel --env <environment id> node set \
-         --node-id <node_id> --role=infrastructure_alerting
+#. Adjust the disk configuration if necessary (see the `Fuel User Guide
+   <http://docs.mirantis.com/openstack/fuel/fuel-8.0/user-guide.html#disk-partitioning>`_
+   for details). By default, the *LMA Infrastructure Alerting Plugin* allocates:
 
-#. Please take into consideration the information on the disks partitioning.
-   By default, the LMA Infrastructure Alerting Plugin allocates:
+     * 20% of the first available disk for the operating system by honoring a range of
+       15GB minimum and 50GB maximum,
+     * 10GB for */var/log*,
+     * At least 20 GB for the Nagios data in */var/nagios*.
 
-    - 20% of the first available disk for the operating system by honoring a range of 15GB minimum and 50GB maximum.
-    - 10GB for */var/log*.
-    - At least 20 GB for the Nagios data in */var/nagios*.
-
-   Please check the `Fuel User Guide <http://docs.mirantis.com/openstack/fuel/fuel-7.0/user-guide.html#disk-partitioning>`_
-   if you would like to change the default configuration of the disks partitioning.
-
-#. `Configure your environment <http://docs.mirantis.com/openstack/fuel/fuel-7.0/user-guide.html#configure-your-environment>`_
+#. `Configure your environment <http://docs.mirantis.com/openstack/fuel/fuel-8.0/user-guide.html#configure-your-environment>`_
    as needed.
 
-#. `Verify the networks <http://docs.mirantis.com/openstack/fuel/fuel-7.0/user-guide.html#verify-networks>`_ on the Networks tab of the Fuel web UI.
+#. `Verify the networks <http://docs.mirantis.com/openstack/fuel/fuel-8.0/user-guide.html#verify-networks>`_
+   on the Networks tab of the Fuel web UI.
 
-#. `Deploy <http://docs.mirantis.com/openstack/fuel/fuel-7.0/user-guide.html#deploy-changes>`_ your changes.
+#. And finally, `Deploy <http://docs.mirantis.com/openstack/fuel/fuel-8.0/user-guide.html#deploy-changes>`_ your changes.
 
 .. _plugin_install_verification:
 
@@ -79,38 +80,17 @@ Plugin verification
 Be aware, that depending on the number of nodes and deployment setup,
 deploying a Mirantis OpenStack environment can typically take anything
 from 30 minutes to several hours. But once your deployment is complete,
-you should see a notification that looks like the following:
+you should see a deployment success notification message with
+a link to the Nagios dashboard as shown below.
 
 .. image:: ../images/deployment_notification.png
    :align: center
    :width: 800
 
-Once your deployment has completed, you should verify that Nagios is
-installed properly through checking its URL::
-
-    http://<HOST>:8001/
-
-Where *HOST* is the IP address of the node which runs the Nagios server.
-
-.. note:: You can retrieve the IP address where Nagios is installed using
-   the `fuel` command line::
-
-    [root@fuel ~]# fuel nodes
-    id | status   | name             | cluster | ip        | mac                ....
-    ---|----------|------------------|---------|-----------|------------------- ....
-    14 | ready    | Untitled (20:0c) | 8       | 10.20.0.8 | 08:00:27:29:20:0c  ....
-    13 | ready    | Untitled (47:b7) | 8       | 10.20.0.4 | 08:00:27:54:47:b7  ....
-
-    ... | roles                       | pending_roles | online | group_id
-    ... |-----------------------------|---------------|--------|---------
-    ... | controller                  |               | True   | 8
-    ... | lma_infrastructure_alerting |               | True   | 8
-
-
-
-Once you have authenticated to the Nagios UI (the username is ``nagiosadmin`` and the
-password is defined in the settings of the plugin), you should get to this
-page:
+From the Fuel web UI **Dashboard** view, click on the **Nagios** link.
+Once you have authenticated (username is ``nagiosadmin`` and the
+password is defined in the settings of the plugin), you should be directed to
+the *Nagios Home Page* as shown below.
 
 .. image:: ../images/nagios_homepage.png
    :align: center
@@ -120,45 +100,53 @@ Managing Nagios
 ---------------
 
 You can get the current status of the OpenStack environment by clicking on
-the *Services* menu item:
+the *Services* menu item as shown below.
 
 .. image:: ../images/nagios_services.png
    :align: center
-   :width: 900
+   :width: 800
 
-The LMA Infrastructure Alerting plugin has provisioned Nagios with all the
+The *LMA Infrastructure Alerting Plugin* configures Nagios for all the
 hosts and services that have been deployed in the environment. The alarms (or
-service checks in Nagios vocabulary) are configured in passive mode because
-they are received from the LMA collectors and aggregator (see the `LMA
+service checks in Nagios terms) are created in **passive mode** as 
+they are received from the *LMA Collector* and *Aggregator* (see the `LMA
 Collector documentation <http://fuel-plugin-lma-collector.readthedocs.org/>`_
 for more details).
 
-.. note:: Notifications for system and node cluster alarms are disabled by
-   default because they can be triggered often while not affecting the overall
-   health of the OpenStack services. If you want to enable notifications for a
-   particular service, go to the service's details page and click on the 'Enable
-   notifications for this service' link in the 'Service Commands' panel.
+.. note:: The alert notifications for the nodes and clusters of nodes are
+   disabled by default to avoid the alert fatigue and because they are not
+   necessarily indicative of a condition affecting the overall health state
+   of an OpenStack service cluster. If you nonetheless want to enable those alerts,
+   go to the service details page and click on the *Enable notifications
+   for this service* link within the *Service Commands* panel as shown below.
 
-There are also two *virtual* hosts representing the service and node clusters:
+.. image:: ../images/nagios_enable_notifs.png
+   :align: center
+   :width: 800
 
-* *00-global-clusters-env${ENVID}* for the service clusters like the Nova
-  cluster, the Keystone cluster, the RabbiMQ cluster and so on.
+There are also two *Virtual Hosts* representing the health state of the
+*service clusters* and *node clusters*:
 
-* *00-node-clusters-env${ENVID}* for the physical node clusters like the
-  cluster of controller nodes, the cluster of storage nodes and so on.
+  * *00-global-clusters-env${ENVID}* for the service clusters like the Nova
+    cluster, the Keystone cluster, the RabbiMQ cluster and so on.
 
-These additional 2 entities offer the high-level view on the healthiness of the
-OpenStack environment.
+  * *00-node-clusters-env${ENVID}* for the physical node clusters like the
+    cluster of controller nodes, the cluster of storage nodes and so on.
+
+These *Virtual Hosts* entities offer a high-level health state view for
+those clusters in the OpenStack environment.
 
 Configuring service checks on InfluxDB metrics
 ----------------------------------------------
 
 You could configure addtional alarms (other than those already defined in the
-LMA Collector) based on the metrics stored in the InfluxDB database. For
-instance, if you wanted to be alerted when the system CPU usage of the
-Elasticsearch process reaches a certain threshold, you could setup a 'warning'
-alarm at say 30% of CPU usage threshold and a 'criticial' alarm at 50% of CPU
-usage threshold. The steps to define those alarms in Nagios would be as follow:
+*LMA Collector*) based on the metrics stored in the InfluxDB database. You
+could, for example, define an alert to be notified when the CPU activity for a 
+particular process crosses a particular threshold.
+Say for example, you would like to set a 'warning'
+alarm at 30% of system CPU usage and a 'criticial' alarm at 50% system CPU usage for the
+Elasticsearch process.
+The steps to define those alarms in Nagios would be as follow:
 
 #. Connect to the *LMA Infrastructure Alerting* node.
 
@@ -196,43 +184,43 @@ usage threshold. The steps to define those alarms in Nagios would be as follow:
     Total Warnings: 0
     Total Errors:   0
 
-    Things look okay - No serious problems were detected during the pre-flight check
+  Here, things look okay. No serious problems were detected during the pre-flight check.
 
-
-#. Restart the Nagios server::
+5. Restart the Nagios server,::
 
     [root@node-13 ~]# /etc/init.d/nagios3 restart
 
 #. Go the Nagios dashboard and verify that the service check has been added.
 
+From there, you could define additional service checks for different hosts or
+host groups using the same ``check_influx`` command.
+You will just need to provide these three required arguments for defining new service checks:
 
-From there, you can define additional service checks for different hosts or hostgroups using the same ``check_influx`` command. You just need to provide the 3 required arguments when defining the service checks:
+  * A valid InfluxDB query that should return only one row with a single value.
+    Check the `InfluxDB documentation <https://influxdb.com/docs/v0.10/query_language>`_
+    to learn how to use the InfluxDB's query language.
+  * A range specification for the warning threshold.
+  * A range specification for the critical threshold.
 
-* A valid InfluxDB query that should return only one row with a single value. Check the `InfluxDB documentation <https://influxdb.com/docs/v0.9/query_language/index.html>`_ to learn how to use InfluxDB query language.
-
-* A range specification for the warning threshold.
-
-* A range specification for the critical threshold.
-
-.. _note: Threshold ranges are defined following the `Nagios format <https://nagios-plugins.org/doc/guidelines.html#THRESHOLDFORMAT>`_.
+.. note:: Threshold ranges are defined following the `Nagios format
+   <https://nagios-plugins.org/doc/guidelines.html#THRESHOLDFORMAT>`_.
 
 Using an external SMTP server with STARTTLS
 -------------------------------------------
 
-If your SMTP server requires the use of STARTTLS, you need to make some
-manual adjustements to the Nagios configuration after the deployment of the
-environment has completed. To enable STARTTLS, you should have configured the SMTP
-Authentication method to use either to Plain, Login or CRAM-MD5 first.
+If your SMTP server requires STARTTLS, you need to make some
+manual adjustements to the Nagios configuration after the deployment of
+your environment.
 
-.. note:: Future versions of the LMA Infrastructure Alerting plugin will
-   support the configuration of STARTTLS from the Fuel UI.
+.. note:: Prior to enabling STARTTLS, you need to configure the *SMTP Authentication method*
+   parameter in the plugin's settings to use either *Plain*, *Login* or *CRAM-MD5*.
 
 #. Login to the *LMA Infrastructure Alerting* node.
 
 #. Edit the
    ``/etc/nagios3/conf.d/cmd_notify-service-by-smtp-with-long-service-output.cfg``
    file to add the ``-S smtp-use-starttls`` option to the `mail` command. For
-   instance::
+   example::
 
     define command{
       command_name    notify-service-by-smtp-with-long-service-output
@@ -270,11 +258,12 @@ Authentication method to use either to Plain, Login or CRAM-MD5 first.
 Troubleshooting
 ---------------
 
-If you cannot access the Nagios UI, check the following:
+If you cannot access the Nagios UI, follow these troubleshooting tips.
 
-#. Check if the nodes are able to connect to the Nagios server on port *8001*.
+#. Check that the *LMA Collector* nodes are able to connect to the Nagios
+   VIP address on port *8001*.
 
-#. Check the Nagios configuration is valid::
+#. Check that the Nagios configuration is valid::
 
     [root@node-13 ~]# nagios3 -v /etc/nagios3/nagios.cfg
 
@@ -283,14 +272,13 @@ If you cannot access the Nagios UI, check the following:
     Total Warnings: 0
     Total Errors:   0
 
-    Things look okay - No serious problems were detected during the pre-flight check
-
+  Here, things look okay. No serious problems were detected during the pre-flight check.
 
 #. Check that the Nagios server is up and running::
 
     [root@node-13 ~]# /etc/init.d/nagios3 status
 
-#. If Nagios is down, start it::
+#. If Nagios is down, restart it::
 
     [root@node-13 ~]# /etc/init.d/nagios3 start
 
@@ -298,23 +286,23 @@ If you cannot access the Nagios UI, check the following:
 
     [root@node-13 ~]# /etc/init.d/apache2 status
 
-#. If Apache is down, start it::
+#. If Apache is down, restart it::
 
     [root@node-13 ~]# /etc/init.d/apache2 start
 
-If Nagios reports some hosts or services as 'UNKNOWN: No data received for at
-least X seconds ', it indicates that the LMA collector fails to communicate
-with the Nagios service:
+Finally, Nagios may report a host or service state as *UNKNOWN*.
+Two cases can be distinguished:
 
-#. First, check that the LMA Collector is running properly on these nodes
-   by following the troubleshooting instructions of the
-   `LMA Collector Fuel Plugin User Guide <http://fuel-plugin-lma-collector.readthedocs.org/en/latest/user/configuration.html#troubleshooting>`_.
+  * 'UNKNOWN: No datapoint have been received ever',
+  * 'UNKNOWN: No datapoint have been received over the last X seconds'.
+    
+Both cases indicate that Nagios doesn't receive regular passive checks from
+the *LMA Collector*. This may be due to different problems:
 
-#. Check if the nodes are able to connect to the Nagios server on port *8001*.
+  * The 'hekad' process of the *LMA Collector* fails to communicate with Nagios,
+  * The 'collectd' and/or 'hekad' process of the *LMA Collector* has crashed,
+  * One or several alarm rules are misconfigured.
 
-If Nagios reports some hosts or services as 'UNKNOWN: No datapoint have been
-received ever' or 'UNKNOWN: No datapoint have been received over the last X
-seconds ', it indicates that the LMA collector fails to determine the status of
-the service because either the alarm rule is misconfigured or no metric is
-received. In both cases, follow the the troubleshooting instructions of the
-`LMA Collector Fuel Plugin User Guide <http://fuel-plugin-lma-collector.readthedocs.org/en/latest/user/configuration.html#troubleshooting>`_.
+To remedy to the above situations, follow the `troubleshooting tips
+<http://fuel-plugin-lma-collector.readthedocs.org/en/latest/user/configuration.html#troubleshooting>`
+of the *LMA Collector Plugin User Guide*.
