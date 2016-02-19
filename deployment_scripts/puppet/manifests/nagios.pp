@@ -64,6 +64,105 @@ class { 'lma_infra_alerting':
   password                  => $password,
 }
 
+file { 'ocf-ns_apache':
+  ensure => present,
+  path   => '/usr/lib/ocf/resource.d/fuel/ocf-ns_apache',
+  source => 'puppet:///modules/lma_infra_alerting/ocf-ns_apache',
+  mode   => '0755',
+  owner  => 'root',
+  group  => 'root',
+}
+
+file { 'ocf-ns_nagios':
+  ensure => present,
+  path   => '/usr/lib/ocf/resource.d/fuel/ocf-ns_nagios',
+  source => 'puppet:///modules/lma_infra_alerting/ocf-ns_nagios',
+  mode   => '0755',
+  owner  => 'root',
+  group  => 'root',
+}
+
+# This is required so Apache and Nagios can bind to the VIP address
+exec { 'net.ipv4.ip_nonlocal_bind':
+  command => '/sbin/sysctl -w net.ipv4.ip_nonlocal_bind=1',
+  unless  => '/sbin/sysctl -n net.ipv4.ip_nonlocal_bind | /bin/grep 1',
+}
+
+# Apache2 resources for Pacemaker
+pacemaker_wrappers::service { 'apache2':
+  primitive_type => 'ocf-ns_apache',
+  parameters     => {
+    'ns'         => 'infrastructure_alerting',
+    'status_url' => 'http://localhost:8001/server-status',
+  },
+  metadata       => {
+    'migration-threshold' => '3',
+    'failure-timeout'     => '120',
+  },
+  operations     => {
+    'monitor' => {
+      'interval' => '30',
+      'timeout'  => '60'
+    },
+    'start'   => {
+      'timeout' => '60'
+    },
+    'stop'    => {
+      'timeout' => '60'
+    },
+  },
+  prefix         => false,
+  use_handler    => false,
+  require        => [File['ocf-ns_apache'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting']],
+}
+
+cs_rsc_colocation { 'infrastructure_alerting_vip-with-apache2':
+  ensure     => present,
+  score      => 'INFINITY',
+  primitives => [
+    'vip__infrastructure_alerting_mgmt_vip',
+    'apache2'
+  ],
+  require    => Cs_resource['apache2'],
+}
+
+# Nagios resources for Pacemaker
+pacemaker_wrappers::service { 'nagios3':
+  primitive_type => 'ocf-ns_nagios',
+  parameters     => {
+    'ns'         => 'infrastructure_alerting',
+  },
+  metadata       => {
+    'migration-threshold' => '3',
+    'failure-timeout'     => '120',
+  },
+  operations     => {
+    'monitor' => {
+      'interval' => '30',
+      'timeout'  => '60'
+    },
+    'start'   => {
+      'timeout' => '60'
+    },
+    'stop'    => {
+      'timeout' => '60'
+    },
+  },
+  prefix         => false,
+  use_handler    => false,
+  require        => [File['ocf-ns_nagios'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting']],
+}
+
+cs_rsc_colocation { 'infrastructure_alerting_vip-with-nagios':
+  ensure     => present,
+  score      => 'INFINITY',
+  primitives => [
+    'vip__infrastructure_alerting_mgmt_vip',
+    'nagios3'
+  ],
+  require    => Cs_resource['nagios3'],
+}
+
 class { 'lma_infra_alerting::nagios::contact':
   send_to         => $send_to,
   send_from       => $send_from,
