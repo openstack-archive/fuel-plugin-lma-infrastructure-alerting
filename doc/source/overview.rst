@@ -4,7 +4,7 @@ Overview
 ========
 
 The **LMA Infrastructure Alerting Plugin** is used to install and configure
-Nagios which provides the alerting and escalation functionalities of the LMA
+Nagios™ which provides the alerting and escalation functionalities of the LMA
 Toolchain.
 
 Nagios is a key component of the `LMA Toolchain project <https://launchpad.net/lma-toolchain>`_
@@ -18,25 +18,31 @@ as shown in the figure below.
 Requirements
 ------------
 
-+----------------------------------+---------------------------------------------------------+
-| Requirement                      | Version/Comment                                         |
-+==================================+=========================================================+
-| Disk space                       | At least 45GB                                           |
-+----------------------------------+---------------------------------------------------------+
-| Fuel                             | Mirantis OpenStack 7.0                                  |
-+----------------------------------+---------------------------------------------------------+
-| The LMA collector Fuel plugin    | At least 0.8.0                                          |
-+----------------------------------+---------------------------------------------------------+
-| The InfluxDB-Grafana Fuel plugin | At least 0.8.0                                          |
-|                                  |                                                         |
-|                                  | This is optional and only needed if you want to trigger |
-|                                  | alarms from InfluxDB data.                              |
-+----------------------------------+---------------------------------------------------------+
++------------------------+------------------------------------------------------------------------------------------+
+| **Requirement**        | **Version/Comment**                                                                      |
++========================+==========================================================================================+
+| Disk space             | The plugin's specification requires to provision at least 15GB of disk space for the     |
+|                        | system, 10GB for the logs and 20GB for Nagios™. As a result, the installation            |
+|                        | of the plugin will fail if there is less than 45GB of disk space available on the node.  |
++------------------------+------------------------------------------------------------------------------------------+
+| Fuel                   | Mirantis OpenStack 8.0                                                                   |
++------------------------+------------------------------------------------------------------------------------------+
+| The LMA Collector      | v 0.9                                                                                    |
+| Fuel Plugin            |                                                                                          |
++------------------------+------------------------------------------------------------------------------------------+
+| The LMA InfluxDB       | v 0.9                                                                                    |
+| Grafana Fuel Plugin    | This is optional and only needed if you want to create alarms in Nagios™ for             |
+|                        | time-series stored in InfluxDB.                                                          |
++------------------------+------------------------------------------------------------------------------------------+
+| Hardware configuration | The hardware configuration (RAM, CPU, disk) required by this plugin depends on the size  |
+|                        | of your cloud environment and other parameters like the retention period of the data.    |
+|                        |                                                                                          |
+|                        | A typical setup would at least require a quad-core server with 8GB of RAM and fast disks |
+|                        | (ideally, SSDs).                                                                         |
++------------------------+------------------------------------------------------------------------------------------+
 
 Limitations
 -----------
 
-A current limitation of this plugin is that it not possible to display in the Fuel web UI,
-the URL where the Nagios interface can be reached when the deployment has completed.
-Instructions are provided in the :ref:`user_guide` about how you can
-obtain this URL using the `fuel` command line.
+If Nagios is installed on several nodes for high availability, the alerts history will be lost in case of
+a server failover.
