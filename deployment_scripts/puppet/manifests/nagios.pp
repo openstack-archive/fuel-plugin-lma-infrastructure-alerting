@@ -15,6 +15,9 @@
 
 $management_vip = hiera('management_vip')
 $env_id = hiera('deployment_id')
+$nagios_link_created_file = '/var/cache/nagios_link_created'
+$current_roles = hiera('roles')
+$is_primary = member($current_roles, 'primary-infrastructure_alerting')
 
 $plugin = hiera('lma_infrastructure_alerting')
 $password = $plugin['nagios_password']
@@ -80,6 +83,12 @@ file { 'ocf-ns_nagios':
   mode   => '0755',
   owner  => 'root',
   group  => 'root',
+}
+
+unless $is_primary {
+  exec { 'notify_nagios_url':
+    command => "/usr/bin/touch ${nagios_link_created_file}",
+  }
 }
 
 # This is required so Apache and Nagios can bind to the VIP address
