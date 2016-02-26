@@ -4,3 +4,4 @@
 Gemfile.lock
 .tox
 .bundled_gems
+.idea
