@@ -33,7 +33,7 @@
   required_for: [deploy_end]
   parameters:
     puppet_manifest: "puppet/manifests/hiera.pp"
-    puppet_modules: "puppet/modules"
+    puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 120
 
 - id: lma-alerting-firewall
@@ -43,7 +43,7 @@
   required_for: [deploy_end]
   parameters:
     puppet_manifest: "puppet/manifests/firewall.pp"
-    puppet_modules: "puppet/modules"
+    puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 120
 
 - id: lma-alerting-cluster
@@ -53,7 +53,7 @@
   required_for: [deploy_end]
   parameters:
     puppet_manifest: "puppet/manifests/cluster.pp"
-    puppet_modules: "puppet/modules"
+    puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 600
   reexecute_on:
     - deploy_changes
@@ -65,7 +65,7 @@
   required_for: [deploy_end]
   parameters:
     puppet_manifest: "puppet/modules/osnailyfacter/modular/virtual_ips/virtual_ips.pp"
-    puppet_modules: "puppet/modules"
+    puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 600
 
 # This task needs to be reexecuted to reconfigure the no-quorum-policy every
@@ -77,7 +77,7 @@
   required_for: [post_deployment_end]
   parameters:
     puppet_manifest: "puppet/manifests/enable_quorum.pp"
-    puppet_modules: "puppet/modules"
+    puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 120
   reexecute_on:
     - deploy_changes

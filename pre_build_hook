@@ -3,8 +3,6 @@ set -eux
 
 . "$(dirname "$(readlink -f "$0")")"/functions.sh
 
-FUEL_LIB_COMMIT="stable/8.0"
-FUEL_LIB_TARBALL_URL="https://github.com/openstack/fuel-library/archive/${FUEL_LIB_COMMIT}.tar.gz"
 HTPASSWD_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/leinaddm-htpasswd-0.0.3.tar.gz"
 APACHE_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/puppetlabs-apache-1.4.0.tar.gz"
 CONCAT_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/puppetlabs-concat-1.2.3.tar.gz"
@@ -41,13 +39,6 @@ download_packages \
     http://mirrors.kernel.org/ubuntu/pool/main/w/whois/whois_5.1.1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/universe/h/heirloom-mailx/heirloom-mailx_12.5-4_amd64.deb
 
-
-rm -rf "${MODULES_DIR:?}"/{stdlib,htpasswd,apache,concat,l23network,osnailyfacter,cluster,corosync,pacemaker_wrappers,pacemaker,openstack}
-wget -qO- "${FUEL_LIB_TARBALL_URL}" | \
-    tar -C "${MODULES_DIR}" --strip-components=3 -zxvf - \
-    fuel-library-${FUEL_LIB_COMMIT/\//-}/deployment/puppet/{l23network,osnailyfacter,cluster,corosync,pacemaker_wrappers,pacemaker,openstack}
-# Remove this dead link otherwise fpb fails
-rm -f "${MODULES_DIR:?}"/osnailyfacter/modular/master
 
 download_puppet_module "htpasswd" "${HTPASSWD_TARBALL_URL}"
 download_puppet_module "apache" "${APACHE_TARBALL_URL}"
