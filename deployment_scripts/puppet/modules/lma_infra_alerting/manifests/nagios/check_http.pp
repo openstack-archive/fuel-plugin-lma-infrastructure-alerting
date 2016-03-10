@@ -73,10 +73,14 @@ define lma_infra_alerting::nagios::check_http(
     $check_command = "check_http_${title}"
   }
 
+  $command_line = rstrip(join([
+      "${nagios::params::nagios_plugin_dir}/check_http -4 -I '${hostaddress}' ${base_options} ${port_option} ",
+      "${url_option} ${expect_in_status_option} ${expect_in_content_option} ${expect_in_headers_option}",
+  ], ''))
   nagios::command { $check_command:
     prefix     => $prefix,
     properties => {
-      command_line => rstrip("${nagios::params::nagios_plugin_dir}/check_http -4 -I '${hostaddress}' ${base_options} ${port_option} ${url_option} ${expect_in_status_option} ${expect_in_content_option} ${expect_in_headers_option}"),
+      command_line => $command_line
     }
   }
 
