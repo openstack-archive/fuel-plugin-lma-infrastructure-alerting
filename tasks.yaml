@@ -6,7 +6,7 @@
   type: puppet
   parameters:
     puppet_manifest: puppet/manifests/nagios.pp
-    puppet_modules: puppet/modules
+    puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 600
 
 - role: [primary-infrastructure_alerting]
@@ -14,5 +14,5 @@
   type: puppet
   parameters:
     puppet_manifest: puppet/manifests/nagios_dashboard_url.pp
-    puppet_modules: puppet/modules
+    puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 120
