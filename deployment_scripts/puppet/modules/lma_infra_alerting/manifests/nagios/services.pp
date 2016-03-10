@@ -91,9 +91,16 @@ define lma_infra_alerting::nagios::services (
     use                    => $_use,
   }
 
-  # Contrived way to transform {'a'=>'x', 'b'=>'y'} into {'a'=>{'properties'=>{'service_description'=>'x', ...}, ...}, 'b'=>{'properties'=>{'service_description'=>'y', ...}, ...}}
+  # Contrived way to transform:
+  #   {'a'=>'x', 'b'=>'y'}
+  # into:
+  #   {'a'=>{'properties'=>{'service_description'=>'x', ...}, ...}, 'b'=>{'properties'=>{'service_description'=>'y', ...}, ...}}
   $resources = parseyaml(
-    inline_template("<%= @services_hash.inject({}) { |c, (k, v)| c[k] = @default_resource.merge({'properties' => @default_properties.merge({'service_description' => v})}); c}.to_yaml %>")
+    inline_template(join([
+      '<%= @services_hash.inject({}) { |c, (k, v)| ',
+      "  c[k] = @default_resource.merge({'properties' => @default_properties.merge({'service_description' => v})}); c",
+      '}.to_yaml %>'
+    ], ''))
   )
 
   create_resources(nagios::service, $resources)
