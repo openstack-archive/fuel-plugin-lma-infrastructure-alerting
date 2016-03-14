@@ -37,16 +37,6 @@ class lma_infra_alerting (
     http_password => $password,
   }
 
-  # Purge the default configuration shipped by the distribution before applying
-  # anything else
-  if !empty($lma_infra_alerting::params::nagios_distribution_configs_to_purge) {
-    file { $lma_infra_alerting::params::nagios_distribution_configs_to_purge:
-      ensure  => absent,
-      backup  => '.puppet-bak',
-      require => Class['lma_infra_alerting::nagios'],
-    }
-  }
-
   if ! empty($global_clusters) {
     # Configure the virtual host for the global clusters
     lma_infra_alerting::nagios::vhost_cluster_status{ 'global':

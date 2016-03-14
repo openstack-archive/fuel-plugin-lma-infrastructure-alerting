@@ -42,6 +42,7 @@ class lma_infra_alerting::nagios (
     enable_flap_detection         => $lma_infra_alerting::params::nagios_enable_flap_detection,
     debug_level                   => $lma_infra_alerting::params::nagios_debug_level,
     process_performance_data      => $lma_infra_alerting::params::nagios_process_performance_data,
+    config_files_to_purge         => $lma_infra_alerting::params::nagios_distribution_configs_to_purge,
   }
 
   class { '::nagios::cgi':
