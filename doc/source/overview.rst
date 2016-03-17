@@ -25,20 +25,20 @@ Requirements
 |                        | system, 10GB for the logs and 20GB for Nagios™. As a result, the installation            |
 |                        | of the plugin will fail if there is less than 45GB of disk space available on the node.  |
 +------------------------+------------------------------------------------------------------------------------------+
-| Fuel                   | Mirantis OpenStack 8.0                                                                   |
-+------------------------+------------------------------------------------------------------------------------------+
-| The LMA Collector      | v 0.9                                                                                    |
-| Fuel Plugin            |                                                                                          |
-+------------------------+------------------------------------------------------------------------------------------+
-| The LMA InfluxDB       | v 0.9                                                                                    |
-| Grafana Fuel Plugin    | This is optional and only needed if you want to create alarms in Nagios™ for             |
-|                        | time-series stored in InfluxDB.                                                          |
-+------------------------+------------------------------------------------------------------------------------------+
 | Hardware configuration | The hardware configuration (RAM, CPU, disk) required by this plugin depends on the size  |
 |                        | of your cloud environment and other parameters like the retention period of the data.    |
 |                        |                                                                                          |
 |                        | A typical setup would at least require a quad-core server with 8GB of RAM and fast disks |
 |                        | (ideally, SSDs).                                                                         |
++------------------------+------------------------------------------------------------------------------------------+
+| Mirantis OpenStack     | 8.0                                                                                      |
++------------------------+------------------------------------------------------------------------------------------+
+| The LMA Collector      | 0.9                                                                                      |
+| Fuel Plugin            |                                                                                          |
++------------------------+------------------------------------------------------------------------------------------+
+| The LMA InfluxDB       | 0.9                                                                                      |
+| Grafana Fuel Plugin    | This is optional and only needed if you want to create alarms in Nagios™ for             |
+|                        | time-series stored in InfluxDB.                                                          |
 +------------------------+------------------------------------------------------------------------------------------+
 
 Limitations

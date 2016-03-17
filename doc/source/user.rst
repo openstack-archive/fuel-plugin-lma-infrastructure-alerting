@@ -26,7 +26,7 @@ To configure your plugin, you need to follow these steps:
    as indicated below.
 
    a. Change the Nagios web interface password (recommended).
-   #. Check the boxes corresponding to the type of notification you would.
+   #. Check the boxes corresponding to the type of notification you would
       like to be alerted for by email (*CRITICAL*, *WARNING*, *UNKNOWN*, *RECOVERY*).
    #. Specify the recipient email address for the alerts.
    #. Specify the sender email address for the alerts.
@@ -53,7 +53,7 @@ To configure your plugin, you need to follow these steps:
       it is possible to add or remove a node with the *Infrastructure_Alerting*
       role after deployment.
 
-#. Clik on **Apply Changes**.
+#. Click on **Apply Changes**.
 
 #. Adjust the disk configuration if necessary (see the `Fuel User Guide
    <http://docs.mirantis.com/openstack/fuel/fuel-8.0/user-guide.html#disk-partitioning>`_
@@ -139,9 +139,9 @@ those clusters in the OpenStack environment.
 Configuring service checks on InfluxDB metrics
 ----------------------------------------------
 
-You could configure addtional alarms (other than those already defined in the
+You can configure additional alarms (other than those already defined in the
 *LMA Collector*) based on the metrics stored in the InfluxDB database. You
-could, for example, define an alert to be notified when the CPU activity for a 
+can, for example, define an alert to be notified when the CPU activity for a
 particular process crosses a particular threshold.
 Say for example, you would like to set a 'warning'
 alarm at 30% of system CPU usage and a 'criticial' alarm at 50% system CPU usage for the
@@ -192,12 +192,12 @@ The steps to define those alarms in Nagios would be as follow:
 
 #. Go the Nagios dashboard and verify that the service check has been added.
 
-From there, you could define additional service checks for different hosts or
+From there, you can define additional service checks for different hosts or
 host groups using the same ``check_influx`` command.
 You will just need to provide these three required arguments for defining new service checks:
 
   * A valid InfluxDB query that should return only one row with a single value.
-    Check the `InfluxDB documentation <https://influxdb.com/docs/v0.10/query_language>`_
+    Check the `InfluxDB documentation <https://docs.influxdata.com/influxdb/v0.10/query_language/>`_
     to learn how to use the InfluxDB's query language.
   * A range specification for the warning threshold.
   * A range specification for the critical threshold.
@@ -290,12 +290,16 @@ If you cannot access the Nagios UI, follow these troubleshooting tips.
 
     [root@node-13 ~]# /etc/init.d/apache2 start
 
+#. Look for errors in the Nagios log file (located at /var/log/nagios3/nagios.log).
+
+#. Look for errors in the Apache log file (located at /var/log/apache2/nagios_error.log).
+
 Finally, Nagios may report a host or service state as *UNKNOWN*.
 Two cases can be distinguished:
 
   * 'UNKNOWN: No datapoint have been received ever',
   * 'UNKNOWN: No datapoint have been received over the last X seconds'.
-    
+
 Both cases indicate that Nagios doesn't receive regular passive checks from
 the *LMA Collector*. This may be due to different problems:
 
@@ -304,5 +308,5 @@ the *LMA Collector*. This may be due to different problems:
   * One or several alarm rules are misconfigured.
 
 To remedy to the above situations, follow the `troubleshooting tips
-<http://fuel-plugin-lma-collector.readthedocs.org/en/latest/user/configuration.html#troubleshooting>`_
+<http://fuel-plugin-lma-collector.readthedocs.org/en/latest/configuration.html#troubleshooting>`_
 of the *LMA Collector Plugin User Guide*.
