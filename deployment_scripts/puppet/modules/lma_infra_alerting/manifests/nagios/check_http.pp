@@ -28,6 +28,7 @@
 #
 define lma_infra_alerting::nagios::check_http(
   $host_name = undef,
+  $contact_group = $lma_infra_alerting::params::nagios_contactgroup,
   $custom_var_address = undef,
   $port = undef,
   $url = '/',
@@ -85,8 +86,9 @@ define lma_infra_alerting::nagios::check_http(
   nagios::service { "HTTP ${title}":
     prefix     => $prefix,
     properties => {
-      host_name     => $host_name,
-      check_command => $check_command,
+      host_name      => $host_name,
+      check_command  => $check_command,
+      contact_groups => $contact_group,
     },
     defaults   => {
       'use' => $lma_infra_alerting::params::nagios_generic_service_template,
