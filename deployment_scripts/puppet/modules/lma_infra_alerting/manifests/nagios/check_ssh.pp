@@ -23,6 +23,7 @@
 #
 define lma_infra_alerting::nagios::check_ssh(
   $hostgroups = [],
+  $contact_group = $lma_infra_alerting::params::nagios_contactgroup,
   $custom_var_address = undef,
 ){
 
@@ -50,7 +51,8 @@ define lma_infra_alerting::nagios::check_ssh(
     "SSH ${title} network" => {
       properties => {
         hostgroup_name => $hostgroups,
-        check_command => $check_command,
+        check_command  => $check_command,
+        contact_groups => $contact_group,
       }
     }
   }
