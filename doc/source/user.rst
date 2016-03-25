@@ -92,6 +92,10 @@ Once you have authenticated (username is ``nagiosadmin`` and the
 password is defined in the settings of the plugin), you should be directed to
 the *Nagios Home Page* as shown below.
 
+.. note:: Be aware that Nagios is attached to the *management network*.
+   Your desktop machine must have access to the OpenStack environment's
+   *management network* you just created to get access to the Nagios dashboard.   
+
 .. image:: ../images/nagios_homepage.png
    :align: center
    :width: 800
