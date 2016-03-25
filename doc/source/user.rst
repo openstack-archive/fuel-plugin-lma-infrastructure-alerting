@@ -92,6 +92,10 @@ Once you have authenticated (username is ``nagiosadmin`` and the
 password is defined in the settings of the plugin), you should be directed to
 the *Nagios Home Page* as shown below.
 
+.. note:: Be aware that Nagios is attached to the *management network*.
+   Your desktop machine must have access to the OpenStack environment's
+   *management network* you just created to get access to the Nagios dashboard.
+
 .. image:: ../images/nagios_homepage.png
    :align: center
    :width: 800
@@ -108,7 +112,7 @@ the *Services* menu item as shown below.
 
 The *LMA Infrastructure Alerting Plugin* configures Nagios for all the
 hosts and services that have been deployed in the environment. The alarms (or
-service checks in Nagios terms) are created in **passive mode** as 
+service checks in Nagios terms) are created in **passive mode** as
 they are received from the *LMA Collector* and *Aggregator* (see the `LMA
 Collector documentation <http://fuel-plugin-lma-collector.readthedocs.org/>`_
 for more details).
