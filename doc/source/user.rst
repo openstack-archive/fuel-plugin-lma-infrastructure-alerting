@@ -153,7 +153,7 @@ OpenStack environment.
 Configuring service checks on InfluxDB metrics
 ----------------------------------------------
 
-You could configure addtional alarms (other than those already defined in the
+You can configure addtional alarms (other than those already defined in the
 LMA Collector) based on the metrics stored in the InfluxDB database. For
 instance, if you wanted to be alerted when the system CPU usage of the
 Elasticsearch process reaches a certain threshold, you could setup a 'warning'
@@ -301,6 +301,10 @@ If you cannot access the Nagios UI, check the following:
 #. If Apache is down, start it::
 
     [root@node-13 ~]# /etc/init.d/apache2 start
+
+#. Look for errors in the Nagios log file (located at /var/nagios/nagios.log).
+
+#. Look for errors in the Apache log file (located at /var/log/apache2/nagios_error.log).
 
 If Nagios reports some hosts or services as 'UNKNOWN: No data received for at
 least X seconds ', it indicates that the LMA collector fails to communicate
