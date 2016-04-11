@@ -294,7 +294,7 @@ If you cannot access the Nagios UI, follow these troubleshooting tips.
 
     [root@node-13 ~]# /etc/init.d/apache2 start
 
-#. Look for errors in the Nagios log file (located at /var/log/nagios3/nagios.log).
+#. Look for errors in the Nagios log file (located at /var/nagios/nagios.log).
 
 #. Look for errors in the Apache log file (located at /var/log/apache2/nagios_error.log).
 
