@@ -1,5 +1,7 @@
+# Groups definitions
 - id: primary-infrastructure_alerting
   type: group
+  version: 2.0.0
   role: [primary-infrastructure_alerting]
   tasks: &common_tasks
     - hiera
@@ -10,6 +12,10 @@
     - logging
     - netconfig
     - hosts
+    - lma-alerting-hiera
+    - lma-alerting-firewall
+    - lma-alerting-cluster
+    - lma-alerting-vip
   required_for: [deploy_end]
   requires: [deploy_start]
   parameters:
@@ -18,6 +24,7 @@
 
 - id: infrastructure_alerting
   type: group
+  version: 2.0.0
   role: [infrastructure_alerting]
   tasks: *common_tasks
   required_for: [deploy_end]
@@ -26,9 +33,11 @@
     strategy:
       type: parallel
 
+# Tasks definitions for deployment
+
 - id: lma-alerting-hiera
   type: puppet
-  groups: [primary-infrastructure_alerting, infrastructure_alerting]
+  version: 2.0.0
   requires: [globals]
   required_for: [deploy_end]
   parameters:
@@ -38,7 +47,7 @@
 
 - id: lma-alerting-firewall
   type: puppet
-  groups: [primary-infrastructure_alerting, infrastructure_alerting]
+  version: 2.0.0
   requires: [netconfig, lma-alerting-hiera]
   required_for: [deploy_end]
   parameters:
@@ -48,7 +57,7 @@
 
 - id: lma-alerting-cluster
   type: puppet
-  groups: [primary-infrastructure_alerting, infrastructure_alerting]
+  version: 2.0.0
   requires: [lma-alerting-firewall, lma-alerting-hiera]
   required_for: [deploy_end]
   parameters:
@@ -60,7 +69,7 @@
 
 - id: lma-alerting-vip
   type: puppet
-  groups: [primary-infrastructure_alerting, infrastructure_alerting]
+  version: 2.0.0
   requires: [lma-alerting-cluster]
   required_for: [deploy_end]
   parameters:
@@ -68,10 +77,13 @@
     puppet_modules: /etc/puppet/modules
     timeout: 600
 
+# Tasks definitions for post-deployment
+
 # This task needs to be reexecuted to reconfigure the no-quorum-policy every
 # time the cluster is scaled up or down
 - id: lma-alerting-enable-quorum
   type: puppet
+  version: 2.0.0
   role: [primary-infrastructure_alerting]
   requires: [post_deployment_start]
   required_for: [post_deployment_end]
@@ -81,3 +93,30 @@
     timeout: 120
   reexecute_on:
     - deploy_changes
+
+# These tasks need to be run after the StackLight collectors have been deployed.
+- id: lma-alerting-nagios
+  type: puppet
+  version: 2.0.0
+  role: [primary-infrastructure_alerting, infrastructure_alerting]
+  # update_hosts is used as an anchor to ensure that LMA collectors are
+  # deployed before executing this task.
+  requires: [lma-backends, update_hosts]
+  required_for: [post_deployment_end]
+  parameters:
+    puppet_manifest: puppet/manifests/nagios.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 600
+  reexecute_on:
+    - deploy_changes
+
+- id: lma-alerting-nagios-dashboard-url
+  type: puppet
+  version: 2.0.0
+  role: [primary-infrastructure_alerting]
+  requires: [lma-backends, lma-alerting-nagios]
+  required_for: [post_deployment_end]
+  parameters:
+    puppet_manifest: puppet/manifests/nagios_dashboard_url.pp
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 120
