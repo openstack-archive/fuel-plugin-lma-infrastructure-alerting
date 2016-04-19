@@ -16,6 +16,7 @@ notice('fuel-plugin-lma-infrastructure-alerting: nagios.pp')
 
 $management_vip = hiera('management_vip')
 $env_id = hiera('deployment_id')
+$fuel_version = 0 + hiera('fuel_version')
 
 $plugin = hiera('lma_infrastructure_alerting')
 $password = $plugin['nagios_password']
@@ -89,79 +90,152 @@ exec { 'net.ipv4.ip_nonlocal_bind':
   unless  => '/sbin/sysctl -n net.ipv4.ip_nonlocal_bind | /bin/grep 1',
 }
 
-# Apache2 resources for Pacemaker
-pacemaker_wrappers::service { 'apache2':
-  primitive_type => 'ocf-ns_apache',
-  parameters     => {
-    'ns'         => 'infrastructure_alerting',
-    'status_url' => 'http://localhost:8001/server-status',
-  },
-  metadata       => {
-    'migration-threshold' => '3',
-    'failure-timeout'     => '120',
-  },
-  operations     => {
-    'monitor' => {
-      'interval' => '30',
-      'timeout'  => '60'
+if $fuel_version < 9.0 {
+  # Apache2 resources for Pacemaker
+  pacemaker_wrappers::service { 'apache2':
+    primitive_type => 'ocf-ns_apache',
+    parameters     => {
+      'ns'         => 'infrastructure_alerting',
+      'status_url' => 'http://localhost:8001/server-status',
     },
-    'start'   => {
-      'timeout' => '60'
+    metadata       => {
+      'migration-threshold' => '3',
+      'failure-timeout'     => '120',
     },
-    'stop'    => {
-      'timeout' => '60'
+    operations     => {
+      'monitor' => {
+        'interval' => '30',
+        'timeout'  => '60'
+      },
+      'start'   => {
+        'timeout' => '60'
+      },
+      'stop'    => {
+        'timeout' => '60'
+      },
     },
-  },
-  prefix         => false,
-  use_handler    => false,
-  require        => [File['ocf-ns_apache'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting']],
-}
+    prefix         => false,
+    use_handler    => false,
+    require        => [File['ocf-ns_apache'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting']],
+  }
 
-cs_rsc_colocation { 'infrastructure_alerting_vip-with-apache2':
-  ensure     => present,
-  score      => 'INFINITY',
-  primitives => [
-    'vip__infrastructure_alerting_mgmt_vip',
-    'apache2'
-  ],
-  require    => Cs_resource['apache2'],
-}
+  cs_rsc_colocation { 'infrastructure_alerting_vip-with-apache2':
+    ensure     => present,
+    score      => 'INFINITY',
+    primitives => [
+      'vip__infrastructure_alerting_mgmt_vip',
+      'apache2'
+    ],
+    require    => Cs_resource['apache2'],
+  }
 
-# Nagios resources for Pacemaker
-pacemaker_wrappers::service { 'nagios3':
-  primitive_type => 'ocf-ns_nagios',
-  parameters     => {
-    'ns'         => 'infrastructure_alerting',
-  },
-  metadata       => {
-    'migration-threshold' => '3',
-    'failure-timeout'     => '120',
-  },
-  operations     => {
-    'monitor' => {
-      'interval' => '30',
-      'timeout'  => '60'
+  # Nagios resources for Pacemaker
+  pacemaker_wrappers::service { 'nagios3':
+    primitive_type => 'ocf-ns_nagios',
+    parameters     => {
+      'ns'         => 'infrastructure_alerting',
     },
-    'start'   => {
-      'timeout' => '60'
+    metadata       => {
+      'migration-threshold' => '3',
+      'failure-timeout'     => '120',
     },
-    'stop'    => {
-      'timeout' => '60'
+    operations     => {
+      'monitor' => {
+        'interval' => '30',
+        'timeout'  => '60'
+      },
+      'start'   => {
+        'timeout' => '60'
+      },
+      'stop'    => {
+        'timeout' => '60'
+      },
     },
-  },
-  prefix         => false,
-  use_handler    => false,
-  require        => [File['ocf-ns_nagios'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting']],
-}
+    prefix         => false,
+    use_handler    => false,
+    require        => [File['ocf-ns_nagios'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting']],
+  }
 
-cs_rsc_colocation { 'infrastructure_alerting_vip-with-nagios':
-  ensure     => present,
-  score      => 'INFINITY',
-  primitives => [
-    'vip__infrastructure_alerting_mgmt_vip',
-    'nagios3'
-  ],
-  require    => Cs_resource['nagios3'],
+  cs_rsc_colocation { 'infrastructure_alerting_vip-with-nagios':
+    ensure     => present,
+    score      => 'INFINITY',
+    primitives => [
+      'vip__infrastructure_alerting_mgmt_vip',
+      'nagios3'
+    ],
+    require    => Cs_resource['nagios3'],
+  }
+} else {
+  # Apache2 resources for Pacemaker
+  pacemaker::service { 'apache2':
+    primitive_type   => 'ocf-ns_apache',
+    parameters       => {
+      'ns'           => 'infrastructure_alerting',
+      'status_url'   => 'http://localhost:8001/server-status',
+    },
+    complex_metadata => {
+      'migration-threshold' => '3',
+      'failure-timeout'     => '120',
+    },
+    operations       => {
+      'monitor' => {
+        'interval' => '30',
+        'timeout'  => '60'
+      },
+      'start'   => {
+        'timeout' => '60'
+      },
+      'stop'    => {
+        'timeout' => '60'
+      },
+    },
+    prefix           => false,
+    use_handler      => false,
+    require          => [File['ocf-ns_apache'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting']],
+  }
+
+  pcmk_colocation { 'infrastructure_alerting_vip-with-apache2':
+    ensure  => present,
+    score   => 'INFINITY',
+    first   => 'vip__infrastructure_alerting_mgmt_vip',
+    second  => 'apache2',
+    require => Pacemaker::Service['apache2'],
+  }
+
+  # Nagios resources for Pacemaker
+  pacemaker::service { 'nagios3':
+    primitive_type   => 'ocf-ns_nagios',
+    parameters       => {
+      'ns'           => 'infrastructure_alerting',
+    },
+    complex_metadata => {
+      'migration-threshold' => '3',
+      'failure-timeout'     => '120',
+    },
+    operations       => {
+      'monitor' => {
+        'interval' => '30',
+        'timeout'  => '60'
+      },
+      'start'   => {
+        'timeout' => '60'
+      },
+      'stop'    => {
+        'timeout' => '60'
+      },
+    },
+    prefix           => false,
+    use_handler      => false,
+    require          => [File['ocf-ns_nagios'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting']],
+  }
+
+  pcmk_colocation { 'infrastructure_alerting_vip-with-nagios':
+    ensure  => present,
+    score   => 'INFINITY',
+    first   => 'vip__infrastructure_alerting_mgmt_vip',
+    second  => 'nagios3',
+    require => Pacemaker::Service['nagios3'],
+  }
 }
 
 class { 'lma_infra_alerting::nagios::contact':
@@ -195,9 +269,8 @@ if $lma_collector['node_cluster_alarms'] {
 # See https://bugs.launchpad.net/lma-toolchain/+bug/1532869 for details.
 $private_network = false
 
-$nodes = hiera('nodes', {})
 class { 'lma_infra_alerting::nagios::hosts':
-  hosts                  => $nodes,
+  hosts                  => hiera('nodes', {}),
   host_name_key          => 'name',
   host_address_key       => 'internal_address',
   role_key               => 'role',
@@ -214,19 +287,14 @@ class { 'lma_infra_alerting::nagios::hosts':
   require                => Class['lma_infra_alerting'],
 }
 
-$influxdb_nodes = concat(
-  filter_nodes($nodes, 'role', 'influxdb_grafana'),
-  filter_nodes($nodes, 'role', 'primary-influxdb_grafana')
-)
-$es_kibana_nodes = concat(
-  filter_nodes($nodes, 'role', 'elasticsearch_kibana'),
-  filter_nodes($nodes, 'role', 'primary-elasticsearch_kibana')
-)
+$network_metadata  = hiera_hash('network_metadata')
+$influxdb_nodes = get_nodes_hash_by_roles($network_metadata, ['influxdb_grafana', 'primary-influxdb_grafana'])
+$es_kibana_nodes = get_nodes_hash_by_roles($network_metadata, ['elasticsearch_kibana', 'primary-elasticsearch_kibana'])
 
 # Configure Grafana and InfluxDB checks
 if ! empty($influxdb_nodes){
   $grafana_params = parseyaml(
-    inline_template("<%= a={}; @influxdb_nodes.each { |node| a.update({\"Grafana_#{node['name']}\" => {'host_name' => node['name'], 'service_description' => 'Grafana'}})}; a.to_yaml %>")
+    inline_template("<%= a={}; @influxdb_nodes.each { |node, values| a.update({\"Grafana_#{values['name']}\" => {'host_name' => values['name'], 'service_description' => 'Grafana'}})}; a.to_yaml %>")
   )
   $grafana_defaults = {
     port                       => $lma_infra_alerting::params::grafana_port,
@@ -238,7 +306,7 @@ if ! empty($influxdb_nodes){
   create_resources(lma_infra_alerting::nagios::check_http, $grafana_params, $grafana_defaults)
 
   $influxdb_params = parseyaml(
-    inline_template("<%= a={}; @influxdb_nodes.each { |node| a.update({\"InfluxDB_#{node['name']}\" => {'host_name' => node['name'], 'service_description' => 'InfluxDB'}})}; a.to_yaml %>")
+    inline_template("<%= a={}; @influxdb_nodes.each { |node, values| a.update({\"InfluxDB_#{values['name']}\" => {'host_name' => values['name'], 'service_description' => 'InfluxDB'}})}; a.to_yaml %>")
   )
   $influxdb_defaults = {
     port                       => $lma_infra_alerting::params::influxdb_port,
@@ -254,7 +322,7 @@ if ! empty($influxdb_nodes){
 # Configure Elasticsearch and Kibana checks
 if ! empty($es_kibana_nodes){
   $kibana_params = parseyaml(
-    inline_template("<%= a={}; @es_kibana_nodes.each { |node| a.update({\"Kibana_#{node['name']}\" => {'host_name' => node['name'], 'service_description' => 'Kibana'}})}; a.to_yaml %>")
+    inline_template("<%= a={}; @es_kibana_nodes.each { |node, values| a.update({\"Kibana_#{values['name']}\" => {'host_name' => values['name'], 'service_description' => 'Kibana'}})}; a.to_yaml %>")
   )
   $kibana_defaults = {
     port                       => $lma_infra_alerting::params::kibana_port,
@@ -266,7 +334,7 @@ if ! empty($es_kibana_nodes){
   create_resources(lma_infra_alerting::nagios::check_http, $kibana_params, $kibana_defaults)
 
   $es_params = parseyaml(
-    inline_template("<%= a={}; @es_kibana_nodes.each { |node| a.update({\"Elasticsearch_#{node['name']}\" => {'host_name' => node['name'], 'service_description' => 'Elasticsearch'}})}; a.to_yaml %>")
+    inline_template("<%= a={}; @es_kibana_nodes.each { |node, values| a.update({\"Elasticsearch_#{values['name']}\" => {'host_name' => values['name'], 'service_description' => 'Elasticsearch'}})}; a.to_yaml %>")
   )
   $es_defaults = {
     port                       => $lma_infra_alerting::params::elasticserach_port,
