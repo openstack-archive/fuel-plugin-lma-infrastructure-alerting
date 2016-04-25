@@ -24,11 +24,11 @@ download_packages \
     http://mirrors.kernel.org/ubuntu/pool/main/n/nagios-plugins/nagios-plugins-common_1.5-3ubuntu1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/n/nagios-plugins/nagios-plugins-basic_1.5-3ubuntu1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/a/apache2/apache2-utils_2.4.7-1ubuntu4.5_amd64.deb\
-    http://mirrors.kernel.org/ubuntu/pool/main/p/php5/libapache2-mod-php5_5.5.9+dfsg-1ubuntu4.14_amd64.deb \
-    http://mirrors.kernel.org/ubuntu/pool/main/p/php5/php5-common_5.5.9+dfsg-1ubuntu4.14_amd64.deb \
+    http://mirrors.kernel.org/ubuntu/pool/main/p/php5/libapache2-mod-php5_5.5.9+dfsg-1ubuntu4.16_amd64.deb \
+    http://mirrors.kernel.org/ubuntu/pool/main/p/php5/php5-common_5.5.9+dfsg-1ubuntu4.16_amd64.deb \
     http://mirrors.kernel.org/ubuntu/pool/main/p/php-json/php5-json_1.3.2-2build1_amd64.deb \
-    http://mirrors.kernel.org/ubuntu/pool/main/p/php5/php5-cli_5.5.9+dfsg-1ubuntu4.14_amd64.deb \
-    http://mirrors.kernel.org/ubuntu/pool/main/p/php5/php5-readline_5.5.9+dfsg-1ubuntu4.14_amd64.deb \
+    http://mirrors.kernel.org/ubuntu/pool/main/p/php5/php5-cli_5.5.9+dfsg-1ubuntu4.16_amd64.deb \
+    http://mirrors.kernel.org/ubuntu/pool/main/p/php5/php5-readline_5.5.9+dfsg-1ubuntu4.16_amd64.deb \
     http://mirrors.kernel.org/ubuntu/pool/main/b/bsd-mailx/bsd-mailx_8.1.2-0.20131005cvs-1ubuntu0.14.04.1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/libn/libnet-snmp-perl/libnet-snmp-perl_6.0.1-2_all.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/n/nagios-plugins/nagios-plugins-standard_1.5-3ubuntu1_amd64.deb\
