@@ -13,20 +13,20 @@ Catalog, you need to follow these steps:
 
 2. Copy the RPM file to the Fuel Master node::
 
-    [root@home ~]# scp lma_infrastructure_alerting-0.9-0.9.0-0.noarch.rpm \
+    [root@home ~]# scp lma_infrastructure_alerting-0.10-0.10.0-0.noarch.rpm \
     root@<Fuel Master node IP address>:
 
 3. Install the plugin using the `Fuel CLI <http://docs.mirantis.com/openstack/fuel/fuel-8.0/user-guide.html#using-fuel-cli>`_::
 
     [root@fuel ~]# fuel plugins --install \
-    lma_infrastructure_alerting-0.9-0.9.0-0.noarch.rpm
+    lma_infrastructure_alerting-0.10-0.10.0-0.noarch.rpm
 
 4. Verify that the plugin is installed correctly::
 
     [root@fuel ~]# fuel plugins --list
     id | name                        | version | package_version
     ---|-----------------------------|---------|----------------
-    1  | lma_infrastructure_alerting | 0.9.0   | 4.0.0
+    1  | lma_infrastructure_alerting | 0.10.0   | 4.0.0
 
 LMA Infrastructure Alerting Fuel Plugin install from source
 -----------------------------------------------------------
