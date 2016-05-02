@@ -271,8 +271,10 @@ if $lma_collector['node_cluster_alarms'] {
 # See https://bugs.launchpad.net/lma-toolchain/+bug/1532869 for details.
 $private_network = false
 
+$network_metadata  = hiera_hash('network_metadata', {})
+
 class { 'lma_infra_alerting::nagios::hosts':
-  hosts                  => hiera('nodes', {}),
+  hosts                  => $network_metadata['nodes'],
   host_name_key          => 'name',
   host_address_key       => 'internal_address',
   role_key               => 'role',
@@ -289,7 +291,6 @@ class { 'lma_infra_alerting::nagios::hosts':
   require                => Class['lma_infra_alerting'],
 }
 
-$network_metadata  = hiera_hash('network_metadata')
 $influxdb_nodes = get_nodes_hash_by_roles($network_metadata, ['influxdb_grafana', 'primary-influxdb_grafana'])
 $es_kibana_nodes = get_nodes_hash_by_roles($network_metadata, ['elasticsearch_kibana', 'primary-elasticsearch_kibana'])
 
