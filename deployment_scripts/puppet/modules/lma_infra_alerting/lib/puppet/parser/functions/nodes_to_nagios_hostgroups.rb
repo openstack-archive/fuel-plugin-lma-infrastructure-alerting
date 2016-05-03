@@ -25,8 +25,8 @@ It expects 3 arguments:
 *Examples:*
 
   $hash = nodes_to_nagios_hostgroups(
-    [{'name' => 'node-1', role => 'controller'}, {'name' => 'node-2', role => 'controller'}],
-    'name', 'role'
+    [{'name' => 'node-1', 'node_roles' => ['controller']}, {'name' => 'node-2', node_roles => ['controller']}],
+    'name', 'node_roles'
   )
 
 Would return:
@@ -47,13 +47,13 @@ Would return:
     result = {}
     roles = Set.new([])
     nodes.each do |node|
-        roles << node[role_key]
+        roles.merge(node[role_key])
     end
 
     roles.each do |role|
         result[role] = {
             'properties' => {
-                'members' => nodes.select{|x| x[role_key] == role}.collect{|x| x[name_key]}.sort().join(','),
+                'members' => nodes.select{|x| x[role_key].include?(role)}.collect{|x| x[name_key]}.sort().join(','),
             }
         }
     end
