@@ -16,9 +16,10 @@
 # Configure virtual hosts for monitoring the clusters of global services and nodes
 #
 class lma_infra_alerting (
+  $password,
+  $http_port = $lma_infra_alerting::params::http_port,
   $openstack_management_vip = undef,
   $openstack_deployment_name = '',
-  $password = $lma_infra_alerting::params::nagios_http_password,
   $global_clusters = [],
   $node_clusters = [],
 ) inherits lma_infra_alerting::params {
@@ -34,7 +35,9 @@ class lma_infra_alerting (
 
   # Install and configure nagios server
   class { 'lma_infra_alerting::nagios':
+    http_user     => $lma_infra_alerting::params::http_user,
     http_password => $password,
+    http_port     => $http_port,
   }
 
   if ! empty($global_clusters) {
