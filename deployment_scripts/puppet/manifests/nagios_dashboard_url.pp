@@ -17,9 +17,10 @@ notice('fuel-plugin-lma-infrastructure-alerting: nagios_dashboard_url.pp')
 $deployment_id = hiera('deployment_id')
 $master_ip = hiera('master_ip')
 $vip = hiera('lma::infrastructure_alerting::vip')
+$port = hiera('lma::infrastructure_alerting::apache_port')
 $nagios_link_data = "{\"title\":\"Nagios\",\
 \"description\":\"Dashboard for visualizing alerts\",\
-\"url\":\"http://${vip}:8001/\"}"
+\"url\":\"http://${vip}:${port}/\"}"
 $nagios_link_created_file = '/var/cache/nagios_link_created'
 
 exec { 'notify_nagios_url':
