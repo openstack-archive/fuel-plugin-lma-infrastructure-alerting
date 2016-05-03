@@ -20,17 +20,7 @@ describe 'afds_to_nagios_services' do
      "internal_address" => "10.109.2.5",
      "internal_netmask" => "255.255.255.0",
      "name" => "node-1",
-     "role" => "influxdb_grafana",
-     "storage_address" => "10.109.4.2",
-     "storage_netmask" => "255.255.255.0",
-     "swift_zone" => "1",
-     "uid" => "1",
-     "user_node_name" => "slave-03_alerting"},
-    {"fqdn" => "node-1.test.domain.local",
-     "internal_address" => "10.109.2.5",
-     "internal_netmask" => "255.255.255.0",
-     "name" => "node-1",
-     "role" => "infrastructure_alerting",
+     "node_roles" => ["influxdb_grafana", "infrastructure_alerting"],
      "storage_address" => "10.109.4.2",
      "storage_netmask" => "255.255.255.0",
      "swift_zone" => "1",
@@ -42,7 +32,7 @@ describe 'afds_to_nagios_services' do
      "name" => "node-3",
      "public_address" => "10.109.1.4",
      "public_netmask" => "255.255.255.0",
-     "role" => "primary-controller",
+     "node_roles" => ["primary-controller"],
      "storage_address" => "10.109.4.3",
      "storage_netmask" => "255.255.255.0",
      "swift_zone" => "3",
@@ -52,7 +42,7 @@ describe 'afds_to_nagios_services' do
      "internal_address" => "10.109.2.7",
      "internal_netmask" => "255.255.255.0",
      "name" => "node-4",
-     "role" => "elasticsearch_kibana",
+     "node_roles" => ["elasticsearch_kibana"],
      "storage_address" => "10.109.4.5",
      "storage_netmask" => "255.255.255.0",
      "swift_zone" => "4",
@@ -62,22 +52,12 @@ describe 'afds_to_nagios_services' do
      "internal_address" => "10.109.2.6",
      "internal_netmask" => "255.255.255.0",
      "name" => "node-2",
-     "role" => "cinder",
+     "node_roles" => ["cinder", "compute"],
      "storage_address" => "10.109.4.4",
      "storage_netmask" => "255.255.255.0",
      "swift_zone" => "2",
      "uid" => "2",
      "user_node_name" => "slave-02_compute_cinder"},
-    {"fqdn" => "node-2.test.domain.local",
-     "internal_address" => "10.109.2.6",
-     "internal_netmask" => "255.255.255.0",
-     "name" => "node-2",
-     "role" => "compute",
-     "storage_address" => "10.109.4.4",
-     "storage_netmask" => "255.255.255.0",
-     "swift_zone" => "2",
-     "uid" => "2",
-     "user_node_name" => "slave-02_compute_cinder"}
     ]
 
     role_to_cluster = {
@@ -99,8 +79,8 @@ describe 'afds_to_nagios_services' do
             "cpu" => ["cpu-critical-default"],
             "fs" => ["fs-critical", "fs-warning"]}
     }
-    describe 'with argumentss' do
-        it { should run.with_params(all_nodes, 'name', 'role', role_to_cluster, afds).and_return(
+    describe 'with arguments' do
+        it { should run.with_params(all_nodes, 'name', 'node_roles', role_to_cluster, afds).and_return(
            {"default checks for node-1" => {
                 "hostname" => "node-1",
                 "services" => {
