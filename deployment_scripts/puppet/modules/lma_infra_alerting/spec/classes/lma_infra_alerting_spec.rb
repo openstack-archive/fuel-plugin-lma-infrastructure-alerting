@@ -23,7 +23,8 @@ describe 'lma_infra_alerting' do
     describe 'with global and node clusters' do
         let(:params) do
             {:global_clusters => ['nova', 'cinder', 'keystone'],
-             :node_clusters => ['controller', 'compute', 'storage']}
+             :node_clusters => ['controller', 'compute', 'storage'],
+             :password => 'secrete'}
         end
         it { should contain_class('nagios') }
         it { should create_class('nagios::cgi') }

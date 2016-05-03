@@ -14,21 +14,36 @@
 
 notice('fuel-plugin-lma-infrastructure-alerting: hiera.pp')
 
-$hiera_dir        = '/etc/hiera/plugins'
-$plugin_name      = 'lma_infrastructure_alerting'
+# Initialize network-related variables
+$network_scheme   = hiera('network_scheme')
 $network_metadata = hiera('network_metadata')
-$alerting_vip     = $network_metadata['vips']['infrastructure_alerting_mgmt_vip']['ipaddr']
+prepare_network_config($network_scheme)
 
-$calculated_content = inline_template('
----
+$hiera_file       = '/etc/hiera/plugins/lma_infrastructure_alerting.yaml'
+$alerting_vip     = $network_metadata['vips']['infrastructure_alerting_mgmt_vip']['ipaddr']
+$listen_address  = get_network_role_property('infrastructure_alerting', 'ipaddr')
+
+$kibana_port = hiera('lma::elasticsearch::kibana_port', 80)
+$es_port = hiera('lma::elasticsearch::rest_port', 9200)
+$grafana_port = hiera('lma::influxdb::grafana_port', 8000)
+$influxdb_port = hiera('lma::influxdb::influxdb_port', 8086)
+
+$calculated_content = inline_template('---
 lma::corosync_roles:
   - infrastructure_alerting
   - primary-infrastructure_alerting
+lma::infrastructure_alerting::listen_address: <%= @listen_address %>
+lma::infrastructure_alerting::apache_port: 8001
 lma::infrastructure_alerting::vip: <%= @alerting_vip %>
 lma::infrastructure_alerting::vip_ns: infrastructure_alerting
+lma::infrastructure_alerting::kibana_port: <%= @kibana_port %>
+lma::infrastructure_alerting::es_port: <%= @es_port %>
+lma::infrastructure_alerting::grafana_port: <%= @grafana_port %>
+lma::infrastructure_alerting::influxdb_port: <%= @influxdb_port %>
+lma::infrastructure_alerting::cluster_ip: 127.0.0.1
 ')
 
-file { "${hiera_dir}/${plugin_name}.yaml":
+file { $hiera_file:
   ensure  => file,
   content => $calculated_content,
 }
