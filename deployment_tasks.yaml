@@ -39,7 +39,7 @@
 - id: lma-alerting-firewall
   type: puppet
   groups: [primary-infrastructure_alerting, infrastructure_alerting]
-  requires: [netconfig]
+  requires: [netconfig, lma-alerting-hiera]
   required_for: [deploy_end]
   parameters:
     puppet_manifest: "puppet/manifests/firewall.pp"
