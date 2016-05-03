@@ -26,8 +26,8 @@ It expects 5 arguments:
 *Examples:*
 
   $hash = afds_to_nagios_services(
-    [{'name' => 'node-1', role => 'primary-controller'}, {'name' => 'node-2', role => 'controller'}],
-    'name', 'role',
+    [{'name' => 'node-1', node_roles => ['primary-controller']}, {'name' => 'node-2', node_roles => ['controller']}],
+    'name', 'node_roles',
     {'control_nodes' => ['primary-controller', 'controller']},
     {'control_nodes' => {'cpu' => ['alarm1'], 'fs' => ['alarm1']}}
   )
@@ -66,7 +66,7 @@ Would return:
             node_clusters[node_name] = Set.new([])
         end
         role_to_cluster.each do |cluster, roles|
-            node_clusters[node_name] << cluster if roles.include?(node[role_key])
+            node_clusters[node_name] << cluster if (roles & node[role_key]).length > 0
         end
     end
 

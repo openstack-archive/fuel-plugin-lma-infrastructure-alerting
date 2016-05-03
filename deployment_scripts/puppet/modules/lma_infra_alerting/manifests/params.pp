@@ -19,7 +19,6 @@ class lma_infra_alerting::params {
   ## Default configuration of Nagios
   #
   $nagios_http_user = 'nagiosadmin'
-  $nagios_http_password = ''
   $nagios_http_port = 8001
   $nagios_cmd_check_ssh = 'check_ssh'
 
