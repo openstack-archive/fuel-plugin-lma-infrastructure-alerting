@@ -20,19 +20,21 @@ Returns a hash that can be used to create/update nagios::host resources.
 It expects 5 arguments:
 1. An array of nodes, each node being described as a hash.
 2. The key containing the node's name.
-3. The key containing the node's IP address.
+3. The key containing the network role to resolve node's IP address.
 4. The list of keys that will be used to build the node's display name.
 5. The list of keys that will be used to build the node's custom variables.
 
-*Examples:*
+*Example:*
+
   $hash = nodes_to_nagios_hostgroups(
-    [{'name' => 'node-1', role => 'controller', 'internal_address' => '10.20.0.5', 'user_node_name' => 'foo'},
-     {'name' => 'node-2', role => 'compute', 'internal_address' => '10.20.0.4', 'storage_address' => '10.20.2.4', 'user_node_name' => 'bar'},
-     {'name' => 'node-2', role => 'cinder', 'internal_address' => '10.20.0.4', 'storage_address' => '10.20.2.4', 'user_node_name' => 'bar'}],
+    [{'name' => 'node-1', node_roles => ['controller'],
+      'network_roles' => {'management' => '10.20.0.5'}, 'user_node_name' => 'foo', 'uid' => '1'},
+     {'name' => 'node-2', 'node_roles' => ['compute', 'cinder'],
+      'network_roles' => {'management' => '10.20.0.4', 'storage' => '10.20.2.4'}, 'user_node_name' => 'bar', 'uid' => '2'},
     'name',
-    'internal_address',
+    'management',
     ['name', 'user_node_name'],
-    ['storage_address']
+    ['uid']
   )
 
 Would return:
@@ -45,7 +47,7 @@ Would return:
         'alias' => 'node-1_foo'
       },
       'custom_vars' => {
-        '_storage_address' => ''
+        '_uid' => '1'
       }
     },
     'node-2' => {
@@ -55,7 +57,7 @@ Would return:
         'alias' => 'node-2_bar'
       },
       'custom_vars' => {
-        '_storage_address' => '10.20.2.4'
+        '_uid' => '2'
       }
     },
   }
@@ -74,38 +76,24 @@ Would return:
     custom_vars_keys = arguments[4] or []
 
     result = {}
-    custom_vars = {}
 
     nodes.each do |node|
         node_name = node[name_key]
 
-        unless result.has_key?(node_name) then
-            display_name = display_name_keys.collect{ |x| node[x] }.join('_')
-            result[node_name] = {
-                'properties' => {
-                    'address' => node[ip_key],
-                    'display_name' => display_name,
-                    'alias' => display_name,
-                },
-                'custom_vars' => {}
-            }
-            custom_vars[node_name] = {}
-            custom_vars_keys.each do |x|
-                custom_vars[node_name][x] = Set.new([node[x] || ''])
-            end
-        else
-            custom_vars_keys.each do |x|
-                custom_vars[node_name][x] << node[x] if node[x]
-            end
+        display_name = display_name_keys.collect{ |x| node[x] }.join('_')
+        custom_vars = {}
+        custom_vars_keys.each do |x|
+            custom_vars["_#{x}"] = node[x].is_a?(Array) ? node[x].join(',') : node[x].to_s()
         end
-    end
 
-    result.each_key do |node_name|
-        custom_vars[node_name].each_pair do |k,v|
-            unless v.empty? then
-                result[node_name]['custom_vars']["_#{k}"] = v.to_a.join(',')
-            end
-        end
+        result[node_name] = {
+            'properties' => {
+                'address' => node['network_roles'][ip_key],
+                'display_name' => display_name,
+                'alias' => display_name,
+            },
+            'custom_vars' => custom_vars
+        }
     end
 
     return result
