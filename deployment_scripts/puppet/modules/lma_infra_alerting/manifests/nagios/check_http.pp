@@ -19,8 +19,7 @@
 # === Parameters
 # host_name: The nagios host name
 # service_description: (optional) the service check name (default to $title)
-# custom_var_address: (optional) the name of the custom variable used for the
-#                     IP address, if not defined the address of the host is used.
+# custom_address: (optional) the IP address, if not defined the address of the host is used.
 # port: the HTTP port
 # url: URL to GET
 # string_expected_*: string to expect in the response
@@ -31,7 +30,7 @@ define lma_infra_alerting::nagios::check_http(
   $host_name = undef,
   $contact_group = $lma_infra_alerting::params::nagios_contactgroup,
   $service_description = undef,
-  $custom_var_address = undef,
+  $custom_address = undef,
   $port = undef,
   $url = '/',
   $string_expected_in_status = '200 OK',
@@ -65,10 +64,9 @@ define lma_infra_alerting::nagios::check_http(
     $expect_in_headers_option = ''
   }
 
-  if $custom_var_address {
-    $up_var= upcase($custom_var_address)
-    $hostaddress = "\$_HOST${up_var}\$"
-    $check_command = "check_http_${title}_${custom_var_address}"
+  if $custom_address {
+    $hostaddress = $custom_address
+    $check_command = join(["check_http_${title}_" + regsubst($custom_address, '[^\w]', '_', 'G')], '')
   } else {
     $hostaddress = '$HOSTADDRESS$'
     $check_command = "check_http_${title}"

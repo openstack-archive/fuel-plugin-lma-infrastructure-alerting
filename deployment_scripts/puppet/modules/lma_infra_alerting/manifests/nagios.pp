@@ -18,11 +18,12 @@
 #
 
 class lma_infra_alerting::nagios (
-  $http_user = $lma_infra_alerting::params::nagios_http_user,
-  $http_password = $lma_infra_alerting::params::nagios_http_password,
-  $http_port = $lma_infra_alerting::params::nagios_http_port,
-) inherits lma_infra_alerting::params {
+  $http_password,
+  $http_user,
+  $http_port
+) {
 
+  include lma_infra_alerting::params
   include nagios::params
 
   class { '::nagios':
