@@ -32,14 +32,15 @@ class lma_infra_alerting::nagios::hosts (
   $role_key = undef,
   $private_network = false,
   $storage_network = false,
-  $node_cluster_roles = [],
-  $node_cluster_alarms = [],
+  $node_cluster_roles = {},
+  $node_cluster_alarms = {},
 ){
 
   include lma_infra_alerting::params
 
   validate_string($host_name_key, $host_address_key)
   validate_array($hosts, $host_display_name_keys, $host_custom_vars_keys)
+  validate_hash($node_cluster_roles, $node_cluster_alarms)
 
   $nagios_hosts = nodes_to_nagios_hosts($hosts,
                                         $host_name_key,

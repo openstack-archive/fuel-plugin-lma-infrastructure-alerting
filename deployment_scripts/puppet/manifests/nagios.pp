@@ -180,12 +180,12 @@ class { 'lma_infra_alerting::nagios::contact':
 if $lma_collector['node_cluster_roles'] {
   $node_cluster_roles = $lma_collector['node_cluster_roles']
 } else {
-  $node_cluster_roles = []
+  $node_cluster_roles = {}
 }
 if $lma_collector['node_cluster_alarms'] {
   $node_cluster_alarms = $lma_collector['node_cluster_alarms']
 } else {
-  $node_cluster_alarms = []
+  $node_cluster_alarms = {}
 }
 
 # Since MOS 8, the private (or mesh) network addresses aren't present in the
