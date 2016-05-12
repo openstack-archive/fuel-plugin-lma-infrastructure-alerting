@@ -22,7 +22,16 @@ class nagios::cgi (
   $htpasswd_file = $nagios::params::cgi_htpasswd_file,
   $http_port = $nagios::params::cgi_http_port,
   $vhost_listen_ip = '*',
+  $nagios_command_file = $nagios::params::command_file,
+  $wsgi_process_service_checks_location = '/status',
+  $wsgi_process_service_checks_script = '/usr/local/bin/nagios-process-service-checks.wsgi',
+  $wsgi_processes = 3,
+  $wsgi_threads = 15,
+
 ) inherits nagios::params {
+
+  validate_integer($wsgi_processes)
+  validate_integer($wsgi_threads)
 
   ## Configure apache
   class { 'apache':
@@ -32,7 +41,7 @@ class nagios::cgi (
     default_vhost       => false,
     # prerequists for Nagios CGI
     mpm_module          => 'prefork',
-    default_mods        => ['php', 'cgi', 'authn_file', 'auth_basic', 'authz_user'],
+    default_mods        => ['php', 'cgi', 'authn_file', 'auth_basic', 'authz_user', 'wsgi'],
     # allow to use the Puppet user resource later in the manifest
     manage_group        => false,
     manage_user         => false,
@@ -41,8 +50,16 @@ class nagios::cgi (
   apache::listen { $http_port: }
 
   # Template uses these variables: http_port, vhost_listen_ip, cgi_htpasswd_file
+  #
   apache::custom_config { 'nagios':
     content => template("nagios/${nagios::params::apache_vhost_config_tpl}"),
+  }
+
+  file { 'wsgi_process_service_checks_script':
+    ensure => present,
+    path   => $wsgi_process_service_checks_script,
+    source => 'puppet:///modules/nagios/process-service-checks.wsgi',
+    notify => Class['apache::service'],
   }
 
   $apache_user = $apache::user
