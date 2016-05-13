@@ -45,7 +45,7 @@ if [ $result -eq 1 ]; then
   if [ -d "$CONFIG_DIR" ]; then
     rm -f "$CONFIG_DIR"/"$PREFIX_FILENAMES"*"$EXTENSION_FILENAMES"
   fi
-  $PUPPET apply --modulepath="$PLUGIN_PUPPET_DIR/modules/" "$PLUGIN_PUPPET_DIR/manifests/$MANIFEST"
+  $PUPPET apply --modulepath="$PLUGIN_PUPPET_DIR/modules/:/etc/puppet/modules" "$PLUGIN_PUPPET_DIR/manifests/$MANIFEST"
   set +e
   md5sum --status -c $CURRENT_CHECK
   result=$?
