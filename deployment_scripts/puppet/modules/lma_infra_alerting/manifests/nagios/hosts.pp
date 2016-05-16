@@ -26,25 +26,23 @@ class lma_infra_alerting::nagios::hosts (
   $ensure = present,
   $hosts = [],
   $host_name_key = undef,
-  $host_address_key = undef,
+  $network_role_key = undef,
   $host_display_name_keys = [],
   $host_custom_vars_keys = [],
   $role_key = undef,
-  $private_network = false,
-  $storage_network = false,
   $node_cluster_roles = {},
   $node_cluster_alarms = {},
 ){
 
   include lma_infra_alerting::params
 
-  validate_string($host_name_key, $host_address_key)
+  validate_string($host_name_key, $network_role_key)
   validate_array($hosts, $host_display_name_keys, $host_custom_vars_keys)
   validate_hash($node_cluster_roles, $node_cluster_alarms)
 
   $nagios_hosts = nodes_to_nagios_hosts($hosts,
                                         $host_name_key,
-                                        $host_address_key,
+                                        $network_role_key,
                                         $host_display_name_keys,
                                         $host_custom_vars_keys)
   $host_defaults = {
@@ -77,23 +75,4 @@ class lma_infra_alerting::nagios::hosts (
                                           $node_cluster_alarms)
   $afd_service_defaults = {'notifications_enabled' => 0}
   create_resources(lma_infra_alerting::nagios::services, $afd_services, $afd_service_defaults)
-
-  # Configure SSH checks
-  lma_infra_alerting::nagios::check_ssh { 'management':
-    hostgroups => keys($nagios_hostgroups),
-  }
-
-  if $storage_network {
-    lma_infra_alerting::nagios::check_ssh { 'storage':
-      hostgroups         => keys($nagios_hostgroups),
-      custom_var_address => 'storage_address',
-    }
-  }
-
-  if $private_network {
-    lma_infra_alerting::nagios::check_ssh { 'private':
-      hostgroups         => keys($nagios_hostgroups),
-      custom_var_address => 'private_address',
-    }
-  }
 }

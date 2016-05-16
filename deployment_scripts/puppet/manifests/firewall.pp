@@ -52,8 +52,7 @@ firewall { '114 corosync-input':
 }
 
 firewall { '300 nagios cgi':
-  # Important: it must match with $lma_infra_alerting::params::nagios_http_port
-  port   => 8001,
+  port   => hiera('lma::infrastructure_alerting::apache_port'),
   proto  => 'tcp',
   action => 'accept',
 }
