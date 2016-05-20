@@ -114,7 +114,7 @@ The *LMA Infrastructure Alerting Plugin* configures Nagios for all the
 hosts and services that have been deployed in the environment. The alarms (or
 service checks in Nagios terms) are created in **passive mode** as
 they are received from the *LMA Collector* and *Aggregator* (see the `LMA
-Collector documentation <http://fuel-plugin-lma-collector.readthedocs.org/>`_
+Collector documentation <http://fuel-plugin-lma-collector.readthedocs.io/>`_
 for more details).
 
 .. note:: The alert notifications for the nodes and clusters of nodes are
@@ -312,5 +312,5 @@ the *LMA Collector*. This may be due to different problems:
   * One or several alarm rules are misconfigured.
 
 To remedy to the above situations, follow the `troubleshooting tips
-<http://fuel-plugin-lma-collector.readthedocs.org/en/latest/configuration.html#troubleshooting>`_
+<http://fuel-plugin-lma-collector.readthedocs.io/en/latest/configuration.html#troubleshooting>`_
 of the *LMA Collector Plugin User Guide*.
