@@ -9,30 +9,34 @@ CONCAT_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/puppetlabs-concat-1
 STDLIB_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/puppetlabs-stdlib-4.7.0.tar.gz"
 FIREWALL_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/puppetlabs-firewall-1.7.0.tar.gz"
 
+NAGIOS_VERSION="1.5-3ubuntu1"
+PHP5_VERSION="5.5.9+dfsg-1ubuntu4.17"
+SAMBA_VERSION="4.3.9+dfsg-0ubuntu0.14.04.1"
+
 download_packages \
     http://mirrors.kernel.org/ubuntu/pool/main/t/talloc/libtalloc2_2.1.0-1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/t/tevent/libtevent0_0.9.19-1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/l/ldb/libldb1_1.1.16-1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/n/ntdb/libntdb1_1.0-2ubuntu1_amd64.deb\
-    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/libwbclient0_4.3.9+dfsg-0ubuntu0.14.04.1_amd64.deb \
+    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/libwbclient0_${SAMBA_VERSION}_amd64.deb \
     http://mirrors.kernel.org/ubuntu/pool/main/l/ldb/python-ldb_1.1.16-1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/t/talloc/python-talloc_2.1.0-1_amd64.deb\
-    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/samba-common-bin_4.3.9+dfsg-0ubuntu0.14.04.1_amd64.deb \
-    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/samba-libs_4.3.9+dfsg-0ubuntu0.14.04.1_amd64.deb \
-    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/libsmbclient_4.3.9+dfsg-0ubuntu0.14.04.1_amd64.deb \
-    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/smbclient_4.3.9+dfsg-0ubuntu0.14.04.1_amd64.deb \
-    http://mirrors.kernel.org/ubuntu/pool/main/n/nagios-plugins/nagios-plugins-common_1.5-3ubuntu1_amd64.deb\
-    http://mirrors.kernel.org/ubuntu/pool/main/n/nagios-plugins/nagios-plugins-basic_1.5-3ubuntu1_amd64.deb\
+    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/samba-common-bin_${SAMBA_VERSION}_amd64.deb \
+    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/samba-libs_${SAMBA_VERSION}_amd64.deb \
+    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/libsmbclient_${SAMBA_VERSION}_amd64.deb \
+    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/smbclient_${SAMBA_VERSION}_amd64.deb \
+    http://mirrors.kernel.org/ubuntu/pool/main/n/nagios-plugins/nagios-plugins-common_${NAGIOS_VERSION}_amd64.deb\
+    http://mirrors.kernel.org/ubuntu/pool/main/n/nagios-plugins/nagios-plugins-basic_${NAGIOS_VERSION}_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/a/apache2/apache2-utils_2.4.7-1ubuntu4.5_amd64.deb\
-    http://mirrors.kernel.org/ubuntu/pool/main/p/php5/libapache2-mod-php5_5.5.9+dfsg-1ubuntu4.16_amd64.deb \
-    http://mirrors.kernel.org/ubuntu/pool/main/p/php5/php5-common_5.5.9+dfsg-1ubuntu4.16_amd64.deb \
+    http://mirrors.kernel.org/ubuntu/pool/main/p/php5/libapache2-mod-php5_${PHP5_VERSION}_amd64.deb \
+    http://mirrors.kernel.org/ubuntu/pool/main/p/php5/php5-common_${PHP5_VERSION}_amd64.deb \
     http://mirrors.kernel.org/ubuntu/pool/main/p/php-json/php5-json_1.3.2-2build1_amd64.deb \
-    http://mirrors.kernel.org/ubuntu/pool/main/p/php5/php5-cli_5.5.9+dfsg-1ubuntu4.16_amd64.deb \
-    http://mirrors.kernel.org/ubuntu/pool/main/p/php5/php5-readline_5.5.9+dfsg-1ubuntu4.16_amd64.deb \
+    http://mirrors.kernel.org/ubuntu/pool/main/p/php5/php5-cli_${PHP5_VERSION}_amd64.deb \
+    http://mirrors.kernel.org/ubuntu/pool/main/p/php5/php5-readline_${PHP5_VERSION}_amd64.deb \
     http://mirrors.kernel.org/ubuntu/pool/main/b/bsd-mailx/bsd-mailx_8.1.2-0.20131005cvs-1ubuntu0.14.04.1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/libn/libnet-snmp-perl/libnet-snmp-perl_6.0.1-2_all.deb\
-    http://mirrors.kernel.org/ubuntu/pool/main/n/nagios-plugins/nagios-plugins-standard_1.5-3ubuntu1_amd64.deb\
-    http://mirrors.kernel.org/ubuntu/pool/main/n/nagios-plugins/nagios-plugins_1.5-3ubuntu1_all.deb\
+    http://mirrors.kernel.org/ubuntu/pool/main/n/nagios-plugins/nagios-plugins-standard_${NAGIOS_VERSION}_amd64.deb\
+    http://mirrors.kernel.org/ubuntu/pool/main/n/nagios-plugins/nagios-plugins_${NAGIOS_VERSION}_all.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/n/nagios-images/nagios-images_0.8_all.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/n/nagios3/nagios3-common_3.5.1-1ubuntu1_all.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/n/nagios3/nagios3-cgi_3.5.1-1ubuntu1_amd64.deb\
@@ -40,7 +44,7 @@ download_packages \
     http://mirrors.kernel.org/ubuntu/pool/main/n/nagios3/nagios3_3.5.1-1ubuntu1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/n/ntdb/python-ntdb_1.0-2ubuntu1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/t/tdb/python-tdb_1.2.12-1_amd64.deb\
-    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/python-samba_4.3.9+dfsg-0ubuntu0.14.04.1_amd64.deb \
+    http://mirrors.kernel.org/ubuntu/pool/main/s/samba/python-samba_${SAMBA_VERSION}_amd64.deb \
     http://mirrors.kernel.org/ubuntu/pool/main/w/whois/whois_5.1.1_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/universe/h/heirloom-mailx/heirloom-mailx_12.5-4_amd64.deb
 
