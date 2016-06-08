@@ -313,7 +313,7 @@ if ! empty($es_kibana_nodes){
   $kibana_defaults = {
     port                       => hiera('lma::infrastructure_alerting::kibana_port'),
     url                        => '/',
-    string_expected_in_content => 'Kibana 3',
+    string_expected_in_content => 'kibana',
     service_description        => 'Kibana',
     require                    => Class[lma_infra_alerting::nagios::hosts],
   }
@@ -323,7 +323,7 @@ if ! empty($es_kibana_nodes){
   $es_defaults = {
     port                       => hiera('lma::infrastructure_alerting::es_port'),
     url                        => '/',
-    string_expected_in_content => '"status" : 200',
+    string_expected_in_content => '"lucene_version"',
     service_description        => 'Elasticsearch',
     require                    => Class[lma_infra_alerting::nagios::hosts],
   }
