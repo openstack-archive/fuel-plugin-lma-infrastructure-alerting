@@ -88,6 +88,7 @@ system.
 Contributors
 ------------
 
+* Eric Lemoine <elemoine@mirantis.com>
 * Guillaume Thouvenin <gthouvenin@mirantis.com>
 * Patrick Petit <ppetit@mirantis.com>
 * Simon Pasquier <spasquier@mirantis.com>
