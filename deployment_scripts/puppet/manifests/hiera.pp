@@ -24,6 +24,28 @@ $alerting_vip    = $network_metadata['vips']['infrastructure_alerting_mgmt_vip']
 $alerting_ui_vip = $network_metadata['vips']['infrastructure_alerting_ui']['ipaddr']
 $listen_address  = get_network_role_property('infrastructure_alerting', 'ipaddr')
 
+$plugin             = hiera('lma_infrastructure_alerting')
+$tls_enabled        = $plugin['tls_enabled']
+$nagios_ui_hostname = $plugin['nagios_hostname']
+$nagios_ui_ssl_cert = $plugin['nagios_ssl_cert']
+$nagios_ui_ssl_cert_filename = '/etc/apache2/nagios_ui.pem'
+
+if $tls_enabled and $nagios_ui_ssl_cert != '' {
+  # TODO(scroiset): validate the certificate
+  file { $nagios_ui_ssl_cert_filename:
+    ensure  => present,
+    content => $nagios_ui_ssl_cert,
+    mode    => '0440',
+  }
+}
+
+if $tls_enabled {
+  $ui_scheme = 'https'
+} else {
+  $ui_scheme = 'http'
+}
+
+
 $kibana_port = hiera('lma::elasticsearch::kibana_port', 80)
 $es_port = hiera('lma::elasticsearch::rest_port', 9200)
 $grafana_port = hiera('lma::influxdb::grafana_port', 8000)
@@ -43,6 +65,12 @@ lma::infrastructure_alerting::es_port: <%= @es_port %>
 lma::infrastructure_alerting::grafana_port: <%= @grafana_port %>
 lma::infrastructure_alerting::influxdb_port: <%= @influxdb_port %>
 lma::infrastructure_alerting::cluster_ip: 127.0.0.1
+lma::infrastructure_alerting::nagios_ui:
+  vip: <%= @alerting_ui_vip %>
+  scheme: <%= @ui_scheme %>
+  tls_enabled: <%= @tls_enabled %>
+  hostname: <%= @nagios_ui_hostname %>
+  ssl_cert_filename: <%= nagios_ui_ssl_cert_filename %>
 ')
 
 file { $hiera_file:
