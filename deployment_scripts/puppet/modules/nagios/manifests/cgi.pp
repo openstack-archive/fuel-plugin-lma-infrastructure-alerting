@@ -23,15 +23,24 @@ class nagios::cgi (
   $password = $nagios::params::cgi_password,
   $htpasswd_file = $nagios::params::cgi_htpasswd_file,
   $http_port = $nagios::params::cgi_http_port,
+  $ui_tls_enabled = false,
+  $ui_certificate_filename = undef,
+  $ui_certificate_hostname = undef,
   $wsgi_process_service_checks_location = '/status',
   $wsgi_process_service_checks_script = '/usr/local/bin/nagios-process-service-checks.wsgi',
   $wsgi_processes = 2,
   $wsgi_threads = 15,
-
 ) inherits nagios::params {
 
   validate_integer($wsgi_processes)
   validate_integer($wsgi_threads)
+
+  if $ui_tls_enabled {
+    $apache_modules = ['php', 'cgi', 'authn_file', 'auth_basic', 'authz_user', 'wsgi', 'ssl']
+  } else {
+    $apache_modules = ['php', 'cgi', 'authn_file', 'auth_basic', 'authz_user', 'wsgi']
+  }
+
   ## Configure apache
   class { 'apache':
     # be good citizen by not erasing other configurations
@@ -40,7 +49,7 @@ class nagios::cgi (
     default_vhost       => false,
     # prerequists for Nagios CGI
     mpm_module          => 'prefork',
-    default_mods        => ['php', 'cgi', 'authn_file', 'auth_basic', 'authz_user', 'wsgi'],
+    default_mods        => $apache_modules,
     # allow to use the Puppet user resource later in the manifest
     manage_group        => false,
     manage_user         => false,
