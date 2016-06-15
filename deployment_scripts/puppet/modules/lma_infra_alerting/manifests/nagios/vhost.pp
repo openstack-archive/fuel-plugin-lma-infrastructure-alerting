@@ -12,12 +12,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 #
-# Configure the Nagios server with the CGI service for passive checks.
-# Configure virtual hosts for monitoring the clusters of global services and nodes
+# Configure virtual Nagios hosts for monitoring the clusters of global services
+# and nodes.
 #
-class lma_infra_alerting (
-  $password,
-  $http_port = $lma_infra_alerting::params::http_port,
+class lma_infra_alerting::nagios::vhost (
   $openstack_management_vip = undef,
   $openstack_deployment_name = '',
   $global_clusters = [],
@@ -33,13 +31,6 @@ class lma_infra_alerting (
     $lma_infra_alerting::params::nagios_node_vhostname_prefix,
     '-env', $openstack_deployment_name], '')
 
-  # Install and configure nagios server
-  class { 'lma_infra_alerting::nagios':
-    http_user     => $lma_infra_alerting::params::http_user,
-    http_password => $password,
-    http_port     => $http_port,
-  }
-
   if ! empty($global_clusters) {
     # Configure the virtual host for the global clusters
     lma_infra_alerting::nagios::vhost_cluster_status{ 'global':
@@ -47,7 +38,6 @@ class lma_infra_alerting (
       hostname              => $vhostname_global,
       services              => $global_clusters,
       notifications_enabled => 1,
-      require               => Class['lma_infra_alerting::nagios'],
     }
   }
 
@@ -58,7 +48,6 @@ class lma_infra_alerting (
       hostname              => $vhostname_node,
       services              => $node_clusters,
       notifications_enabled => 0,
-      require               => Class['lma_infra_alerting::nagios'],
     }
   }
 }

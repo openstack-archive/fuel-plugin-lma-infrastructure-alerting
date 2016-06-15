@@ -44,6 +44,8 @@ if $notify_warning == false and
   $notify_recovery = $plugin['notify_recovery']
 }
 $apache_port = hiera('lma::infrastructure_alerting::apache_port')
+$nagios_vip = hiera('lma::infrastructure_alerting::vip')
+$nagios_ui_vip = hiera('lma::infrastructure_alerting::vip_ui')
 
 $lma_collector = hiera_hash('lma_collector', {})
 
@@ -59,13 +61,20 @@ if $lma_collector['gse_cluster_node'] {
   $node_clusters = []
 }
 
-class { 'lma_infra_alerting':
+# Install and configure nagios server for StackLight
+class { 'lma_infra_alerting::nagios':
+  http_password     => $password,
+  http_port         => $apache_port,
+  nagios_ui_address => $nagios_ui_vip,
+  nagios_address    => $nagios_vip,
+}
+
+class { 'lma_infra_alerting::nagios::vhost':
   openstack_deployment_name => $env_id,
   openstack_management_vip  => $cluster_ip,
   global_clusters           => $service_clusters,
   node_clusters             => $node_clusters,
-  password                  => $password,
-  http_port                 => $apache_port,
+  require                   => Class['lma_infra_alerting::nagios'],
 }
 
 file { 'ocf-ns_apache':
@@ -86,7 +95,7 @@ file { 'ocf-ns_nagios':
   group  => 'root',
 }
 
-# This is required so Apache and Nagios can bind to the VIP address
+# This is required so Apache and Nagios can bind to the VIP addresses
 exec { 'net.ipv4.ip_nonlocal_bind':
   command => '/sbin/sysctl -w net.ipv4.ip_nonlocal_bind=1',
   unless  => '/sbin/sysctl -n net.ipv4.ip_nonlocal_bind | /bin/grep 1',
@@ -98,7 +107,7 @@ if $fuel_version < 9.0 {
     primitive_type => 'ocf-ns_apache',
     parameters     => {
       'ns'         => 'infrastructure_alerting',
-      'status_url' => "http://localhost:${apache_port}/server-status",
+      'status_url' => "http://${nagios_vip}:${apache_port}/server-status",
     },
     metadata       => {
       'migration-threshold' => '3',
@@ -118,7 +127,7 @@ if $fuel_version < 9.0 {
     },
     prefix         => false,
     use_handler    => false,
-    require        => [File['ocf-ns_apache'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting']],
+    require        => [File['ocf-ns_apache'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting::nagios']],
   }
 
   cs_rsc_colocation { 'infrastructure_alerting_vip-with-apache2':
@@ -155,7 +164,7 @@ if $fuel_version < 9.0 {
     },
     prefix         => false,
     use_handler    => false,
-    require        => [File['ocf-ns_nagios'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting']],
+    require        => [File['ocf-ns_nagios'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting::nagios']],
   }
 
   cs_rsc_colocation { 'infrastructure_alerting_vip-with-nagios':
@@ -167,13 +176,24 @@ if $fuel_version < 9.0 {
     ],
     require    => Cs_resource['nagios3'],
   }
+
+  # The two VIPs must be colocated
+  # This assumes that the VIPs have already been created
+  cs_rsc_colocation { 'ui_vip-with-wsgi_vip':
+    ensure     => present,
+    score      => 'INFINITY',
+    primitives => [
+      'vip__infrastructure_alerting_mgmt_vip',
+      'vip__infrastructure_alerting_ui'
+    ],
+  }
 } else {
   # Apache2 resources for Pacemaker
   pacemaker::service { 'apache2':
     primitive_type   => 'ocf-ns_apache',
     parameters       => {
       'ns'         => 'infrastructure_alerting',
-      'status_url' => "http://localhost:${apache_port}/server-status",
+      'status_url' => "http://${nagios_vip}:${apache_port}/server-status",
     },
     complex_type     => 'clone',
     complex_metadata => {
@@ -194,7 +214,7 @@ if $fuel_version < 9.0 {
     },
     prefix           => false,
     use_handler      => false,
-    require          => [File['ocf-ns_apache'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting']],
+    require          => [File['ocf-ns_apache'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting::nagios']],
   }
 
   pcmk_colocation { 'infrastructure_alerting_vip-with-apache2':
@@ -230,7 +250,7 @@ if $fuel_version < 9.0 {
     },
     prefix           => false,
     use_handler      => false,
-    require          => [File['ocf-ns_nagios'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting']],
+    require          => [File['ocf-ns_nagios'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting::nagios']],
   }
 
   pcmk_colocation { 'infrastructure_alerting_vip-with-nagios':
@@ -239,6 +259,15 @@ if $fuel_version < 9.0 {
     first   => 'vip__infrastructure_alerting_mgmt_vip',
     second  => 'nagios3',
     require => Pacemaker::Service['nagios3'],
+  }
+
+  # The two VIPs must be colocated
+  # This assumes VIPs are already created
+  pcmk_colocation { 'ui_vip-with-wsgi_vip':
+    ensure => present,
+    score  => 'INFINITY',
+    first  => 'vip__infrastructure_alerting_mgmt_vip',
+    second => 'vip__infrastructure_alerting_ui',
   }
 }
 
@@ -253,7 +282,7 @@ class { 'lma_infra_alerting::nagios::contact':
   notify_critical => $notify_critical,
   notify_recovery => $notify_recovery,
   notify_unknown  => $notify_unknown,
-  require         => Class['lma_infra_alerting'],
+  require         => Class['lma_infra_alerting::nagios'],
 }
 
 if $lma_collector['node_cluster_roles'] {
@@ -277,7 +306,7 @@ class { 'lma_infra_alerting::nagios::hosts':
   host_custom_vars_keys  => ['fqdn', 'node_roles'],
   node_cluster_roles     => $node_cluster_roles,
   node_cluster_alarms    => $node_cluster_alarms,
-  require                => Class['lma_infra_alerting'],
+  require                => Class['lma_infra_alerting::nagios'],
 }
 
 $influxdb_nodes = get_nodes_hash_by_roles($network_metadata, ['influxdb_grafana', 'primary-influxdb_grafana'])

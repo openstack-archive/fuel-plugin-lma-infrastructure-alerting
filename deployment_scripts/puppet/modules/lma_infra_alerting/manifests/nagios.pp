@@ -18,12 +18,13 @@
 #
 
 class lma_infra_alerting::nagios (
+  $http_user = $lma_infra_alerting::params::http_user,
   $http_password,
-  $http_user,
-  $http_port
-) {
+  $http_port,
+  $nagios_ui_address,
+  $nagios_address,
+) inherits lma_infra_alerting::params {
 
-  include lma_infra_alerting::params
   include nagios::params
 
   class { '::nagios':
@@ -47,10 +48,12 @@ class lma_infra_alerting::nagios (
   }
 
   class { '::nagios::cgi':
-    user      => $http_user,
-    password  => $http_password,
-    http_port => $http_port,
-    require   => Class[nagios],
+    user                 => $http_user,
+    password             => $http_password,
+    http_port            => $http_port,
+    vhost_listen_ip      => $nagios_ui_address,
+    wsgi_vhost_listen_ip => $nagios_address,
+    require              => Class[nagios],
   }
 
   $cron_bin = $lma_infra_alerting::params::update_configuration_script
