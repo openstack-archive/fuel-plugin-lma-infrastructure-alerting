@@ -3,7 +3,7 @@
   type: group
   version: 2.0.0
   role: [primary-infrastructure_alerting]
-  tasks: &common_tasks
+  tasks:
     - hiera
     - setup_repositories
     - fuel_pkgs
@@ -13,6 +13,7 @@
     - netconfig
     - hosts
     - lma-alerting-hiera
+    - lma-alerting-validate-certificate
     - lma-alerting-firewall
     - lma-alerting-cluster
     - lma-alerting-vip
@@ -26,7 +27,19 @@
   type: group
   version: 2.0.0
   role: [infrastructure_alerting]
-  tasks: *common_tasks
+  tasks:
+    - hiera
+    - setup_repositories
+    - fuel_pkgs
+    - globals
+    - tools
+    - logging
+    - netconfig
+    - hosts
+    - lma-alerting-hiera
+    - lma-alerting-firewall
+    - lma-alerting-cluster
+    - lma-alerting-vip
   required_for: [deploy_end]
   requires: [deploy_start, primary-infrastructure_alerting]
   parameters:
@@ -44,6 +57,19 @@
     puppet_manifest: "puppet/manifests/hiera.pp"
     puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 120
+
+- id: lma-alerting-validate-certificate
+  type: puppet
+  version: 2.0.0
+  requires: [lma-alerting-hiera]
+  required_for: [logging, lma-alerting-firewall]
+  parameters:
+    puppet_manifest: "puppet/manifests/validate_certificate.pp"
+    puppet_modules: puppet/modules:/etc/puppet/modules
+    timeout: 120
+  # reexecute_on is needed for scale-down operations
+  reexecute_on:
+    - deploy_changes
 
 - id: lma-alerting-firewall
   type: puppet

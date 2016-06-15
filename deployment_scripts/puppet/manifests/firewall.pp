@@ -14,6 +14,9 @@
 
 notice('fuel-plugin-lma-infrastructure-alerting: firewall.pp')
 
+$nagios_ui = hiera_hash('lma::infrastructure_alerting::nagios_ui')
+$apache_port = $nagios_ui['apache_port']
+
 class {'::firewall':}
 
 firewall { '000 accept all icmp requests':
@@ -52,7 +55,7 @@ firewall { '114 corosync-input':
 }
 
 firewall { '300 nagios cgi':
-  port   => hiera('lma::infrastructure_alerting::apache_port'),
+  port   => $apache_port,
   proto  => 'tcp',
   action => 'accept',
 }
