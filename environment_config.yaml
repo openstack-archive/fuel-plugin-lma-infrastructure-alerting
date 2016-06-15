@@ -101,3 +101,30 @@ attributes:
     weight: 52
     type: "password"
     restrictions: *no_auth
+
+  tls_enabled:
+    value: false
+    label: 'Enable TLS for Nagios'
+    description: ''
+    weight: 60
+    type: "checkbox"
+
+  nagios_hostname:
+    value: 'nagios.fuel.local'
+    label: 'DNS hostname for Nagios UI'
+    description: 'Your DNS entries should point to this name'
+    weight: 61
+    type: "text"
+    restrictions:
+      - condition: "settings:lma_infrastructure_alerting.tls_enabled.value == false"
+        action: "hide"
+
+  nagios_ssl_cert:
+    value: ''
+    label: 'Certificate for Nagios UI'
+    description: 'Certificate and private key data, concatenated into a single file'
+    weight: 62
+    type: "file"
+    restrictions:
+      - condition: "settings:lma_infrastructure_alerting.tls_enabled.value == false"
+        action: "hide"
