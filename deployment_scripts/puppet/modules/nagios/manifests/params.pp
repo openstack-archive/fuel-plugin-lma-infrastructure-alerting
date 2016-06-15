@@ -25,7 +25,8 @@ class nagios::params {
       $nagios_cgi_package = 'nagios3-cgi'
       $cgi_htpasswd_file = '/etc/nagios3/htpasswd.users'
       $apache_service_name = 'apache2'
-      $apache_vhost_config_tpl = 'apache_vhost_ubuntu.conf.erb'
+      $apache_ui_vhost_config_tpl = 'apache_vhost_ubuntu.conf.erb'
+      $apache_wsgi_vhost_config_tpl = 'apache_wsgi_vhost_ubuntu.conf.erb'
     }
     'RedHat': {
       $config_dir = '/etc/nagios/conf.d'
@@ -40,7 +41,8 @@ class nagios::params {
       $nagios_cgi_package = $nagios_service_name # CGI is provided by the same package
       $cgi_htpasswd_file = '/etc/nagios/htpasswd'
       $apache_service_name = 'httpd'
-      $apache_vhost_config_tpl = 'apache_vhost_centos.conf.erb'
+      $apache_ui_vhost_config_tpl = 'apache_vhost_centos.conf.erb'
+      $apache_wsgi_vhost_config_tpl = 'apache_wsgi_vhost_centos.conf.erb'
     }
     default: {
       fail("${::osfamily} not supported")
