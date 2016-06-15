@@ -101,8 +101,12 @@
   role: [primary-infrastructure_alerting, infrastructure_alerting]
   # update_hosts is used as an anchor to ensure that LMA collectors are
   # deployed before executing this task.
+  # Note that it is only required for MOS 8 that doesn't support task-based deployment
   requires: [update_hosts]
   required_for: [post_deployment_end]
+  cross-depends:
+    - name: lma-cleanup-apt-config
+      role: /.*/
   parameters:
     puppet_manifest: puppet/manifests/nagios.pp
     puppet_modules: puppet/modules:/etc/puppet/modules
