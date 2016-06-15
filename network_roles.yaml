@@ -1,3 +1,10 @@
+# Plugin allocates 2 virtual IPs:
+# One VIP is used for the Nagios UI and the other for the /status location
+# exclusively used by LMA collectors to report statuses.
+# This split will help to enable HTTPS for the Nagios UI and deploy it on
+# another network while LMA collectors continue to use HTTP over the
+# "monitoring" network.
+
 - id: "infrastructure_alerting"
   default_mapping: "management"
   properties:
@@ -7,6 +14,19 @@
        - name: "infrastructure_alerting_mgmt_vip"
          namespace: "infrastructure_alerting"
          alias: "infrastructure_alerting"
+         node_roles:
+           - "primary-infrastructure_alerting"
+           - "infrastructure_alerting"
+
+- id: "infrastructure_alerting_ui"
+  default_mapping: "management"
+  properties:
+    subnet: true
+    gateway: false
+    vip:
+       - name: "infrastructure_alerting_ui"
+         namespace: "infrastructure_alerting"
+         alias: "infrastructure_alerting_ui"
          node_roles:
            - "primary-infrastructure_alerting"
            - "infrastructure_alerting"
