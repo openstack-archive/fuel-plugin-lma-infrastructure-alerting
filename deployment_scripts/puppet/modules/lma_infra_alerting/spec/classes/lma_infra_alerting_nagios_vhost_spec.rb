@@ -13,17 +13,21 @@
 #    under the License.
 require 'spec_helper'
 
-describe 'nagios::cgi' do
+describe 'lma_infra_alerting::nagios::vhost' do
     let(:facts) do
         {:kernel => 'Linux', :operatingsystem => 'Ubuntu',
          :osfamily => 'Debian', :operatingsystemrelease => '12.4',
          :concat_basedir => '/tmp'}
     end
 
-    describe 'with default' do
+    describe 'with global and node clusters' do
         let(:params) do
-            {:vhost_listen_ip => '1.1.1.1' }
+            {:global_clusters => ['nova', 'cinder', 'keystone'],
+             :node_clusters => ['controller', 'compute', 'storage'],
+            }
         end
-        it { should contain_class('apache') }
+        it { should contain_lma_infra_alerting__nagios__vhost_cluster_status('global') }
+        it { should contain_lma_infra_alerting__nagios__vhost_cluster_status('nodes') }
     end
 end
+

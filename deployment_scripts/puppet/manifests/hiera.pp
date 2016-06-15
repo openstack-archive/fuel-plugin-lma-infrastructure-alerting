@@ -19,8 +19,9 @@ $network_scheme   = hiera_hash('network_scheme')
 $network_metadata = hiera_hash('network_metadata')
 prepare_network_config($network_scheme)
 
-$hiera_file       = '/etc/hiera/plugins/lma_infrastructure_alerting.yaml'
-$alerting_vip     = $network_metadata['vips']['infrastructure_alerting_mgmt_vip']['ipaddr']
+$hiera_file      = '/etc/hiera/plugins/lma_infrastructure_alerting.yaml'
+$alerting_vip    = $network_metadata['vips']['infrastructure_alerting_mgmt_vip']['ipaddr']
+$alerting_ui_vip = $network_metadata['vips']['infrastructure_alerting_ui']['ipaddr']
 $listen_address  = get_network_role_property('infrastructure_alerting', 'ipaddr')
 
 $kibana_port = hiera('lma::elasticsearch::kibana_port', 80)
@@ -35,6 +36,7 @@ lma::corosync_roles:
 lma::infrastructure_alerting::listen_address: <%= @listen_address %>
 lma::infrastructure_alerting::apache_port: 8001
 lma::infrastructure_alerting::vip: <%= @alerting_vip %>
+lma::infrastructure_alerting::vip_ui: <%= @alerting_ui_vip %>
 lma::infrastructure_alerting::vip_ns: infrastructure_alerting
 lma::infrastructure_alerting::kibana_port: <%= @kibana_port %>
 lma::infrastructure_alerting::es_port: <%= @es_port %>

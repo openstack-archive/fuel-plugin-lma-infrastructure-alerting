@@ -10,3 +10,16 @@
          node_roles:
            - "primary-infrastructure_alerting"
            - "infrastructure_alerting"
+
+- id: "infrastructure_alerting_ui"
+  default_mapping: "management"
+  properties:
+    subnet: true
+    gateway: false
+    vip:
+       - name: "infrastructure_alerting_ui"
+         namespace: "infrastructure_alerting"
+         alias: "infrastructure_alerting_ui"
+         node_roles:
+           - "primary-infrastructure_alerting"
+           - "infrastructure_alerting"

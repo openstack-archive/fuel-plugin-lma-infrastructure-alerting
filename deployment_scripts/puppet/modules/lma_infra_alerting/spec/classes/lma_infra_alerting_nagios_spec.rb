@@ -1,4 +1,4 @@
-#    Copyright 2015 Mirantis, Inc.
+#    Copyright 2016 Mirantis, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -13,7 +13,7 @@
 #    under the License.
 require 'spec_helper'
 
-describe 'lma_infra_alerting' do
+describe 'lma_infra_alerting::nagios' do
     let(:facts) do
         {:kernel => 'Linux', :operatingsystem => 'Ubuntu',
          :osfamily => 'Debian', :operatingsystemrelease => '12.4',
@@ -22,15 +22,15 @@ describe 'lma_infra_alerting' do
 
     describe 'with global and node clusters' do
         let(:params) do
-            {:global_clusters => ['nova', 'cinder', 'keystone'],
-             :node_clusters => ['controller', 'compute', 'storage'],
-             :password => 'secrete'}
+            {:http_password => 'foo', :http_port => '999',
+             :nagios_ui_address => '1.1.1.1',
+             :nagios_address => '2.3.3.3'
+            }
         end
         it { should contain_class('nagios') }
         it { should create_class('nagios::cgi') }
         it { should create_cron('update lma infra alerting') }
         it { should create_file('/usr/local/bin/update-lma-configuration') }
-        it { should contain_lma_infra_alerting__nagios__vhost_cluster_status('global') }
-        it { should contain_lma_infra_alerting__nagios__vhost_cluster_status('nodes') }
     end
 end
+
