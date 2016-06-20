@@ -1,0 +1,44 @@
+#!/bin/bash
+#    Copyright 2016 Mirantis, Inc.
+#
+#    Licensed under the Apache License, Version 2.0 (the "License"); you may
+#    not use this file except in compliance with the License. You may obtain
+#    a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+#    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+#    License for the specific language governing permissions and limitations
+#    under the License.
+
+# This script configures source-base routing to support several virtual IPs
+# per interface.
+
+num=1
+for nic_config in $(ls -d  /proc/sys/net/ipv4/conf/*infra* 2>/dev/null); do
+  echo 1 > "${nic_config}/arp_filter"
+  nic=$(basename $nic_config)
+  ip_address=$(ip -f inet -o addr show $nic|cut -d\  -f 7|cut -d/ -f 1)
+
+  # Create new routing table
+  if ! $(grep $nic /etc/iproute2/rt_tables >/dev/null); then
+    echo "$num $nic" >> /etc/iproute2/rt_tables
+  fi
+  num=$(($num+1))
+
+  # Get network (eg. 1.2.3.0/24). This assumes the default route is present
+  net=$(ip route|grep $(echo $ip_address|cut -d. -f1,2,3)|head -n1|cut -f 1 -d ' ')
+
+  # Add route for the routing table
+  if ! $(ip route show table all|grep "table $nic">/dev/null); then
+    ip route add $net dev $nic src $ip_address table $nic
+  fi
+  # Add rule for the routing table
+  if ! $(ip rule list|grep "from $ip_address" >/dev/null); then
+    ip rule add from $ip_address table $nic
+  fi
+
+done
+exit 0
