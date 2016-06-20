@@ -85,13 +85,23 @@ class { 'lma_infra_alerting::nagios::vhost':
   require                   => Class['lma_infra_alerting::nagios'],
 }
 
-file { 'ocf-ns_apache':
+$fix_routing_per_source_script = '/usr/local/bin/fix_vip_routing_per_source'
+file { $fix_routing_per_source_script:
   ensure => present,
-  path   => '/usr/lib/ocf/resource.d/fuel/ocf-ns_apache',
-  source => 'puppet:///modules/lma_infra_alerting/ocf-ns_apache',
+  source => 'puppet:///modules/lma_infra_alerting/fix_vip_routing_per_source',
   mode   => '0755',
   owner  => 'root',
   group  => 'root',
+}
+
+file { 'ocf-ns_apache':
+  ensure  => present,
+  path    => '/usr/lib/ocf/resource.d/fuel/ocf-ns_apache',
+  source  => 'puppet:///modules/lma_infra_alerting/ocf-ns_apache',
+  mode    => '0755',
+  owner   => 'root',
+  group   => 'root',
+  require => File[$fix_several_ips_per_nic],
 }
 
 file { 'ocf-ns_nagios':
