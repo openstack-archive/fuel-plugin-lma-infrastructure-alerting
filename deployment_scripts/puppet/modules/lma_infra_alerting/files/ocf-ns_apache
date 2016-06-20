@@ -209,6 +209,7 @@ service_start() {
         return "$OCF_SUCCESS"
     fi
 
+    ocf_run ${RUN} bash -c "/usr/local/bin/configure_arp_filter_for_vip"
     ocf_run ${RUN} bash -c ". /etc/apache2/envvars && ${OCF_RESKEY_binary} -k start"
 
     # Spin waiting for the server to come up
