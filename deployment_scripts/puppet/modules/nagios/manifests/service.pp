@@ -30,10 +30,14 @@ define nagios::service (
   $properties = {},
   $defaults = {},
   $ensure = present,
+  $dummy_cmd_state = 3,
+  $dummy_cmd_state_string = 'UNKNOWN',
+  $dummy_cmd_text = '',
 ){
 
   validate_hash($properties, $defaults)
   validate_string($properties['host_name'])
+  validate_integer($dummy_cmd_state)
   $opts = {}
 
   if is_array($properties['contact_groups']) {
@@ -82,15 +86,21 @@ define nagios::service (
   }
 
   if $properties['check_command'] == undef {
-    # create a dummy command to report the UNKNOWN state when no data is received
-    $_check_command = "return-unknown-${title}"
+    # create a dummy command to report the $dummy_cmd_state state when no data is received
+    $dummy_string = downcase($dummy_cmd_state_string)
+    $_check_command = "return-${dummy_string}-${title}"
     $opts['check_command'] = $_check_command
     $final_properties = merge($properties, $opts)
     $timeout_freshness = $final_properties['freshness_threshold'] * $final_properties['max_check_attempts']
+    if $dummy_cmd_text {
+      $dummy_text = $dummy_cmd_text
+    } else {
+      $dummy_text = "No data received for at least ${timeout_freshness} seconds"
+    }
     nagios::command { $_check_command:
       prefix     => "${prefix}services_",
       properties => {
-        command_line => "${nagios::params::nagios_plugin_dir}/check_dummy 3 'No data received for at least ${timeout_freshness} seconds'",
+        command_line => "${nagios::params::nagios_plugin_dir}/check_dummy ${dummy_cmd_state} '${dummy_text}'",
       }
     }
   }

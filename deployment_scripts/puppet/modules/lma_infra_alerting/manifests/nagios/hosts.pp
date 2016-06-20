@@ -75,4 +75,21 @@ class lma_infra_alerting::nagios::hosts (
                                           $node_cluster_alarms)
   $afd_service_defaults = {'notifications_enabled' => 0}
   create_resources(lma_infra_alerting::nagios::services, $afd_services, $afd_service_defaults)
+
+  if empty($node_cluster_roles) and empty($node_cluster_alarms) {
+    $node_uid= hiera('uid')
+    nagios::service { 'dummy-check-for-ci':
+      prefix                 => $lma_infra_alerting::params::nagios_config_filename_prefix,
+      onefile                => false,
+      service_description    => 'dummy-check',
+      dummy_cmd_state        => 0,
+      dummy_cmd_state_string => 'OKAY',
+      dummy_cmd_text         => 'dummy check okay',
+      properties             => {
+        'host_name'      => "node-${node_uid}",
+        'contact_groups' => $lma_infra_alerting::params::nagios_contactgroup,
+        'hostgroup_name' => 'primary-infrastructure_alerting'
+      }
+    }
+  }
 }
