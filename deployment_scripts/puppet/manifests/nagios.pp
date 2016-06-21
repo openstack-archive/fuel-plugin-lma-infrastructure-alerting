@@ -135,7 +135,7 @@ if $fuel_version < 9.0 {
   pacemaker_wrappers::service { 'nagios3':
     primitive_type => 'ocf-ns_nagios',
     parameters     => {
-      'ns'         => 'infrastructure_alerting',
+      'ns' => 'infrastructure_alerting',
     },
     metadata       => {
       'migration-threshold' => '3',
@@ -209,7 +209,7 @@ if $fuel_version < 9.0 {
   pacemaker::service { 'nagios3':
     primitive_type   => 'ocf-ns_nagios',
     parameters       => {
-      'ns'           => 'infrastructure_alerting',
+      'ns' => 'infrastructure_alerting',
     },
     complex_type     => 'clone',
     complex_metadata => {
