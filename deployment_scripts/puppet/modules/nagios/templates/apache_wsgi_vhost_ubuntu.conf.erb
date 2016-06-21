@@ -5,7 +5,13 @@
 
 <VirtualHost <%= @wsgi_vhost_listen_ip %>:<%= @http_port %>>
   ServerName nagios
-  DocumentRoot "/usr/share/nagios3/htdocs"
+
+  # Disable directory indexes
+  Options -Indexes
+  <Directory />
+    Options FollowSymLinks
+    AllowOverride None
+  </Directory>
 
   # WSGI implementation for the process_service_check command
   SetEnv NAGIOS_CMD_FILE <%= @nagios_command_file %>
