@@ -43,6 +43,8 @@ if $notify_warning == false and
   $notify_unknown = $plugin['notify_unknown']
   $notify_recovery = $plugin['notify_recovery']
 }
+
+$apache_config_dir = hiera('lma::infrastructure_alerting::apache_dir')
 $nagios_vip = hiera('lma::infrastructure_alerting::vip')
 
 $nagios_ui = hiera_hash('lma::infrastructure_alerting::nagios_ui')
@@ -67,6 +69,7 @@ if $lma_collector['gse_cluster_node'] {
 
 # Install and configure nagios server for StackLight
 class { 'lma_infra_alerting::nagios':
+  httpd_dir               => $apache_config_dir,
   http_password           => $password,
   http_port               => $apache_port,
   nagios_ui_address       => $nagios_ui_vip,
@@ -119,13 +122,22 @@ exec { 'net.ipv4.ip_nonlocal_bind':
   unless  => '/sbin/sysctl -n net.ipv4.ip_nonlocal_bind | /bin/grep 1',
 }
 
+# Service must be defined for Pacemaker resources
+service { 'apache2-nagios':
+  ensure     => 'running',
+  enable     => true,
+  hasstatus  => true,
+  hasrestart => true,
+}
+
 if $fuel_version < 9.0 {
   # Apache2 resources for Pacemaker
-  pacemaker_wrappers::service { 'apache2':
+  pacemaker_wrappers::service { 'apache2-nagios':
     primitive_type => 'ocf-ns_apache',
     parameters     => {
       'ns'         => 'infrastructure_alerting',
       'status_url' => "http://${nagios_vip}:${apache_port}/server-status",
+      'config'     => "${apache_config_dir}/apache2.conf",
     },
     metadata       => {
       'migration-threshold' => '3',
@@ -148,14 +160,14 @@ if $fuel_version < 9.0 {
     require        => [File['ocf-ns_apache'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting::nagios']],
   }
 
-  cs_rsc_colocation { 'infrastructure_alerting_vip-with-apache2':
+  cs_rsc_colocation { 'infrastructure_alerting_vip-with-apache2-nagios':
     ensure     => present,
     score      => 'INFINITY',
     primitives => [
       'vip__infrastructure_alerting_mgmt_vip',
-      'apache2'
+      'apache2-nagios'
     ],
-    require    => Cs_resource['apache2'],
+    require    => Cs_resource['apache2-nagios'],
   }
 
   # Nagios resources for Pacemaker
@@ -207,11 +219,12 @@ if $fuel_version < 9.0 {
   }
 } else {
   # Apache2 resources for Pacemaker
-  pacemaker::service { 'apache2':
+  pacemaker::service { 'apache2-nagios':
     primitive_type   => 'ocf-ns_apache',
     parameters       => {
       'ns'         => 'infrastructure_alerting',
       'status_url' => "http://${nagios_vip}:${apache_port}/server-status",
+      'config'     => "${apache_config_dir}/apache2.conf",
     },
     complex_type     => 'clone',
     complex_metadata => {
@@ -235,12 +248,12 @@ if $fuel_version < 9.0 {
     require          => [File['ocf-ns_apache'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting::nagios']],
   }
 
-  pcmk_colocation { 'infrastructure_alerting_vip-with-apache2':
+  pcmk_colocation { 'infrastructure_alerting_vip-with-apache2-nagios':
     ensure  => present,
     score   => 'INFINITY',
     first   => 'vip__infrastructure_alerting_mgmt_vip',
-    second  => 'apache2',
-    require => Pacemaker::Service['apache2'],
+    second  => 'apache2-nagios',
+    require => Pacemaker::Service['apache2-nagios'],
   }
 
   # Nagios resources for Pacemaker

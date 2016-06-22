@@ -43,4 +43,18 @@ describe 'nagios::cgi' do
         it { should contain_apache__custom_config('nagios-wsgi') }
         it { should contain_file('wsgi_process_service_checks_script') }
     end
+    describe 'with default httpd_dir' do
+        let(:params) do
+            {:vhost_listen_ip => '1.1.1.1',
+             :httpd_dir => '/etc/apache2-nagios',
+            }
+        end
+        it {
+            should contain_class('apache').with(
+                :conf_dir => '/etc/apache2-nagios',
+                :server_root => '/etc/apache2-nagios',
+                :httpd_dir => '/etc/apache2-nagios',
+            )
+        }
+    end
 end
