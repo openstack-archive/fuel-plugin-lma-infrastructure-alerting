@@ -27,23 +27,25 @@ $listen_address  = get_network_role_property('infrastructure_alerting', 'ipaddr'
 $plugin      = hiera('lma_infrastructure_alerting')
 $tls_enabled = $plugin['tls_enabled']
 
+$apache_httpd_dir = '/etc/apache2-nagios'
+
 if $tls_enabled {
   $nagios_ui_hostname = $plugin['nagios_hostname']
   if $plugin['nagios_ssl_cert'] and $plugin['nagios_ssl_cert']['content'] {
     $nagios_ui_ssl_cert = $plugin['nagios_ssl_cert']['content']
-    $nagios_ui_ssl_cert_path = "/etc/apache2/certs/${$plugin['nagios_ssl_cert']['name']}"
+    $nagios_ui_ssl_cert_path = "${apache_httpd_dir}/certs/${$plugin['nagios_ssl_cert']['name']}"
 
-    file { '/etc/apache2':
+    file { $apache_httpd_dir:
       ensure => directory,
       mode   => '0755',
     } ->
-    file { '/etc/apache2/certs':
+    file { "${apache_httpd_dir}/certs":
       ensure => directory,
       mode   => '0750',
     } ->
     file { $nagios_ui_ssl_cert_path:
       ensure  => present,
-      mode    => '0700',
+      mode    => '0600',
       content => $nagios_ui_ssl_cert,
     }
   }
@@ -71,6 +73,7 @@ lma::infrastructure_alerting::es_port: <%= @es_port %>
 lma::infrastructure_alerting::grafana_port: <%= @grafana_port %>
 lma::infrastructure_alerting::influxdb_port: <%= @influxdb_port %>
 lma::infrastructure_alerting::cluster_ip: 127.0.0.1
+lma::infrastructure_alerting::apache_dir: <%= @apache_httpd_dir %>
 lma::infrastructure_alerting::nagios_ui:
   vip: <%= @alerting_ui_vip %>
   scheme: <%= @ui_scheme %>
