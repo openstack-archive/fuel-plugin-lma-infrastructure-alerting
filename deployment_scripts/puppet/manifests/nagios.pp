@@ -43,6 +43,9 @@ if $notify_warning == false and
   $notify_unknown = $plugin['notify_unknown']
   $notify_recovery = $plugin['notify_recovery']
 }
+
+$apache_config_dir = hiera('lma::infrastructure_alerting::apache_dir')
+$apache_port = hiera('lma::infrastructure_alerting::apache_port')
 $nagios_vip = hiera('lma::infrastructure_alerting::vip')
 
 $nagios_ui = hiera_hash('lma::infrastructure_alerting::nagios_ui')
@@ -67,6 +70,7 @@ if $lma_collector['gse_cluster_node'] {
 
 # Install and configure nagios server for StackLight
 class { 'lma_infra_alerting::nagios':
+  httpd_dir               => $apache_config_dir,
   http_password           => $password,
   http_port               => $apache_port,
   nagios_ui_address       => $nagios_ui_vip,
@@ -126,6 +130,7 @@ if $fuel_version < 9.0 {
     parameters     => {
       'ns'         => 'infrastructure_alerting',
       'status_url' => "http://${nagios_vip}:${apache_port}/server-status",
+      'config'     => "${apache_config_dir}/apache2.conf",
     },
     metadata       => {
       'migration-threshold' => '3',
@@ -212,6 +217,7 @@ if $fuel_version < 9.0 {
     parameters       => {
       'ns'         => 'infrastructure_alerting',
       'status_url' => "http://${nagios_vip}:${apache_port}/server-status",
+      'config'     => "${apache_config_dir}/apache2.conf",
     },
     complex_type     => 'clone',
     complex_metadata => {
