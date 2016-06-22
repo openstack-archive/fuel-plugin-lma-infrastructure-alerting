@@ -18,6 +18,7 @@
 #
 class nagios::cgi (
   $vhost_listen_ip,
+  $httpd_dir = '/etc/apache2',
   $wsgi_vhost_listen_ip = undef,
   $user = $nagios::params::cgi_user,
   $password = $nagios::params::cgi_password,
@@ -36,9 +37,9 @@ class nagios::cgi (
   validate_integer($wsgi_threads)
 
   if $ui_tls_enabled {
-    $apache_modules = ['php', 'cgi', 'authn_file', 'auth_basic', 'authz_user', 'wsgi', 'ssl']
+    $apache_modules = ['php', 'cgi', 'autoindex', 'env', 'access_compat', 'deflate', 'authn_core', 'authn_file', 'auth_basic', 'authz_user', 'wsgi', 'ssl']
   } else {
-    $apache_modules = ['php', 'cgi', 'authn_file', 'auth_basic', 'authz_user', 'wsgi']
+    $apache_modules = ['php', 'cgi', 'autoindex', 'env', 'access_compat', 'deflate', 'authn_core', 'authn_file', 'auth_basic', 'authz_user', 'wsgi']
   }
 
   ## Configure apache
@@ -53,6 +54,20 @@ class nagios::cgi (
     # allow to use the Puppet user resource later in the manifest
     manage_group        => false,
     manage_user         => false,
+    httpd_dir           => $httpd_dir,
+    conf_dir            => $httpd_dir,
+    server_root         => $httpd_dir,
+    confd_dir           => "${httpd_dir}/conf.d",
+    mod_dir             => "${httpd_dir}/mods-available",
+    mod_enable_dir      => "${httpd_dir}/mods-enabled",
+    vhost_dir           => "${httpd_dir}/sites-available",
+    vhost_enable_dir    => "${httpd_dir}/sites-enabled",
+    ports_file          => "${httpd_dir}/port.confs",
+  }
+
+  # Apache mod_status is used by the Pacemaker OCF script
+  class { 'apache::mod::status':
+    allow_from => [$vhost_listen_ip, $wsgi_vhost_listen_ip, '127.0.0.1'],
   }
 
   apache::listen { "${vhost_listen_ip}:${http_port}": }
@@ -65,7 +80,7 @@ class nagios::cgi (
   $nagios_command_file = '/var/lib/nagios3/rw/nagios.cmd'
   apache::custom_config { 'nagios-ui':
     content => template("nagios/${nagios::params::apache_ui_vhost_config_tpl}"),
-    notify  => Class['apache::service'],
+    verify_command => "${::apache::params::verify_command} -f $httpd_dir/${::apache::params::conf_file}",
     require => Class['apache'],
   }
   if $wsgi_vhost_listen_ip {
@@ -74,7 +89,7 @@ class nagios::cgi (
     # wsgi_process_service_checks_script, wsgi_process_service_checks_location
     apache::custom_config { 'nagios-wsgi':
       content => template("nagios/${nagios::params::apache_wsgi_vhost_config_tpl}"),
-      notify  => Class['apache::service'],
+      verify_command => "${::apache::params::verify_command} -f $httpd_dir/${::apache::params::conf_file}",
       require => Class['apache'],
     }
     file { 'wsgi_process_service_checks_script':
