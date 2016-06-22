@@ -48,7 +48,15 @@ if [ -z "${OCF_RESKEY_ns}" ] ; then
 else
     RUN="$RUN_IN_NS "
 fi
-APACHE_PID_FILE="/var/run/apache2/apache2.pid"
+
+APACHE_CONFDIR=$(dirname ${OCF_RESKEY_config})
+ocf_log info "APACHE CONFIG $APACHE_CONFDIR"
+if [ "${APACHE_CONFDIR##/etc/apache2-}" != "${APACHE_CONFDIR}" ] ; then
+    SUFFIX="-${APACHE_CONFDIR##/etc/apache2-}"
+else
+    SUFFIX=
+fi
+APACHE_PID_FILE="/var/run/apache2/apache2${SUFFIX}.pid"
 
 #######################################################################
 
@@ -210,7 +218,11 @@ service_start() {
     fi
 
     ocf_run ${RUN} bash -c "/usr/local/bin/configure_arp_filter_for_vip"
-    ocf_run ${RUN} bash -c ". /etc/apache2/envvars && ${OCF_RESKEY_binary} -k start"
+
+    # The envvars script uses the variable APACHE_CONFDIR to support multiple
+    # apache2 instances
+    export APACHE_CONFDIR
+    ocf_run ${RUN} bash -c ". /etc/apache2/envvars && ${OCF_RESKEY_binary} -k start -f $OCF_RESKEY_config"
 
     # Spin waiting for the server to come up
     while true; do

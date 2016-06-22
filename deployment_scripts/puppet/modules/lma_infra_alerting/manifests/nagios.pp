@@ -26,6 +26,7 @@ class lma_infra_alerting::nagios (
   $ui_tls_enabled = false,
   $ui_certificate_filename = undef,
   $ui_certificate_hostname = undef,
+  $httpd_dir = '/etc/apache2',
 ) inherits lma_infra_alerting::params {
 
   include nagios::params
@@ -50,7 +51,11 @@ class lma_infra_alerting::nagios (
     config_files_to_purge         => $lma_infra_alerting::params::nagios_distribution_configs_to_purge,
   }
 
+  file { $httpd_dir:
+    ensure => directory,
+  } ->
   class { '::nagios::cgi':
+    httpd_dir               => $httpd_dir,
     user                    => $http_user,
     password                => $http_password,
     http_port               => $http_port,
