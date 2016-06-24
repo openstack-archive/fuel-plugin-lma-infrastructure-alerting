@@ -23,6 +23,9 @@ class lma_infra_alerting::nagios (
   $http_port,
   $nagios_ui_address,
   $nagios_address,
+  $ui_tls_enabled = false,
+  $ui_certificate_filename = undef,
+  $ui_certificate_hostname = undef,
 ) inherits lma_infra_alerting::params {
 
   include nagios::params
@@ -48,12 +51,15 @@ class lma_infra_alerting::nagios (
   }
 
   class { '::nagios::cgi':
-    user                 => $http_user,
-    password             => $http_password,
-    http_port            => $http_port,
-    vhost_listen_ip      => $nagios_ui_address,
-    wsgi_vhost_listen_ip => $nagios_address,
-    require              => Class[nagios],
+    user                    => $http_user,
+    password                => $http_password,
+    http_port               => $http_port,
+    vhost_listen_ip         => $nagios_ui_address,
+    wsgi_vhost_listen_ip    => $nagios_address,
+    ui_tls_enabled          => $ui_tls_enabled,
+    ui_certificate_filename => $ui_certificate_filename,
+    ui_certificate_hostname => $ui_certificate_hostname,
+    require                 => Class[nagios],
   }
 
   $cron_bin = $lma_infra_alerting::params::update_configuration_script

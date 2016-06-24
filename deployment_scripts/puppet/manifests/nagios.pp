@@ -43,9 +43,13 @@ if $notify_warning == false and
   $notify_unknown = $plugin['notify_unknown']
   $notify_recovery = $plugin['notify_recovery']
 }
-$apache_port = hiera('lma::infrastructure_alerting::apache_port')
 $nagios_vip = hiera('lma::infrastructure_alerting::vip')
-$nagios_ui_vip = hiera('lma::infrastructure_alerting::vip_ui')
+
+$nagios_ui = hiera_hash('lma::infrastructure_alerting::nagios_ui')
+$nagios_ui_vip = $nagios_ui['vip']
+$apache_port = $nagios_ui['apache_port']
+
+$tls_enabled = $nagios_ui['tls_enabled']
 
 $lma_collector = hiera_hash('lma_collector', {})
 
@@ -63,10 +67,14 @@ if $lma_collector['gse_cluster_node'] {
 
 # Install and configure nagios server for StackLight
 class { 'lma_infra_alerting::nagios':
-  http_password     => $password,
-  http_port         => $apache_port,
-  nagios_ui_address => $nagios_ui_vip,
-  nagios_address    => $nagios_vip,
+  http_password           => $password,
+  http_port               => $apache_port,
+  nagios_ui_address       => $nagios_ui_vip,
+  nagios_address          => $nagios_vip,
+  ui_tls_enabled          => $tls_enabled,
+  ui_certificate_filename => $nagios_ui['ssl_cert_path'],
+  ui_certificate_hostname => $nagios_ui['hostname'],
+
 }
 
 class { 'lma_infra_alerting::nagios::vhost':
