@@ -17,12 +17,17 @@
 # command PROCESS_SERVICE_CHECK_RESULT
 #
 
+import os
 import time
 from urlparse import parse_qs
 
 
 PROCESS_CHECK_CMD = 'PROCESS_SERVICE_CHECK_RESULT'
 VALID_STATES = range(0, 4)
+
+
+class NagiosNotReady(Exception):
+    pass
 
 
 def http_response(response, status_string, output=None):
@@ -87,8 +92,11 @@ def write_command(cmd_file, p, timestamp):
         state=p['plugin_state'][0],
         output=p['plugin_output'][0]
     )
-    with open(cmd_file, "w") as f:
-        f.write(cmd + "\n")
+    if os.path.exists(cmd_file):
+        with open(cmd_file, "w") as f:
+            f.write(cmd + "\n")
+    else:
+        raise NagiosNotReady()
 
 
 def application(environ, response):
@@ -112,7 +120,9 @@ def application(environ, response):
     cmd_file = environ.get('NAGIOS_CMD_FILE', '/var/lib/nagios3/rw/nagios.cmd')
     try:
         write_command(cmd_file, params, timestamp)
-    except e:
+    except NagiosNotReady:
+        return http_response(response, '503 Service Unavailable')
+    except Exception as e:
         return http_response(response, '500 Internal Server Error', str(e))
 
     return http_response(response, '204 No Content')
