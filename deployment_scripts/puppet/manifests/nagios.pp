@@ -85,13 +85,23 @@ class { 'lma_infra_alerting::nagios::vhost':
   require                   => Class['lma_infra_alerting::nagios'],
 }
 
-file { 'ocf-ns_apache':
+$configure_arp_filter_for_vip = '/usr/local/bin/configure_arp_filter_for_vip'
+file { $configure_arp_filter_for_vip:
   ensure => present,
-  path   => '/usr/lib/ocf/resource.d/fuel/ocf-ns_apache',
-  source => 'puppet:///modules/lma_infra_alerting/ocf-ns_apache',
+  source => 'puppet:///modules/lma_infra_alerting/configure_arp_filter_for_vip',
   mode   => '0755',
   owner  => 'root',
   group  => 'root',
+}
+
+file { 'ocf-ns_apache':
+  ensure  => present,
+  path    => '/usr/lib/ocf/resource.d/fuel/ocf-ns_apache',
+  source  => 'puppet:///modules/lma_infra_alerting/ocf-ns_apache',
+  mode    => '0755',
+  owner   => 'root',
+  group   => 'root',
+  require => File[$configure_arp_filter_for_vip],
 }
 
 file { 'ocf-ns_nagios':
