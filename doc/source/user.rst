@@ -8,22 +8,22 @@ User Guide
 Plugin configuration
 --------------------
 
-To configure your plugin, you need to follow these steps:
+To configure the **StackLight Intrastructure Alerting Plugin**, you need to follow these steps:
 
-1. `Create a new environment <http://docs.mirantis.com/openstack/fuel/fuel-8.0/user-guide.html#launch-wizard-to-create-new-environment>`_
-   with the Fuel web user interface.
+1. `Create a new environment
+   <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide/create-environment/start-create-env.html>`_.
 
-#. Click the **Settings** tab and select the **Other** category.
+2. Click on the *Settings* tab of the Fuel web UI and select the *Other* category.
 
-#. Scroll down through the settings until you find the **LMA Infrastructure Alerting
-   Plugin** section. You should see a page like this.
+3. Scroll down through the settings until you find the *StackLight Infrastructure 
+   Alerting Plugin* section. You should see a page like this.
 
    .. image:: ../images/lma_infrastructure_alerting_settings.png
       :width: 800
       :align: center
 
-#. Check the *LMA Infrastructure Alerting Plugin* box and fill-in the required fields
-   as indicated below.
+4. Tick the *StackLight Infrastructure Alerting Plugin* box and fill-in the required
+   fields as indicated below.
 
    a. Change the Nagios web interface password (recommended).
    #. Check the boxes corresponding to the type of notification you would
@@ -34,43 +34,53 @@ To configure your plugin, you need to follow these steps:
    #. Specify the SMTP authentication method.
    #. Specify the SMTP username and password (required if the authentication method isn't *None*).
 
-#. When you are done with the settings, scroll down to the bottom of the page and click
-   the **Save Settings** button.
+5. `Configure your environment
+   <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide/configure-environment.html>`_.
 
-#. Click the *Nodes* tab and assign the *LMA Infrastructure Alerting* role to nodes
-   as shown below. You can see in this example that the *Infrastructure_Alerting*
-   role is assigned to three different nodes along with the *Elasticsearch_Kibana* role
-   and the *InfluxDB_Grafana* role. This means that the three plugins of the LMA toolchain
-   can be installed on the same nodes.
+   .. note:: By default, StackLight is configured to use the *management network*,
+      of the so-called `Default Node Network Group
+      <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide/configure-environment/network-settings.html>`_.
+      While this default setup may be appropriate for small deployments or
+      evaluation purposes, it is recommended not to use this network 
+      for StackLight in production. Instead it is recommended to create a network
+      dedicated to StackLight. Using a dedicated network for  monitoring should 
+      improve the performance of StackLight and minimize the monitoring footprint 
+      on the control-plane. It will also facilitate access to the Nagios web UI
+      after deployment. Please refer to the *StackLight Deployment Guide*
+      for further information about that subject. 
+
+6. Click the *Nodes* tab and assign the *Infrastructure_Alerting* role
+   to the node(s) where you want to install the plugin.
+
+   You can see in the example below that the *Infrastructure_Alerting*
+   role is assigned to three nodes along side with the
+   *Elasticsearch_Kibana* role and the *InfluxDB_Grafana* role.
+   Here, the three plugins of the LMA toolchain backend servers are
+   installed on the same node.
 
    .. image:: ../images/lma_infrastructure_alerting_role.png
       :width: 800
       :align: center
 
-   .. note:: You can assign the *Infrastructure_Alerting* role up to three nodes.
-      Nagios clustering for high availability requires that you assign
-      the *Infrastructure_Alerting* role to at least three nodes. Note also that
-      it is possible to add or remove a node with the *Infrastructure_Alerting*
-      role after deployment.
+   .. note:: Nagios clustering for high availability requires that you assign
+      the *Infrastructure_Alerting* role to at least three nodes.
+      Note also that it is possible to add or remove nodes with the
+      *Infrastructure_Alerting* role after deployment.
 
-#. Click on **Apply Changes**.
+7. `Adjust the disk partitioning if necessary
+   <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide/configure-environment/customize-partitions.html>`_.
 
-#. Adjust the disk configuration if necessary (see the `Fuel User Guide
-   <http://docs.mirantis.com/openstack/fuel/fuel-8.0/user-guide.html#disk-partitioning>`_
-   for details). By default, the *LMA Infrastructure Alerting Plugin* allocates:
+   By default, the StackLight Infrastructure Alerting Plugin allocates:
 
-     * 20% of the first available disk for the operating system by honoring a range of
-       15GB minimum and 50GB maximum,
+     * 20% of the first available disk for the operating system
+       by honoring a range of 15GB minimum and 50GB maximum,
      * 10GB for */var/log*,
-     * At least 20 GB for the Nagios data in */var/nagios*.
+     * At least 20 GB for the Nagios data in ``/var/nagios``.
 
-#. `Configure your environment <http://docs.mirantis.com/openstack/fuel/fuel-8.0/user-guide.html#configure-your-environment>`_
-   as needed.
+   The deployment will fail if the above requirements are not met.
 
-#. `Verify the networks <http://docs.mirantis.com/openstack/fuel/fuel-8.0/user-guide.html#verify-networks>`_
-   on the Networks tab of the Fuel web UI.
-
-#. And finally, `Deploy <http://docs.mirantis.com/openstack/fuel/fuel-8.0/user-guide.html#deploy-changes>`_ your changes.
+8. `Deploy your environment
+   <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide/deploy-environment.html>`_.
 
 .. _plugin_install_verification:
 
@@ -78,81 +88,123 @@ Plugin verification
 -------------------
 
 Be aware, that depending on the number of nodes and deployment setup,
-deploying a Mirantis OpenStack environment can typically take anything
-from 30 minutes to several hours. But once your deployment is complete,
+deploying a Mirantis OpenStack environment may typically take between 
+20 minutes to several hours. Once your deployment is complete,
 you should see a deployment success notification message with
-a link to the Nagios dashboard as shown below.
+a link to the Nagios web UI as shown below.
 
 .. image:: ../images/deployment_notification.png
    :align: center
    :width: 800
 
-From the Fuel web UI **Dashboard** view, click on the **Nagios** link.
-Once you have authenticated (username is ``nagiosadmin`` and the
-password is defined in the settings of the plugin), you should be directed to
-the *Nagios Home Page* as shown below.
+Click on the *Nagios* link.
 
-.. note:: Be aware that Nagios is attached to the *management network*.
-   Your desktop machine must have access to the OpenStack environment's
-   *management network* you just created to get access to the Nagios dashboard.
+Once you are authenticated,
+you should be redirected to the **Nagios Home Page** as shown below.
 
 .. image:: ../images/nagios_homepage.png
    :align: center
    :width: 800
 
-Managing Nagios
----------------
+.. note:: *username* is ``nagiosadmin`` by default, *password* is defined
+   in the settings.
 
-You can get the current status of the OpenStack environment by clicking on
-the *Services* menu item as shown below.
+.. note:: Be aware that if Nagios is installed on the *management network*,
+   you may not have direct access to the Nagios web UI. Some extra network
+   configuration may be required to create a tunnel to the *management network*. 
+
+Using Nagios
+------------
+
+The StackLight Infrastructure Alerting Plugin configures Nagios
+to display the health status of all the nodes and services running
+in the OpenStack environment. The alarms (or service checks in Nagios
+terms) are created in **passive mode** which means that the actual
+checks are not performed by Nagios itself, but by the Collector
+and Aggregator agents of the LMA toolchain.
+
+The best place to get an overview of your OpenStack environment
+is to go the **Services Dashboard**.
+If you click the *Services* link in the left panel of the
+Nagios web UI, you should see a page like this:
 
 .. image:: ../images/nagios_services.png
    :align: center
    :width: 800
 
-The *LMA Infrastructure Alerting Plugin* configures Nagios for all the
-hosts and services that have been deployed in the environment. The alarms (or
-service checks in Nagios terms) are created in **passive mode** as
-they are received from the *LMA Collector* and *Aggregator* (see the `LMA
-Collector documentation <http://fuel-plugin-lma-collector.readthedocs.io/>`_
-for more details).
+In this dashboard, there are two 'virtual hosts' representing
+the health status of the so-called **global clusters** and
+**node clusters** entities:
 
-.. note:: The alert notifications for the nodes and clusters of nodes are
-   disabled by default to avoid the alert fatigue and because they are not
-   necessarily indicative of a condition affecting the overall health state
-   of an OpenStack service cluster. If you nonetheless want to enable those alerts,
-   go to the service details page and click on the *Enable notifications
-   for this service* link within the *Service Commands* panel as shown below.
+  * *00-global-clusters-env${ENVID}* is used to represent the
+    aggregated health status of global clusters like 'Nova',
+    'Keystone' or 'RabbiMQ' to name a few. 
+
+  * *00-node-clusters-env${ENVID}* is used to represent the
+    aggregated health status of  node clusters like
+    'Controller', 'Compute' and 'Storage'.
+
+Following the 'virtual hosts' sections, there is a list
+of checks received for each of the nodes provisioned in the 
+environment. These checks may vary depending on the role of
+the node being monitored.
+ 
+Alerting for the global cluster entities is enabled by default.
+Alerting for the nodes and clusters of nodes is disabled
+by default to avoid the alert fatigue since those alerts should 
+not be representative of a critical condition affecting
+the overall health status of the global cluster entities.
+If you nonetheless want to enable those alerts, we can go
+to the service details page and click on the *Enable notifications
+for this service* link within the *Service Commands* panel as shown below.
 
 .. image:: ../images/nagios_enable_notifs.png
    :align: center
    :width: 800
 
-There are also two *Virtual Hosts* representing the health state of the
-*service clusters* and *node clusters*:
+Finally, you should pay attention to the fact that there is
+a direct dependency between the configuraton of the passive
+checks in Nagios and the `configuration of the alarms in
+the Collectors
+<http://fuel-plugin-lma-collector.readthedocs.io/en/latest/alarms.html>`_.
+A change in ``/etc/hiera/override/alarming.yaml`` or  
+``/etc/hiera/override/gse_filters.yaml`` on any of the
+nodes monitored by StackLight would require to reconfigure Nagios. 
+It also implies that these two files should be maintained
+rigourously identical on all the nodes of the environment
+**including those where Nagios is installed**. Fortunately,
+StackLight provides Puppet artefacts to help you out with
+that task. To reconfigure the passive checks in Nagios
+when ``/etc/hiera/override/alarming.yaml`` or
+``/etc/hiera/override/gse_filters.yaml`` are modified
+you should run the command shown bellow on all the nodes where
+Nagios is installed::
 
-  * *00-global-clusters-env${ENVID}* for the service clusters like the Nova
-    cluster, the Keystone cluster, the RabbiMQ cluster and so on.
+  # puppet apply --modulepath=/etc/fuel/plugins/lma_infrastructure_alerting-<version>/puppet/modules/ \
+  /etc/fuel/plugins/lma_infrastructure_alerting-<version>/puppet/manifests/nagios.pp  
 
-  * *00-node-clusters-env${ENVID}* for the physical node clusters like the
-    cluster of controller nodes, the cluster of storage nodes and so on.
+Configuring service checks using the InfluxDB metrics
+-----------------------------------------------------
 
-These *Virtual Hosts* entities offer a high-level health state view for
-those clusters in the OpenStack environment.
+You could also configure Nagios to perform active checks,
+which are not performed by StakLight by default, using the
+metrics stored in InfluxDB's time-series.
+For example, you could define active checks to be notified
+when the CPU activity of particular process is too high. 
 
-Configuring service checks on InfluxDB metrics
-----------------------------------------------
+Let's assume the following scenario.
 
-You can configure additional alarms (other than those already defined in the
-*LMA Collector*) based on the metrics stored in the InfluxDB database. You
-can, for example, define an alert to be notified when the CPU activity for a
-particular process crosses a particular threshold.
-Say for example, you would like to set a 'warning'
-alarm at 30% of system CPU usage and a 'criticial' alarm at 50% system CPU usage for the
-Elasticsearch process.
-The steps to define those alarms in Nagios would be as follow:
+  * You want to monitor the Elasticsearch server
+  * The CPU activity of the Elasticsearch server is captured
+    in a time-series stored in InfluxDB. 
+  * You want to receive an alert at the 'warning' level
+    when the CPU load exceeds 30% of system activity.
+  * You want to receive an alert at the 'critical' level
+    when the CPU load exceeds 50% of system activity.
 
-#. Connect to the *LMA Infrastructure Alerting* node.
+The steps to create such an alarms in Nagios would be as follow:
+
+#. Connect to each of the nodes running Nagios.
 
 #. Install the Nagios plugin for querying InfluxDB::
 
@@ -190,14 +242,14 @@ The steps to define those alarms in Nagios would be as follow:
 
   Here, things look okay. No serious problems were detected during the pre-flight check.
 
-5. Restart the Nagios server,::
+#. Restart the Nagios server::
 
     [root@node-13 ~]# /etc/init.d/nagios3 restart
 
-#. Go the Nagios dashboard and verify that the service check has been added.
+#. Go to the Nagios Web UI to verify that the service check has been added.
 
-From there, you can define additional service checks for different hosts or
-host groups using the same ``check_influx`` command.
+You can define additional service checks for different nodes or
+node groups using the same ``check_influx`` command.
 You will just need to provide these three required arguments for defining new service checks:
 
   * A valid InfluxDB query that should return only one row with a single value.
@@ -262,9 +314,9 @@ your environment.
 Troubleshooting
 ---------------
 
-If you cannot access the Nagios UI, follow these troubleshooting tips.
+If you cannot access the Nagios web UI, follow these troubleshooting tips.
 
-#. Check that the *LMA Collector* nodes are able to connect to the Nagios
+#. Check that the StackLight Collectors are able to connect to the Nagios
    VIP address on port *8001*.
 
 #. Check that the Nagios configuration is valid::
@@ -286,7 +338,7 @@ If you cannot access the Nagios UI, follow these troubleshooting tips.
 
     [root@node-13 ~]# /etc/init.d/nagios3 start
 
-#. Check if Apache is up and running::
+#. Check that Apache is up and running::
 
     [root@node-13 ~]# /etc/init.d/apache2 status
 
@@ -294,9 +346,9 @@ If you cannot access the Nagios UI, follow these troubleshooting tips.
 
     [root@node-13 ~]# /etc/init.d/apache2 start
 
-#. Look for errors in the Nagios log file (located at /var/nagios/nagios.log).
+#. Look for errors in the Nagios log file ``/var/nagios/nagios.log``.
 
-#. Look for errors in the Apache log file (located at /var/log/apache2/nagios_error.log).
+#. Look for errors in the Apache log file ``/var/log/apache2/nagios_error.log``.
 
 Finally, Nagios may report a host or service state as *UNKNOWN*.
 Two cases can be distinguished:
@@ -305,12 +357,12 @@ Two cases can be distinguished:
   * 'UNKNOWN: No datapoint have been received over the last X seconds'.
 
 Both cases indicate that Nagios doesn't receive regular passive checks from
-the *LMA Collector*. This may be due to different problems:
+the StackLight Collector. This may be due to different problems:
 
-  * The 'hekad' process of the *LMA Collector* fails to communicate with Nagios,
-  * The 'collectd' and/or 'hekad' process of the *LMA Collector* has crashed,
+  * The 'hekad' process fails to communicate with Nagios,
+  * The 'collectd' and/or 'hekad' process have crashed,
   * One or several alarm rules are misconfigured.
 
 To remedy to the above situations, follow the `troubleshooting tips
 <http://fuel-plugin-lma-collector.readthedocs.io/en/latest/configuration.html#troubleshooting>`_
-of the *LMA Collector Plugin User Guide*.
+of the *StackLight Collector Plugin User Guide*.
