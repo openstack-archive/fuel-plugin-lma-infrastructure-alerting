@@ -5,7 +5,7 @@ source_suffix = '.rst'
 
 master_doc = 'index'
 
-project = u'The LMA Infrastructure Alerting plugin for Fuel'
+project = u'The StackLight Infrastructure Alerting Plugin for Fuel'
 copyright = u'2015, Mirantis Inc.'
 
 version = '0.10'
@@ -20,7 +20,7 @@ html_static_path = ['_static']
 
 latex_documents = [
   ('index', 'LMAInfrastructureAlerting.tex',
-   u'The LMA Infrastructure Alerting plugin for Fuel Documentation',
+   u'The StackLight Infrastructure Alerting Plugin for Fuel Documentation',
    u'Mirantis Inc.', 'manual'),
   ]
 
