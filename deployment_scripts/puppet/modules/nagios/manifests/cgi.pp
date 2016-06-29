@@ -74,7 +74,13 @@ class nagios::cgi (
     allow_from => [$vhost_listen_ip, $wsgi_vhost_listen_ip, '127.0.0.1'],
   }
 
-  apache::listen { "${vhost_listen_ip}:${http_port}": }
+  if $ui_tls_enabled {
+    # Explicitly set HTTPS for the virtualhost to avoid random error
+    # "ssl_error_rx_record_too_long"
+    apache::listen { "${vhost_listen_ip}:${http_port} https": }
+  } else {
+    apache::listen { "${vhost_listen_ip}:${http_port}": }
+  }
   if $wsgi_vhost_listen_ip {
     apache::listen { "${wsgi_vhost_listen_ip}:${http_port}": }
   }
