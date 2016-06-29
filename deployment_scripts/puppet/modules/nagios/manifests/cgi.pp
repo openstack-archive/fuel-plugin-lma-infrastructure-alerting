@@ -18,6 +18,7 @@
 #
 class nagios::cgi (
   $vhost_listen_ip,
+  $httpd_service_name = 'httpd',
   $httpd_dir = '/etc/apache2',
   $wsgi_vhost_listen_ip = undef,
   $user = $nagios::params::cgi_user,
@@ -87,6 +88,7 @@ class nagios::cgi (
   class { 'apache':
     # be good citizen by not erasing other configurations
     purge_configs       => false,
+    service_name        => $httpd_service_name,
     default_confd_files => false,
     default_vhost       => false,
     # prerequists for Nagios CGI
@@ -216,6 +218,7 @@ class nagios::cgi (
       'set authorized_for_all_service_commands *',
       'set authorized_for_all_host_commands *',
     ],
-    require => Htpasswd[$user],
+    require => [Htpasswd[$user], Class['apache']],
+    notify  => Service[$httpd_service_name],
   }
 }

@@ -19,6 +19,7 @@
 
 class lma_infra_alerting::nagios (
   $http_user = $lma_infra_alerting::params::http_user,
+  $httpd_service_name = 'httpd',
   $http_password,
   $http_port,
   $nagios_ui_address,
@@ -67,6 +68,7 @@ class lma_infra_alerting::nagios (
     ensure => directory,
   } ->
   class { '::nagios::cgi':
+    httpd_service_name         => $httpd_service_name,
     httpd_dir                  => $httpd_dir,
     user                       => $http_user,
     password                   => $http_password,

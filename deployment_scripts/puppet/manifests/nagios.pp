@@ -70,6 +70,8 @@ if $lma_collector['gse_cluster_node'] {
 
 # Install and configure nagios server for StackLight
 class { 'lma_infra_alerting::nagios':
+  # Service must be named as the Pacemaker resource
+  httpd_service_name         => 'apache2-nagios',
   httpd_dir                  => $apache_config_dir,
   http_password              => $password,
   http_port                  => $apache_port,
@@ -133,14 +135,6 @@ file { 'ocf-ns_nagios':
 exec { 'net.ipv4.ip_nonlocal_bind':
   command => '/sbin/sysctl -w net.ipv4.ip_nonlocal_bind=1',
   unless  => '/sbin/sysctl -n net.ipv4.ip_nonlocal_bind | /bin/grep 1',
-}
-
-# Service must be defined for Pacemaker resources
-service { 'apache2-nagios':
-  ensure     => 'running',
-  enable     => true,
-  hasstatus  => true,
-  hasrestart => true,
 }
 
 if $fuel_version < 9.0 {
