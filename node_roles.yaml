@@ -1,5 +1,5 @@
 infrastructure_alerting:
-  name: 'LMA Infrastructure Alerting'
+  name: 'StackLight Infrastructure Alerting'
   description: 'Install services for the infrastructure alerting'
   has_primary: true
   public_ip_required: false
