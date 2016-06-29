@@ -49,9 +49,6 @@ if $tls_enabled {
       content => $nagios_ui_ssl_cert,
     }
   }
-  $ui_scheme = 'https'
-} else {
-  $ui_scheme = 'http'
 }
 
 $kibana_port = hiera('lma::elasticsearch::kibana_port', 80)
@@ -75,7 +72,6 @@ lma::infrastructure_alerting::apache_dir: <%= @apache_httpd_dir %>
 lma::infrastructure_alerting::nagios_ui:
   vip: <%= @alerting_ui_vip %>
   apache_port: 8001
-  scheme: <%= @ui_scheme %>
   tls_enabled: <%= @tls_enabled %>
 <% if @tls_enabled -%>
   hostname: <%= @nagios_ui_hostname %>
