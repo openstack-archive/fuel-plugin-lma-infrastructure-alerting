@@ -15,7 +15,7 @@ To configure the **StackLight Intrastructure Alerting Plugin**, you need to foll
 
 2. Click on the *Settings* tab of the Fuel web UI and select the *Other* category.
 
-3. Scroll down through the settings until you find the *StackLight Infrastructure 
+3. Scroll down through the settings until you find the *StackLight Infrastructure
    Alerting Plugin* section. You should see a page like this.
 
    .. image:: ../images/lma_infrastructure_alerting_settings.png
@@ -25,7 +25,7 @@ To configure the **StackLight Intrastructure Alerting Plugin**, you need to foll
 4. Tick the *StackLight Infrastructure Alerting Plugin* box and fill-in the required
    fields as indicated below.
 
-   a. Change the Nagios web interface password (recommended).
+   a. Override the Nagios web interface self-generated password if you choose to do so.
    #. Check the boxes corresponding to the type of notification you would
       like to be alerted for by email (*CRITICAL*, *WARNING*, *UNKNOWN*, *RECOVERY*).
    #. Specify the recipient email address for the alerts.
@@ -41,13 +41,13 @@ To configure the **StackLight Intrastructure Alerting Plugin**, you need to foll
       of the so-called `Default Node Network Group
       <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide/configure-environment/network-settings.html>`_.
       While this default setup may be appropriate for small deployments or
-      evaluation purposes, it is recommended not to use this network 
+      evaluation purposes, it is recommended not to use this network
       for StackLight in production. Instead it is recommended to create a network
-      dedicated to StackLight. Using a dedicated network for  monitoring should 
-      improve the performance of StackLight and minimize the monitoring footprint 
+      dedicated to StackLight. Using a dedicated network for  monitoring should
+      improve the performance of StackLight and minimize the monitoring footprint
       on the control-plane. It will also facilitate access to the Nagios web UI
       after deployment. Please refer to the *StackLight Deployment Guide*
-      for further information about that subject. 
+      for further information about that subject.
 
 6. Click the *Nodes* tab and assign the *Infrastructure_Alerting* role
    to the node(s) where you want to install the plugin.
@@ -63,7 +63,7 @@ To configure the **StackLight Intrastructure Alerting Plugin**, you need to foll
       :align: center
 
    .. note:: Nagios clustering for high availability requires that you assign
-      the *Infrastructure_Alerting* role to at least three nodes.
+      the *Infrastructure_Alerting* role to three different nodes.
       Note also that it is possible to add or remove nodes with the
       *Infrastructure_Alerting* role after deployment.
 
@@ -88,7 +88,7 @@ Plugin verification
 -------------------
 
 Be aware, that depending on the number of nodes and deployment setup,
-deploying a Mirantis OpenStack environment may typically take between 
+deploying a Mirantis OpenStack environment may typically take between
 20 minutes to several hours. Once your deployment is complete,
 you should see a deployment success notification message with
 a link to the Nagios web UI as shown below.
@@ -111,7 +111,7 @@ you should be redirected to the **Nagios Home Page** as shown below.
 
 .. note:: Be aware that if Nagios is installed on the *management network*,
    you may not have direct access to the Nagios web UI. Some extra network
-   configuration may be required to create a tunnel to the *management network*. 
+   configuration may be required to create an SSH tunnel to the *management network*.
 
 Using Nagios
 ------------
@@ -138,20 +138,20 @@ the health status of the so-called **global clusters** and
 
   * *00-global-clusters-env${ENVID}* is used to represent the
     aggregated health status of global clusters like 'Nova',
-    'Keystone' or 'RabbiMQ' to name a few. 
+    'Keystone' or 'RabbiMQ' to name a few.
 
   * *00-node-clusters-env${ENVID}* is used to represent the
     aggregated health status of  node clusters like
     'Controller', 'Compute' and 'Storage'.
 
 Following the 'virtual hosts' sections, there is a list
-of checks received for each of the nodes provisioned in the 
+of checks received for each of the nodes provisioned in the
 environment. These checks may vary depending on the role of
 the node being monitored.
- 
+
 Alerting for the global cluster entities is enabled by default.
 Alerting for the nodes and clusters of nodes is disabled
-by default to avoid the alert fatigue since those alerts should 
+by default to avoid the alert fatigue since those alerts should
 not be representative of a critical condition affecting
 the overall health status of the global cluster entities.
 If you nonetheless want to enable those alerts, we can go
@@ -167,9 +167,9 @@ a direct dependency between the configuraton of the passive
 checks in Nagios and the `configuration of the alarms in
 the Collectors
 <http://fuel-plugin-lma-collector.readthedocs.io/en/latest/alarms.html>`_.
-A change in ``/etc/hiera/override/alarming.yaml`` or  
+A change in ``/etc/hiera/override/alarming.yaml`` or
 ``/etc/hiera/override/gse_filters.yaml`` on any of the
-nodes monitored by StackLight would require to reconfigure Nagios. 
+nodes monitored by StackLight would require to reconfigure Nagios.
 It also implies that these two files should be maintained
 rigourously identical on all the nodes of the environment
 **including those where Nagios is installed**. Fortunately,
@@ -180,8 +180,9 @@ when ``/etc/hiera/override/alarming.yaml`` or
 you should run the command shown bellow on all the nodes where
 Nagios is installed::
 
-  # puppet apply --modulepath=/etc/fuel/plugins/lma_infrastructure_alerting-<version>/puppet/modules/ \
-  /etc/fuel/plugins/lma_infrastructure_alerting-<version>/puppet/manifests/nagios.pp  
+  # puppet apply --modulepath=/etc/fuel/plugins/lma_infrastructure_alerting-<version>/puppet/modules:\
+  /etc/puppet/modules \
+  /etc/fuel/plugins/lma_infrastructure_alerting-<version>/puppet/manifests/nagios.pp
 
 Configuring service checks using the InfluxDB metrics
 -----------------------------------------------------
@@ -190,13 +191,13 @@ You could also configure Nagios to perform active checks,
 which are not performed by StakLight by default, using the
 metrics stored in InfluxDB's time-series.
 For example, you could define active checks to be notified
-when the CPU activity of particular process is too high. 
+when the CPU activity of particular process is too high.
 
 Let's assume the following scenario.
 
   * You want to monitor the Elasticsearch server
   * The CPU activity of the Elasticsearch server is captured
-    in a time-series stored in InfluxDB. 
+    in a time-series stored in InfluxDB.
   * You want to receive an alert at the 'warning' level
     when the CPU load exceeds 30% of system activity.
   * You want to receive an alert at the 'critical' level
@@ -204,13 +205,13 @@ Let's assume the following scenario.
 
 The steps to create such an alarms in Nagios would be as follow:
 
-#. Connect to each of the nodes running Nagios.
+1. Connect to each of the nodes running Nagios.
 
-#. Install the Nagios plugin for querying InfluxDB::
+2. Install the Nagios plugin for querying InfluxDB::
 
     [root@node-13 ~]# pip install influx-nagios-plugin
 
-#. Define the command and the service check in the ``/etc/nagios3/conf.d/influxdb_services.conf`` file::
+3. Define the command and the service check in the ``/etc/nagios3/conf.d/influxdb_services.conf`` file::
 
     # Replace <INFLUXDB_HOST>, <INFLUXDB_USER> and <INFLUXDB_PASSWORD> by
     # the appropriate values for your deployment
@@ -231,7 +232,7 @@ The steps to create such an alarms in Nagios would be as follow:
       use                 generic-service
     }
 
-#. Verify that the Nagios configuration is valid::
+4. Verify that the Nagios configuration is valid::
 
     [root@node-13 ~]# nagios3 -v /etc/nagios3/nagios.cfg
 
@@ -242,11 +243,11 @@ The steps to create such an alarms in Nagios would be as follow:
 
   Here, things look okay. No serious problems were detected during the pre-flight check.
 
-#. Restart the Nagios server::
+5. Restart the Nagios server::
 
-    [root@node-13 ~]# /etc/init.d/nagios3 restart
+    [root@node-13 ~]# crm resource restart nagios3
 
-#. Go to the Nagios Web UI to verify that the service check has been added.
+6. Go to the Nagios Web UI to verify that the service check has been added.
 
 You can define additional service checks for different nodes or
 node groups using the same ``check_influx`` command.
@@ -271,9 +272,9 @@ your environment.
 .. note:: Prior to enabling STARTTLS, you need to configure the *SMTP Authentication method*
    parameter in the plugin's settings to use either *Plain*, *Login* or *CRAM-MD5*.
 
-#. Login to the *LMA Infrastructure Alerting* node.
+1. Login to the *LMA Infrastructure Alerting* node.
 
-#. Edit the
+2. Edit the
    ``/etc/nagios3/conf.d/cmd_notify-service-by-smtp-with-long-service-output.cfg``
    file to add the ``-S smtp-use-starttls`` option to the `mail` command. For
    example::
@@ -303,23 +304,23 @@ your environment.
      If you want to disable the verification of the SSL/TLS server
      certificate altogether, you should add the ``-S ssl-verify=ignore`` option instead.
 
-#. Verify that the Nagios configuration is correct::
+3. Verify that the Nagios configuration is correct::
 
     [root@node-13 ~]# nagios3 -v /etc/nagios3/nagios.cfg
 
-#. Restart the Nagios service::
+4. Restart the Nagios service::
 
-    [root@node-13 ~]# /etc/init.d/nagios3 restart
+    [root@node-13 ~]# crm resource restart nagios3
 
 Troubleshooting
 ---------------
 
 If you cannot access the Nagios web UI, follow these troubleshooting tips.
 
-#. Check that the StackLight Collectors are able to connect to the Nagios
+1. Check that the StackLight Collector are able to connect to the Nagios
    VIP address on port *8001*.
 
-#. Check that the Nagios configuration is valid::
+2. Check that the Nagios configuration is valid::
 
     [root@node-13 ~]# nagios3 -v /etc/nagios3/nagios.cfg
 
@@ -330,25 +331,33 @@ If you cannot access the Nagios web UI, follow these troubleshooting tips.
 
   Here, things look okay. No serious problems were detected during the pre-flight check.
 
-#. Check that the Nagios server is up and running::
+3. Check that the Nagios server is up and running::
 
-    [root@node-13 ~]# /etc/init.d/nagios3 status
+    [root@node-13 ~]# crm resource status nagios3
+    resource nagios3 is NOT running
+    resource nagios3 is NOT running
 
-#. If Nagios is down, restart it::
+4. If Nagios is not running, start it::
 
-    [root@node-13 ~]# /etc/init.d/nagios3 start
+    [root@node-13 ~]# crm resource start nagios3
 
-#. Check that Apache is up and running::
+5. Check that Apache is up and running::
 
-    [root@node-13 ~]# /etc/init.d/apache2 status
+    [root@node-13 ~]# crm resource status apache2-nagios
 
-#. If Apache is down, restart it::
+6. If Apache is not running, start it::
 
-    [root@node-13 ~]# /etc/init.d/apache2 start
+    [root@node-13 ~]# crm resource start apache2-nagios
 
-#. Look for errors in the Nagios log file ``/var/nagios/nagios.log``.
+7. Look for errors in the Nagios log file:
+   
+   * ``/var/nagios/nagios.log``.
 
-#. Look for errors in the Apache log file ``/var/log/apache2/nagios_error.log``.
+8. Look for errors in the Apache log files:
+   
+   * ``/var/log/apache2/nagios_error.log``
+   * ``/var/log/apache2/nagios_wsgi_access.log``
+   * ``/var/log/apache2/nagios_wsgi_error.log``
 
 Finally, Nagios may report a host or service state as *UNKNOWN*.
 Two cases can be distinguished:
