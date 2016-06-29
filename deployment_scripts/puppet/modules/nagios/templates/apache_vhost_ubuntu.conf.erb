@@ -39,7 +39,25 @@
     AuthName "Nagios Access"
     AuthType Basic
     AuthUserFile <%= @cgi_htpasswd_file %>
+<% if @ldap_enabled -%>
+    AuthBasicProvider file ldap
+    AuthLDAPURL "<%= @ldap_protocol %>://<%= @ldap_url %>"
+    AuthLDAPBindDN "<%= @ldap_bind_dn %>"
+    AuthLDAPBindPassword <%= @ldap_bind_password %>
+<% if @ldap_authorization_enabled -%>
+    AuthLDAPGroupAttribute <%= @ldap_group_attribute %>
+    AuthLDAPGroupAttributeIsDN off
+    AuthBasicAuthoritative on
+    <RequireAny>
+    require user <%= @user %>
+    Require ldap-group <%= @ldap_admin_group_dn %>
+    </RequireAny>
+<% else -%>
     require valid-user
+<% end -%>
+<% else -%>
+    require valid-user
+<% end -%>
   </DirectoryMatch>
 
   <Directory /usr/share/nagios3/htdocs>

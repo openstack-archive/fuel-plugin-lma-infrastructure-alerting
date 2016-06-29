@@ -24,9 +24,22 @@ class nagios::cgi (
   $password = $nagios::params::cgi_password,
   $htpasswd_file = $nagios::params::cgi_htpasswd_file,
   $http_port = $nagios::params::cgi_http_port,
+  $cgi_conf_file = $nagios::params::nagios_cgi_conf_file,
   $ui_tls_enabled = false,
   $ui_certificate_filename = undef,
   $ui_certificate_hostname = undef,
+  $ldap_enabled = false,
+  $ldap_protocol = undef,
+  $ldap_servers = [],
+  $ldap_port = undef,
+  $ldap_bind_dn = undef,
+  $ldap_bind_password = undef,
+  $ldap_user_search_base_dns = undef,
+  $ldap_user_search_filter = undef,
+  $ldap_user_attribute = undef,
+  $ldap_authorization_enabled = false,
+  $ldap_group_attribute = undef,
+  $ldap_admin_group_dn = undef,
   $wsgi_process_service_checks_location = '/status',
   $wsgi_process_service_checks_script = '/usr/local/bin/nagios-process-service-checks.wsgi',
   $wsgi_processes = 2,
@@ -36,14 +49,38 @@ class nagios::cgi (
   validate_integer($wsgi_processes)
   validate_integer($wsgi_threads)
 
+  if $ldap_enabled {
+    if empty($ldap_servers) {
+      fail('ldap_servers list parameter is empty')
+    }
+    if ! $ldap_port { fail('Missing ldap_port parameter')}
+    if ! $ldap_protocol { fail('Missing ldap_protocol parameter')}
+    if ! $ldap_bind_dn { fail('Missing ldap_bind_dn parameter')}
+    if ! $ldap_bind_password { fail('Missing ldap_bind_password parameter')}
+    if ! $ldap_user_search_base_dns { fail('Missing ldap_user_search_base_dns parameter')}
+    if ! $ldap_user_search_filter { fail('Missing ldap_user_search_filter parameter')}
+    if ! $ldap_user_attribute { fail('Missing ldap_user_attribute parameter')}
+
+    if $ldap_authorization_enabled {
+      if ! $ldap_group_attribute {fail('Missing ldap_group_attribute parameter')}
+      if ! $ldap_admin_group_dn {fail('Missing ldap_admin_group_dn parameter')}
+    }
+    $ldap_apache_modules = ['ldap', 'authnz_ldap']
+    # LDAP url is used in apache::custom_config
+    $ldap_urls = suffix($ldap_servers, ":${ldap_port}/${ldap_user_search_base_dns}?${ldap_user_attribute}?sub?${ldap_user_search_filter}")
+
+    $ldap_url = join($ldap_urls, ' ')
+  } else {
+    $ldap_apache_modules = []
+  }
   $default_apache_modules = [
     'php', 'cgi', 'autoindex', 'env', 'access_compat', 'deflate',
     'authn_core', 'authn_file', 'auth_basic', 'authz_user', 'wsgi']
 
   if $ui_tls_enabled {
-    $apache_modules = concat($default_apache_modules, ['ssl', 'headers'])
+    $apache_modules = concat($default_apache_modules, ['ssl', 'headers'], $ldap_apache_modules)
   } else {
-    $apache_modules = $default_apache_modules
+    $apache_modules = concat($default_apache_modules, $ldap_apache_modules)
   }
 
   ## Configure apache
@@ -163,6 +200,22 @@ class nagios::cgi (
     owner   => root,
     group   => $apache_user,
     mode    => '0640',
+    require => Htpasswd[$user],
+  }
+
+  # Authorize all logged users
+  augeas { $cgi_conf_file:
+    incl    => $cgi_conf_file,
+    lens    => 'nagioscfg.lns',
+    changes => [
+      'set authorized_for_system_information *',
+      'set authorized_for_configuration_information *',
+      'set authorized_for_system_commands *',
+      'set authorized_for_all_services *',
+      'set authorized_for_all_hosts *',
+      'set authorized_for_all_service_commands *',
+      'set authorized_for_all_host_commands *',
+    ],
     require => Htpasswd[$user],
   }
 }

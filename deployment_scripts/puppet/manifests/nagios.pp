@@ -19,7 +19,8 @@ $env_id = hiera('deployment_id')
 $fuel_version = 0 + hiera('fuel_version')
 
 $plugin = hiera('lma_infrastructure_alerting')
-$password = $plugin['nagios_password']
+$nagios_authnz = hiera('lma::infrastructure_alerting::authnz')
+$password = $nagios_authnz['password']
 if $notify_warning == false and
   $notify_critical == false and
   $notify_unknown == false and
@@ -69,15 +70,27 @@ if $lma_collector['gse_cluster_node'] {
 
 # Install and configure nagios server for StackLight
 class { 'lma_infra_alerting::nagios':
-  httpd_dir               => $apache_config_dir,
-  http_password           => $password,
-  http_port               => $apache_port,
-  nagios_ui_address       => $nagios_ui_vip,
-  nagios_address          => $nagios_vip,
-  ui_tls_enabled          => $tls_enabled,
-  ui_certificate_filename => $nagios_ui['ssl_cert_path'],
-  ui_certificate_hostname => $nagios_ui['hostname'],
-
+  httpd_dir                  => $apache_config_dir,
+  http_password              => $password,
+  http_port                  => $apache_port,
+  nagios_ui_address          => $nagios_ui_vip,
+  nagios_address             => $nagios_vip,
+  ui_tls_enabled             => $tls_enabled,
+  ui_certificate_filename    => $nagios_ui['ssl_cert_path'],
+  ui_certificate_hostname    => $nagios_ui['hostname'],
+  ldap_enabled               => $nagios_authnz['ldap_enabled'],
+  ldap_protocol              => $nagios_authnz['ldap_protocol'],
+  ldap_servers               => $nagios_authnz['ldap_servers'],
+  ldap_port                  => $nagios_authnz['ldap_port'],
+  ldap_bind_dn               => $nagios_authnz['ldap_bind_dn'],
+  ldap_bind_password         => $nagios_authnz['ldap_bind_password'],
+  ldap_user_search_base_dns  => $nagios_authnz['ldap_user_search_base_dns'],
+  ldap_user_search_filter    => $nagios_authnz['ldap_user_search_filter'],
+  ldap_user_attribute        => $nagios_authnz['ldap_user_attribute'],
+  ldap_authorization_enabled => $nagios_authnz['ldap_authorization_enabled'],
+  ldap_group_attribute       => $nagios_authnz['ldap_group_attribute'],
+  ldap_admin_group_dn        => $nagios_authnz['ldap_admin_group_dn'],
+  notify                     => Service['apache2-nagios'],
 }
 
 class { 'lma_infra_alerting::nagios::vhost':

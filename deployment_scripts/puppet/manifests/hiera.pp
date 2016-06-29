@@ -55,6 +55,29 @@ $kibana_port = hiera('lma::elasticsearch::kibana_port', 80)
 $es_port = hiera('lma::elasticsearch::rest_port', 9200)
 $grafana_port = hiera('lma::influxdb::grafana_port', 8000)
 $influxdb_port = hiera('lma::influxdb::influxdb_port', 8086)
+$password = $plugin['nagios_password']
+
+$ldap_enabled               = $plugin['ldap_enabled'] or false
+$ldap_protocol              = $plugin['ldap_protocol']
+$ldap_servers               = split($plugin['ldap_servers'], '\s+')
+$ldap_bind_dn               = $plugin['ldap_bind_dn']
+$ldap_bind_password         = $plugin['ldap_bind_password']
+$ldap_user_search_base_dns  = $plugin['ldap_user_search_base_dns']
+$ldap_user_search_filter    = $plugin['ldap_user_search_filter']
+$ldap_user_attribute        = $plugin['ldap_user_attribute']
+$ldap_authorization_enabled = $plugin['ldap_authorization_enabled'] or false
+$ldap_group_attribute       = $plugin['ldap_group_attribute']
+$ldap_admin_group_dn        = $plugin['ldap_admin_group_dn']
+
+if empty($plugin['ldap_server_port']) {
+  if downcase($ldap_protocol) == 'ldap' {
+    $ldap_port = 389
+  } else {
+    $ldap_port = 636
+  }
+} else {
+  $ldap_port = $plugin['ldap_server_port']
+}
 
 $calculated_content = inline_template('---
 lma::corosync_roles:
@@ -76,6 +99,27 @@ lma::infrastructure_alerting::nagios_ui:
 <% if @tls_enabled -%>
   hostname: <%= @nagios_ui_hostname %>
   ssl_cert_path: <%= @nagios_ui_ssl_cert_path %>
+<% end -%>
+lma::infrastructure_alerting::authnz:
+    password: <%= @password %>
+    ldap_enabled: <%= @ldap_enabled %>
+    ldap_authorization_enabled: <%= @ldap_authorization_enabled %>
+<% if @ldap_enabled -%>
+    ldap_servers:
+<% @ldap_servers.each do |s| -%>
+        - "<%= s %>"
+<% end -%>
+    ldap_protocol: <%= @ldap_protocol %>
+    ldap_port: <%= @ldap_port %>
+    ldap_bind_dn: <%= @ldap_bind_dn %>
+    ldap_bind_password: <%= @ldap_bind_password %>
+    ldap_user_search_base_dns: <%= @ldap_user_search_base_dns %>
+    ldap_user_attribute: <%= @ldap_user_attribute %>
+    ldap_user_search_filter: <%= @ldap_user_search_filter %>
+    ldap_group_attribute: <%= @ldap_group_attribute %>
+<% if @ldap_authorization_enabled -%>
+    ldap_admin_group_dn: <%= @ldap_admin_group_dn %>
+<% end -%>
 <% end -%>
 ')
 

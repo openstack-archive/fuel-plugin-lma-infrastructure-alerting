@@ -22,6 +22,7 @@ class nagios::params {
       $nagios_plugin_package = 'nagios-plugins'
       $nagios_plugin_dir = '/usr/lib/nagios/plugins'
       # CGI
+      $nagios_cgi_conf_file = '/etc/nagios3/cgi.cfg'
       $nagios_cgi_package = 'nagios3-cgi'
       $cgi_htpasswd_file = '/etc/nagios3/htpasswd.users'
       $apache_service_name = 'apache2'
@@ -38,6 +39,7 @@ class nagios::params {
                                 'nagios-plugins-procs', 'nagios-plugins-http']
       $nagios_plugin_dir = '/usr/lib64/nagios/plugins/'
       # CGI
+      $nagios_cgi_conf_file = '/etc/nagios3/cgi.cfg'
       $nagios_cgi_package = $nagios_service_name # CGI is provided by the same package
       $cgi_htpasswd_file = '/etc/nagios/htpasswd'
       $apache_service_name = 'httpd'
