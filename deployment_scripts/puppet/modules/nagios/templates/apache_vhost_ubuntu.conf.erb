@@ -3,6 +3,10 @@
 # Managed by Puppet
 # ************************************
 
+<% if @ldap_enabled -%>
+LDAPVerifyServerCert off
+<% end -%>
+
 <VirtualHost <%= @vhost_listen_ip %>:<%= @http_port %>>
 <% if @ui_tls_enabled -%>
   ServerName <%= @ui_certificate_hostname %>
