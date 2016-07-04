@@ -1,6 +1,7 @@
 attributes:
   nagios_password:
-    value: 'r00tme'
+    value:
+      generator: 'password'
     label: 'Nagios HTTP password'
     description: 'The password to access the Nagios Web Interface (username: "nagiosadmin")'
     weight: 42
