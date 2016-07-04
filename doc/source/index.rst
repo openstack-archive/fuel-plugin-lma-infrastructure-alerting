@@ -1,6 +1,6 @@
-==================================================================================
-Welcome to the Mirantis OpenStack LMA Infrastructure Alering Plugin Documentation!
-==================================================================================
+===============================================================================
+Welcome to the StackLight Infrastructure Alering Plugin for Fuel Documentation!
+===============================================================================
 
 User documentation
 ==================
