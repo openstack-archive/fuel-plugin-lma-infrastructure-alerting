@@ -24,7 +24,7 @@ $port = $nagios_ui['apache_port']
 if $tls_enabled {
   $host_name = $nagios_ui['hostname']
   $link = "https://${$host_name}:${port}/"
-  $text = "Dashboard for visualizing alerts (${host_name}: ${vip})"
+  $text = "Dashboard for visualizing alerts (${host_name}: https://${vip}:${port})"
 } else {
   $link = "http://${vip}:${port}/"
   $text = 'Dashboard for visualizing alerts'
