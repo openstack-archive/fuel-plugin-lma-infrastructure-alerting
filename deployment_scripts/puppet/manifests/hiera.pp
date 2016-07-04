@@ -51,7 +51,7 @@ if $tls_enabled {
   }
 }
 
-$kibana_port = hiera('lma::elasticsearch::kibana_port', 80)
+$kibana_port = hiera('lma::elasticsearch::apache_port', 80)
 $es_port = hiera('lma::elasticsearch::rest_port', 9200)
 $grafana_port = hiera('lma::influxdb::grafana_port', 8000)
 $influxdb_port = hiera('lma::influxdb::influxdb_port', 8086)
@@ -79,6 +79,12 @@ if empty($plugin['ldap_server_port']) {
   $ldap_port = $plugin['ldap_server_port']
 }
 
+$elasticsearch_kibana = hiera_hash('elasticsearch_kibana', {})
+if ! empty($elasticsearch_kibana) {
+  $kibana_username = $elasticsearch_kibana["kibana_username"]
+  $kibana_password = $elasticsearch_kibana["kibana_password"]
+}
+
 $calculated_content = inline_template('---
 lma::corosync_roles:
   - infrastructure_alerting
@@ -87,6 +93,8 @@ lma::infrastructure_alerting::listen_address: <%= @listen_address %>
 lma::infrastructure_alerting::vip: <%= @alerting_vip %>
 lma::infrastructure_alerting::vip_ns: infrastructure_alerting
 lma::infrastructure_alerting::kibana_port: <%= @kibana_port %>
+lma::infrastructure_alerting::kibana_username: <%= @kibana_username %>
+lma::infrastructure_alerting::kibana_password: <%= @kibana_password %>
 lma::infrastructure_alerting::es_port: <%= @es_port %>
 lma::infrastructure_alerting::grafana_port: <%= @grafana_port %>
 lma::infrastructure_alerting::influxdb_port: <%= @influxdb_port %>
