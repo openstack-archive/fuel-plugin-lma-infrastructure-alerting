@@ -218,6 +218,13 @@ service_start() {
     fi
 
     ocf_run ${RUN} bash -c "/usr/local/bin/configure_arp_filter_for_vip"
+    rc=$?
+    if [ $rc -ne 0 ]; then
+      # Try another time to configure ARP filter and adding source-based routes
+      # because the VIPs are probably not yet ready hence the sleep.
+      sleep 5
+      ocf_run ${RUN} bash -c "/usr/local/bin/configure_arp_filter_for_vip"
+    fi
 
     # The envvars script uses the variable APACHE_CONFDIR to support multiple
     # apache2 instances
