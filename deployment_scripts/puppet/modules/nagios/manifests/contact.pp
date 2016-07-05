@@ -65,48 +65,47 @@ define nagios::contact (
     $opts['contactgroups'] = $properties['contactgroups']
   }
 
-  if $properties['service_notification_commands'] == undef {
-    if $_smtp_auth {
+  if $_smtp_auth {
+    if $properties['service_notification_commands'] == undef {
       $opts['service_notification_commands'] = $nagios::params::service_notification_command_by_smtp
-      $command_filename = "${path}/cmd_notify-service-by-smtp-with-long-service-output.cfg"
-      $smtp_password_escaped = regsubst($smtp_password, '\'', '\'"\'"\'', 'G')
-      if ! defined(File[$command_filename]){
-        file {$command_filename:
-          ensure  => present,
-          content => template('nagios/notify-by-smtp.cfg.erb'),
-          owner   => 'root',
-          group   => 'root',
-          mode    => '0644',
-          # the deployer may modify the file to enable STARTTLS
-          replace => 'no',
-          require => Package[$nagios::params::package_mailx_smtp],
-        }
-      }
-      if ! defined(Package[$nagios::params::package_mailx_smtp]){
-        package { $nagios::params::package_mailx_smtp:
-          ensure => present,
-        }
-      }
-
-    } else {
-      $opts['service_notification_commands'] = $nagios::params::service_notification_command
-      file {"${path}/cmd_notify-service-by-email-with-long-service-output.cfg":
-        ensure => present,
-        source => 'puppet:///modules/nagios/cmd_notify_service_by_email.cfg',
-        owner  => 'root',
-        group  => 'root',
-        mode   => '0644',
+    }
+    if $properties['host_notification_commands'] == undef {
+      $opts['host_notification_commands'] = $nagios::params::service_notification_command_by_smtp
+    }
+    $command_filename = "${path}/cmd_notify-service-by-smtp-with-long-service-output.cfg"
+    $smtp_password_escaped = regsubst($smtp_password, '\'', '\'"\'"\'', 'G')
+    if ! defined(File[$command_filename]){
+      file {$command_filename:
+        ensure  => present,
+        content => template('nagios/notify-by-smtp.cfg.erb'),
+        owner   => 'root',
+        group   => 'root',
+        mode    => '0644',
+        # the deployer may modify the file to enable STARTTLS
+        replace => 'no',
+        require => Package[$nagios::params::package_mailx_smtp],
       }
     }
-  }
-  if is_array($properties['service_notification_commands']) {
-    $opts['service_notification_commands'] = join(sort($properties['service_notification_commands']), ',')
-  }
-  if $properties['host_notification_commands'] == undef {
-    $opts['host_notification_commands'] = $nagios::params::host_notification_commands
-  }
-  if is_array($properties['host_notification_commands']) {
-    $opts['host_notification_commands'] = join(sort($properties['host_notification_commands']), ',')
+    if ! defined(Package[$nagios::params::package_mailx_smtp]){
+      package { $nagios::params::package_mailx_smtp:
+        ensure => present,
+      }
+    }
+
+  } else {
+    if $properties['service_notification_commands'] == undef {
+      $opts['service_notification_commands'] = $nagios::params::service_notification_command
+    }
+    if $properties['host_notification_commands'] == undef {
+      $opts['host_notification_commands'] = $nagios::params::service_notification_command
+    }
+    file {"${path}/cmd_notify-service-by-email-with-long-service-output.cfg":
+      ensure => present,
+      source => 'puppet:///modules/nagios/cmd_notify_service_by_email.cfg',
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0644',
+    }
   }
 
   if $onefile {

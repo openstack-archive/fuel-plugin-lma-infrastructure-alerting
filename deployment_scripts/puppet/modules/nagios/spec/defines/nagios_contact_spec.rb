@@ -14,7 +14,7 @@
 require 'spec_helper'
 
 describe 'nagios::contact' do
-    let(:title) { :name}
+    let(:title) { :fooContact}
     let(:params) { { :prefix => 'lma_', :path => '/tmp',
                      :send_from => 'sender@foo.bar',
                      :smtp_auth => 'login',
@@ -41,6 +41,7 @@ describe 'nagios::contact' do
         it { should contain_file(notification_smtp_filename)\
              .with_content(/smtp:\/\/1.1.1.1:99/) }
         it { should contain_file(filename) }
+        it { should contain_nagios_contact('fooContact') }
     end
 end
 
