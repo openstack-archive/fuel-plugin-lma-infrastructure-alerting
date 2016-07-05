@@ -102,11 +102,13 @@ lma::infrastructure_alerting::cluster_ip: 127.0.0.1
 lma::infrastructure_alerting::apache_dir: <%= @apache_httpd_dir %>
 lma::infrastructure_alerting::nagios_ui:
   vip: <%= @alerting_ui_vip %>
-  apache_port: 8001
   tls_enabled: <%= @tls_enabled %>
 <% if @tls_enabled -%>
+  apache_port: 443
   hostname: <%= @nagios_ui_hostname %>
   ssl_cert_path: <%= @nagios_ui_ssl_cert_path %>
+<% else -%>
+  apache_port: 80
 <% end -%>
 lma::infrastructure_alerting::authnz:
     password: <%= @password %>

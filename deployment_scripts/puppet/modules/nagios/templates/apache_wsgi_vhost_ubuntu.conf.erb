@@ -3,7 +3,7 @@
 # Managed by Puppet
 # ************************************
 
-<VirtualHost <%= @wsgi_vhost_listen_ip %>:<%= @http_port %>>
+<VirtualHost <%= @wsgi_vhost_listen_ip %>:80>
   ServerName nagios
 
   # Disable directory indexes

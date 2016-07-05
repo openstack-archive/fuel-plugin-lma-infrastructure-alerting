@@ -19,14 +19,13 @@ $master_ip = hiera('master_ip')
 $nagios_ui = hiera_hash('lma::infrastructure_alerting::nagios_ui')
 $vip = $nagios_ui['vip']
 $tls_enabled = $nagios_ui['tls_enabled']
-$port = $nagios_ui['apache_port']
 
 if $tls_enabled {
   $host_name = $nagios_ui['hostname']
-  $link = "https://${$host_name}:${port}/"
-  $text = "Dashboard for visualizing alerts (${host_name}: https://${vip}:${port})"
+  $link = "https://${$host_name}/"
+  $text = "Dashboard for visualizing alerts (${host_name}: https://${vip})"
 } else {
-  $link = "http://${vip}:${port}/"
+  $link = "http://${vip}/"
   $text = 'Dashboard for visualizing alerts'
 }
 $nagios_link_data = "{\"title\":\"Nagios\",\

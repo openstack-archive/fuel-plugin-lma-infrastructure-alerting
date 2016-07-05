@@ -143,7 +143,7 @@ if $fuel_version < 9.0 {
     primitive_type => 'ocf-ns_apache',
     parameters     => {
       'ns'         => 'infrastructure_alerting',
-      'status_url' => "http://${nagios_vip}:${apache_port}/server-status",
+      'status_url' => "http://${nagios_vip}/server-status",
       'config'     => "${apache_config_dir}/apache2.conf",
     },
     metadata       => {
@@ -230,7 +230,7 @@ if $fuel_version < 9.0 {
     primitive_type   => 'ocf-ns_apache',
     parameters       => {
       'ns'         => 'infrastructure_alerting',
-      'status_url' => "http://${nagios_vip}:${apache_port}/server-status",
+      'status_url' => "http://${nagios_vip}/server-status",
       'config'     => "${apache_config_dir}/apache2.conf",
     },
     complex_type     => 'clone',
