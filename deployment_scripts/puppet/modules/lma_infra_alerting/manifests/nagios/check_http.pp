@@ -22,6 +22,8 @@
 # custom_address: (optional) the IP address, if not defined the address of the host is used.
 # port: the HTTP port
 # url: URL to GET
+# username: Username to use for basic authentication
+# password: Password to use for basic authentication
 # string_expected_*: string to expect in the response
 # response_time_*: configure the warning and critical thresholds of the response time
 # timeout: seconds before connection times out
@@ -33,6 +35,8 @@ define lma_infra_alerting::nagios::check_http(
   $custom_address = undef,
   $port = undef,
   $url = '/',
+  $username = undef,
+  $password = undef,
   $string_expected_in_status = '200 OK',
   $string_expected_in_content = undef,
   $string_expected_in_headers = undef,
@@ -72,9 +76,16 @@ define lma_infra_alerting::nagios::check_http(
     $check_command = "check_http_${title}"
   }
 
+  if $username and $password {
+    $auth_basic_option = "-a \"${username}\":\"${password}\""
+  } else {
+    $auth_basic_option = ''
+  }
+
   $command_line = rstrip(join([
-      "${nagios::params::nagios_plugin_dir}/check_http -4 -I '${hostaddress}' ${base_options} ${port_option} ",
-      "${url_option} ${expect_in_status_option} ${expect_in_content_option} ${expect_in_headers_option}",
+      "${nagios::params::nagios_plugin_dir}/check_http -4 -I '${hostaddress}' ${base_options} ${port_option}",
+      rstrip(" ${url_option} ${expect_in_status_option} ${expect_in_content_option} ${expect_in_headers_option}"),
+      rstrip(" ${auth_basic_option}"),
   ], ''))
   nagios::command { $check_command:
     prefix     => $prefix,

@@ -380,6 +380,8 @@ if ! empty($es_kibana_nodes){
   $kibana_defaults = {
     port                       => hiera('lma::infrastructure_alerting::kibana_port'),
     url                        => '/',
+    username                   => hiera('lma::infrastructure_alerting::kibana_username'),
+    password                   => hiera('lma::infrastructure_alerting::kibana_password'),
     string_expected_in_content => 'kibana',
     service_description        => 'Kibana',
     require                    => Class[lma_infra_alerting::nagios::hosts],
