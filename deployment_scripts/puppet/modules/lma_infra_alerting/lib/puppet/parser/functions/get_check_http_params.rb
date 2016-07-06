@@ -51,7 +51,7 @@ Would return:
     nodes.keys.sort.each do |k|
         ip = nodes[k]['network_roles'][network_role]
         raise Puppet::ParseError, "Can't find network role #{network_role} for node #{k}" if ip.nil?
-        result["#{key_prefix}_#{k}"] = {'host_name' => k, 'custom_address' => ip}
+        result["#{key_prefix}_#{k}"] = {'host_name' => nodes[k]['name'], 'custom_address' => ip}
     end
 
     return result
