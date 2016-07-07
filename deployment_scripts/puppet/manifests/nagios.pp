@@ -233,11 +233,6 @@ if $fuel_version < 9.0 {
       'status_url' => "http://${nagios_vip}:${apache_port}/server-status",
       'config'     => "${apache_config_dir}/apache2.conf",
     },
-    complex_type     => 'clone',
-    complex_metadata => {
-      'migration-threshold' => '3',
-      'failure-timeout'     => '120',
-    },
     operations       => {
       'monitor' => {
         'interval' => '30',
@@ -268,11 +263,6 @@ if $fuel_version < 9.0 {
     primitive_type   => 'ocf-ns_nagios',
     parameters       => {
       'ns' => 'infrastructure_alerting',
-    },
-    complex_type     => 'clone',
-    complex_metadata => {
-      'migration-threshold' => '3',
-      'failure-timeout'     => '120',
     },
     operations       => {
       'monitor' => {
