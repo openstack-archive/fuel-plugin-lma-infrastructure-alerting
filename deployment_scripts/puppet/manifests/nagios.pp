@@ -227,18 +227,17 @@ if $fuel_version < 9.0 {
 } else {
   # Apache2 resources for Pacemaker
   pacemaker::service { 'apache2-nagios':
-    primitive_type   => 'ocf-ns_apache',
-    parameters       => {
+    primitive_type => 'ocf-ns_apache',
+    parameters     => {
       'ns'         => 'infrastructure_alerting',
       'status_url' => "http://${nagios_vip}:${apache_port}/server-status",
       'config'     => "${apache_config_dir}/apache2.conf",
     },
-    complex_type     => 'clone',
-    complex_metadata => {
+    metadata       => {
       'migration-threshold' => '3',
       'failure-timeout'     => '120',
     },
-    operations       => {
+    operations     => {
       'monitor' => {
         'interval' => '30',
         'timeout'  => '60'
@@ -250,9 +249,9 @@ if $fuel_version < 9.0 {
         'timeout' => '60'
       },
     },
-    prefix           => false,
-    use_handler      => false,
-    require          => [File['ocf-ns_apache'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting::nagios']],
+    prefix         => false,
+    use_handler    => false,
+    require        => [File['ocf-ns_apache'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting::nagios']],
   }
 
   pcmk_colocation { 'infrastructure_alerting_vip-with-apache2-nagios':
@@ -265,16 +264,15 @@ if $fuel_version < 9.0 {
 
   # Nagios resources for Pacemaker
   pacemaker::service { 'nagios3':
-    primitive_type   => 'ocf-ns_nagios',
-    parameters       => {
+    primitive_type => 'ocf-ns_nagios',
+    parameters     => {
       'ns' => 'infrastructure_alerting',
     },
-    complex_type     => 'clone',
-    complex_metadata => {
+    metadata       => {
       'migration-threshold' => '3',
       'failure-timeout'     => '120',
     },
-    operations       => {
+    operations     => {
       'monitor' => {
         'interval' => '30',
         'timeout'  => '60'
@@ -286,9 +284,9 @@ if $fuel_version < 9.0 {
         'timeout' => '60'
       },
     },
-    prefix           => false,
-    use_handler      => false,
-    require          => [File['ocf-ns_nagios'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting::nagios']],
+    prefix         => false,
+    use_handler    => false,
+    require        => [File['ocf-ns_nagios'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting::nagios']],
   }
 
   pcmk_colocation { 'infrastructure_alerting_vip-with-nagios':
