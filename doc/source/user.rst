@@ -16,14 +16,14 @@ To configure the **StackLight Intrastructure Alerting Plugin**, you need to foll
 2. Click on the *Settings* tab of the Fuel web UI and select the *Other* category.
 
 3. Scroll down through the settings until you find the *StackLight Infrastructure
-   Alerting Plugin* section. You should see a page like this.
+   Alerting Plugin* section.
+
+4. Tick the *StackLight Infrastructure Alerting Plugin* box and fill-in the required
+   fields as indicated below.
 
    .. image:: ../images/lma_infrastructure_alerting_settings.png
       :width: 800
       :align: center
-
-4. Tick the *StackLight Infrastructure Alerting Plugin* box and fill-in the required
-   fields as indicated below.
 
    a. Override the Nagios web interface self-generated password if you choose to do so.
    #. Check the boxes corresponding to the type of notification you would
@@ -32,9 +32,55 @@ To configure the **StackLight Intrastructure Alerting Plugin**, you need to foll
    #. Specify the sender email address for the alerts.
    #. Specify the SMTP server address and port.
    #. Specify the SMTP authentication method.
-   #. Specify the SMTP username and password (required if the authentication method isn't *None*).
+   #. Specify the SMTP username and password (required if the authentication
+      method isn't *None*).
 
-5. `Configure your environment
+5. Tick the *Enable TLS for Nagios* box if you want to encrypt your
+   Nagios web UI credentials (username, password). Then, fill-in the required
+   fields as indicated below.
+
+   .. image:: ../images/tls_settings.png
+      :width: 800
+      :align: center
+
+   a. Specify the DNS name of the Nagios web UI. This parameter is used
+      to create a link from within the Fuel dashboard to the Nagios web UI.
+   #. Specify the location of a PEM file, which contains the certificate
+      and the private key of the server, that will be used in TLS handchecks
+      with the client.
+
+6. Tick the *Use LDAP for Nagios Authentication* box if you want to authenticate
+   via LDAP to the Nagios Web UI. Then, fill-in the required fields as indicated below.
+
+   .. image:: ../images/ldap_auth.png
+      :width: 800
+      :align: center
+
+   a. Select the *LDAPS* button if you want to enable LDAP authentication
+      over SSL.
+   #. Specify one or several LDAP server addresses separated by a space. Those
+      addresses must be accessible from the node where Nagios is installed.
+      Note that addresses external to the *management network* are not routable
+      by default (see the note below).
+   #. Specify the LDAP server port number or leave it empty to use the defaults.
+   #. Specify the administrator *Bind DN* used to connect to the LDAP server.
+   #. Specify the administrator password used with the *Bind DN* parameter.
+   #. Specify the *Base DN* in the Directory Information Tree (DIT) from where
+      search for users.
+   #. Specify a valid *search filter* to search for users.
+      The search should return a uniq user entry.
+
+   You can further restrict access to the Nagios web UI to those users who
+   are member of a specific LDAP group. Note however that with the Nagios
+   web UI there is no notion of priviledge (admin) access.
+
+   a. Tick the *Enable group-based authorization* to restrict the access to
+      a group of users.
+   #. Specify the LDAP attribute in the user entry to identify the
+      the group of users.
+   #. Specify the DN of the LDAP group that has access to the Nagios web UI.
+
+7. `Configure your environment
    <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide/configure-environment.html>`_.
 
    .. note:: By default, StackLight is configured to use the *management network*,
@@ -42,14 +88,13 @@ To configure the **StackLight Intrastructure Alerting Plugin**, you need to foll
       <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide/configure-environment/network-settings.html>`_.
       While this default setup may be appropriate for small deployments or
       evaluation purposes, it is recommended not to use this network
-      for StackLight in production. Instead it is recommended to create a network
-      dedicated to StackLight. Using a dedicated network for  monitoring should
-      improve the performance of StackLight and minimize the monitoring footprint
-      on the control-plane. It will also facilitate access to the Nagios web UI
-      after deployment. Please refer to the *StackLight Deployment Guide*
-      for further information about that subject.
+      for StackLight in production. It is instead recommended to create a network
+      dedicated to StackLight. Using a dedicated network for StackLight should
+      improve performances and reduce the monitoring footprint.
+      It will also facilitate access to the Nagios web UI
+      after deployment.
 
-6. Click the *Nodes* tab and assign the *Infrastructure_Alerting* role
+8. Click the *Nodes* tab and assign the *Infrastructure_Alerting* role
    to the node(s) where you want to install the plugin.
 
    You can see in the example below that the *Infrastructure_Alerting*
@@ -67,7 +112,7 @@ To configure the **StackLight Intrastructure Alerting Plugin**, you need to foll
       Note also that it is possible to add or remove nodes with the
       *Infrastructure_Alerting* role after deployment.
 
-7. `Adjust the disk partitioning if necessary
+9. `Adjust the disk partitioning if necessary
    <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide/configure-environment/customize-partitions.html>`_.
 
    By default, the StackLight Infrastructure Alerting Plugin allocates:
@@ -79,7 +124,7 @@ To configure the **StackLight Intrastructure Alerting Plugin**, you need to foll
 
    The deployment will fail if the above requirements are not met.
 
-8. `Deploy your environment
+10. `Deploy your environment
    <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide/deploy-environment.html>`_.
 
 .. _plugin_install_verification:

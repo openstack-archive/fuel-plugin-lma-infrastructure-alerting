@@ -4,7 +4,7 @@ Overview
 ========
 
 The **StackLight Infrastructure Alerting Plugin** is used to install and configure
-Nagios which provides the alerting and escalation functionalities of the so-called
+Nagios which provides the alerting and escalation functionality of the so-called
 Logging, Monitoring and Alerting Toolchain of Mirantis OpenStack.
 
 Nagios is a key component of the `LMA Toolchain project
