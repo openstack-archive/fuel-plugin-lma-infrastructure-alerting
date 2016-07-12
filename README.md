@@ -1,22 +1,22 @@
-Logging, Monitoring and Alerting (LMA) Infrastructure Alerting Plugin for Fuel
-==============================================================================
+The StackLight Infrastructure Alerting Plugin for Fuel
+======================================================
 
 Overview
 --------
 
-The `LMA Infrastructure Alerting Plugin` for Fuel is used to install and
-configure Nagios&trade; which provides the alerting and escalation capabilities
-of the LMA Toolchain. The LMA Infrastructure Alerting Plugin is 
-deployed by [Fuel](https://wiki.openstack.org/wiki/Fuel).
+The StackLight Infrastructure Alerting Plugin for Fuel is used
+to install and configure Nagios, which provide the alerting and
+escalation capability of the Logging, Monitoring and Alerting (LMA)
+toolchain of Mirantis OpenStack.
 
-Please check the [LMA Infrastructure Alerting Plugin Overview](
+Please start with the [StackLight Infrastructure Alerting Plugin Overview](
 http://fuel-plugin-lma-infrastructure-alerting.readthedocs.org/en/latest/overview.html)
-section of the plugin's documentation for additional details.
+to getting started.
 
 Release Notes
 -------------
 
-The release notes for this plugin are provided in the
+A summary description of the new features are provided in the
 [Release Notes](
 http://fuel-plugin-lma-infrastructure-alerting.readthedocs.org/en/latest/releases.html)
 section of the plugin's documentation.
@@ -24,30 +24,27 @@ section of the plugin's documentation.
 Requirements
 ------------
 
-The requirements for this plugin are provided in the
-[Requirements](
+The requirements are provided in the [Requirements](
 http://fuel-plugin-lma-infrastructure-alerting.readthedocs.org/en/latest/overview.html#requirements)
 section of the plugin's documentation.
 
 Known issues
 ------------
 
-The known issues for this plugin are listed on [Launchpad](
-https://bugs.launchpad.net/lma-toolchain/+bugs?field.tag=nagios)
+All known issues are listed on [Launchpad](
+https://bugs.launchpad.net/lma-toolchain/+bugs?field.tag=nagios).
 
 Limitations
 -----------
 
-The known limitations for this plugin are listed in the
-[Limitations](
+All known limitations are described in the [Limitations](
 http://fuel-plugin-lma-infrastructure-alerting.readthedocs.org/en/latest/overview.html#limitations)
 section of the plugin's documentation.
 
 Installation
 ------------
 
-The installation instructions for this plugin are provided in the
-[Installation](
+The installation instructions are provided in the [Installation](
 http://fuel-plugin-lma-infrastructure-alerting.readthedocs.org/en/latest/installation.html)
 section of the plugin's documentation.
 
