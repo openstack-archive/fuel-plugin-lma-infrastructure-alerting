@@ -121,7 +121,7 @@ class nagios::cgi (
     apache::listen { "${vhost_listen_ip}:${http_port}": }
   }
   if $wsgi_vhost_listen_ip {
-    apache::listen { "${wsgi_vhost_listen_ip}:${http_port}": }
+    apache::listen { "${wsgi_vhost_listen_ip}:80": }
   }
 
   # Template uses these variables: http_port, vhost_listen_ip, cgi_htpasswd_file
@@ -134,7 +134,7 @@ class nagios::cgi (
     require        => Class['apache'],
   }
   if $wsgi_vhost_listen_ip {
-    # Template uses these variables: http_port, cgi_htpasswd_file
+    # Template uses these variables: cgi_htpasswd_file
     # nagios_command_file, wsgi_vhost_listen_ip, wsgi_processes, wsgi_threads,
     # wsgi_process_service_checks_script, wsgi_process_service_checks_location
     apache::custom_config { 'nagios-wsgi':

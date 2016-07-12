@@ -363,7 +363,7 @@ Troubleshooting
 If you cannot access the Nagios web UI, follow these troubleshooting tips.
 
 1. Check that the StackLight Collector are able to connect to the Nagios
-   VIP address on port *8001*.
+   VIP address on port *80*.
 
 2. Check that the Nagios configuration is valid::
 
