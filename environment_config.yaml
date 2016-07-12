@@ -58,12 +58,12 @@ attributes:
 
   smtp_host:
     value: ''
-    label: 'SMTP server IP and port'
-    description: 'ie: 10.2.2.3:25'
+    label: 'SMTP server IP and port (or empty)'
+    description: 'ie: 10.2.2.3:25 or empty to use the local MTA'
     weight: 49
     type: "text"
     regex:
-      source: '^[a-zA-Z\d][a-zA-Z\d_\-.]+(:[0-9]+)?$'
+      source: '^$|[a-zA-Z\d][a-zA-Z\d_\-.]+(:[0-9]+)?$'
       error: 'Invalid address or name'
     restrictions: *disable_notifications
 
