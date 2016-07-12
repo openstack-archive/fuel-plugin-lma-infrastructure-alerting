@@ -307,10 +307,20 @@ if $fuel_version < 9.0 {
   }
 }
 
+# If localhost is provided by the user, we force the usage of the local socket
+# to send the email because by default the local MDA (Postfix) is only accessible
+# by default from local traffic (here we are in a dedicated network namespace).
+if $smtp_host == '127.0.0.1' or $smtp_host == '127.0.0.1:25' or
+  $smtp_host == 'localhost' or $smtp_host == 'localhost:25' {
+  $_smtp_host = ''
+} else {
+  $_smtp_host = $smtp_host
+}
+
 class { 'lma_infra_alerting::nagios::contact':
   send_to         => $send_to,
   send_from       => $send_from,
-  smtp_host       => $smtp_host,
+  smtp_host       => $_smtp_host,
   smtp_auth       => $smtp_auth,
   smtp_user       => $smtp_user,
   smtp_password   => $smtp_password,

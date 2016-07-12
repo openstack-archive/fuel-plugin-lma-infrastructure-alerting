@@ -23,7 +23,7 @@ define nagios::contact (
   $properties = {},
   $send_from = 'nagios@localhost.localdomain',
   $smtp_auth = 'none',
-  $smtp_host = '127.0.0.1:25',
+  $smtp_host = '',
   $smtp_user = undef,
   $smtp_password = undef,
   $ensure = present,
@@ -41,8 +41,8 @@ define nagios::contact (
     $_smtp_auth = $smtp_auth
   }
 
-  if $_smtp_auth and (! $smtp_user or ! $smtp_password) {
-    fail("smtp_user and smtp_password must be provided with smtp_auth = ${smtp_auth}")
+  if $_smtp_auth and (! $smtp_user or ! $smtp_password or $smtp_host == '') {
+    fail("smtp_host, smtp_user and smtp_password must be provided with smtp_auth = ${smtp_auth}")
   }
 
   $opts = {}
@@ -65,7 +65,14 @@ define nagios::contact (
     $opts['contactgroups'] = $properties['contactgroups']
   }
 
+  if ! defined(Package[$nagios::params::package_mailx_smtp]){
+    package { $nagios::params::package_mailx_smtp:
+      ensure => present,
+    }
+  }
+
   if $_smtp_auth {
+    # SMTP authentication
     if $properties['service_notification_commands'] == undef {
       $opts['service_notification_commands'] = $nagios::params::service_notification_command_by_smtp
     }
@@ -86,26 +93,32 @@ define nagios::contact (
         require => Package[$nagios::params::package_mailx_smtp],
       }
     }
-    if ! defined(Package[$nagios::params::package_mailx_smtp]){
-      package { $nagios::params::package_mailx_smtp:
-        ensure => present,
-      }
-    }
-
   } else {
-    if $properties['service_notification_commands'] == undef {
-      $opts['service_notification_commands'] = $nagios::params::service_notification_command
-    }
-    if $properties['host_notification_commands'] == undef {
-      $opts['host_notification_commands'] = $nagios::params::service_notification_command
-    }
-    file {"${path}/cmd_notify-service-by-email-with-long-service-output.cfg":
-      ensure => present,
-      source => 'puppet:///modules/nagios/cmd_notify_service_by_email.cfg',
-      owner  => 'root',
-      group  => 'root',
-      mode   => '0644',
-    }
+      if $properties['service_notification_commands'] == undef {
+        $opts['service_notification_commands'] = $nagios::params::service_notification_command
+      }
+      if $properties['host_notification_commands'] == undef {
+        $opts['host_notification_commands'] = $nagios::params::service_notification_command
+      }
+      if $smtp_host == '' {
+        # No SMTP server is provided then the local MDA is used (local socket).
+        file {"${path}/cmd_notify-service-by-email-with-long-service-output.cfg":
+          ensure  => present,
+          content => template('nagios/cmd_notify_service_by_email.cfg.erb'),
+          owner   => 'root',
+          group   => 'root',
+          mode    => '0644',
+        }
+      } else {
+        # Use SMTP without authentication
+        file {"${path}/cmd_notify-service-by-email-with-long-service-output.cfg":
+          ensure  => present,
+          content => template('nagios/notify-by-smtp-noauth.cfg.erb'),
+          owner   => 'root',
+          group   => 'root',
+          mode    => '0644',
+        }
+      }
   }
 
   if $onefile {
