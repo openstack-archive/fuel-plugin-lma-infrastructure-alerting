@@ -1,7 +1,7 @@
-.. _user_appendix:
+.. _references:
 
-Appendix
-========
+References
+----------
 
 * The `StackLight Infrastructure Alerting Plugin
   <https://github.com/openstack/fuel-plugin-lma-Infrastructure-alerting>`_ project at GitHub.
