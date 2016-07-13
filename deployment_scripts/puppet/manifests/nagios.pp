@@ -180,9 +180,6 @@ if $fuel_version < 9.0 {
   # Nagios resources for Pacemaker
   pacemaker_wrappers::service { 'nagios3':
     primitive_type => 'ocf-ns_nagios',
-    parameters     => {
-      'ns' => 'infrastructure_alerting',
-    },
     metadata       => {
       'migration-threshold' => '3',
       'failure-timeout'     => '120',
@@ -265,9 +262,6 @@ if $fuel_version < 9.0 {
   # Nagios resources for Pacemaker
   pacemaker::service { 'nagios3':
     primitive_type => 'ocf-ns_nagios',
-    parameters     => {
-      'ns' => 'infrastructure_alerting',
-    },
     metadata       => {
       'migration-threshold' => '3',
       'failure-timeout'     => '120',
