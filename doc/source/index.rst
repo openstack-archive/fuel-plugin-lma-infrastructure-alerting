@@ -1,21 +1,36 @@
-===============================================================================
-Welcome to the StackLight Infrastructure Alering Plugin for Fuel Documentation!
-===============================================================================
+================================================================================
+Welcome to the StackLight Infrastructure Alerting plugin for Fuel documentation!
+================================================================================
 
-User documentation
-==================
+Overview
+========
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   overview
-   releases
-   installation
-   user
+   intro
+   requirements
+   limitations
+   release_notes
    licenses
-   appendix
+   references
 
-Indices and Tables
-==================
+Installing and configuring StackLight Infrastructure Alerting plugin for Fuel
+=============================================================================
 
-* :ref:`search`
+.. toctree::
+   :maxdepth: 1
+
+   install_intro
+   install
+   configure
+   verification
+
+Using StackLight Infrastructure Alerting plugin for Fuel
+========================================================
+
+.. toctree::
+   :maxdepth: 1
+
+   usage
+   troubleshooting
