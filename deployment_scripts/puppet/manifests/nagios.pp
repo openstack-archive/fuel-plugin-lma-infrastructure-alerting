@@ -137,15 +137,18 @@ exec { 'net.ipv4.ip_nonlocal_bind':
   unless  => '/sbin/sysctl -n net.ipv4.ip_nonlocal_bind | /bin/grep 1',
 }
 
+$apache_parameters = {
+  'ns'         => 'infrastructure_alerting',
+  'status_url' => "http://${nagios_vip}/server-status",
+  'config'     => "${apache_config_dir}/apache2.conf",
+  'ns_gateway' => hiera('lma::infrastructure_alerting::apache_ns_gateway')
+}
+
 if $fuel_version < 9.0 {
   # Apache2 resources for Pacemaker
   pacemaker_wrappers::service { 'apache2-nagios':
     primitive_type => 'ocf-ns_apache',
-    parameters     => {
-      'ns'         => 'infrastructure_alerting',
-      'status_url' => "http://${nagios_vip}/server-status",
-      'config'     => "${apache_config_dir}/apache2.conf",
-    },
+    parameters     => $apache_parameters,
     metadata       => {
       'migration-threshold' => '3',
       'failure-timeout'     => '120',
@@ -228,11 +231,7 @@ if $fuel_version < 9.0 {
   # Apache2 resources for Pacemaker
   pacemaker::service { 'apache2-nagios':
     primitive_type => 'ocf-ns_apache',
-    parameters     => {
-      'ns'         => 'infrastructure_alerting',
-      'status_url' => "http://${nagios_vip}/server-status",
-      'config'     => "${apache_config_dir}/apache2.conf",
-    },
+    parameters     => $apache_parameters,
     metadata       => {
       'migration-threshold' => '3',
       'failure-timeout'     => '120',

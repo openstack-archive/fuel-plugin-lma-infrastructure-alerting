@@ -24,6 +24,19 @@ $alerting_vip    = $network_metadata['vips']['infrastructure_alerting_mgmt_vip']
 $alerting_ui_vip = $network_metadata['vips']['infrastructure_alerting_ui']['ipaddr']
 $listen_address  = get_network_role_property('infrastructure_alerting', 'ipaddr')
 
+# If any of the VIP addresses is located in the management network, we should
+# configure the management vrouter as the default gateway so that the Apache
+# process can connect to remote services such as LDAP.
+# TODO(pasquier-s): do the same when network templates are used.
+$vip_networks = concat(
+  get_routable_networks_for_network_role($network_scheme, 'infrastructure_alerting'),
+  get_routable_networks_for_network_role($network_scheme, 'infrastructure_alerting_ui')
+)
+$management_vrouter = hiera('management_vrouter_vip')
+$apache_ns_gateway = inline_template(
+  '<%= require "ipaddr"; @vip_networks.any?{ |x| IPAddr.new(x).include?(@management_vrouter) } ? @management_vrouter : "" %>'
+)
+
 $plugin      = hiera('lma_infrastructure_alerting')
 $tls_enabled = $plugin['tls_enabled']
 
@@ -100,6 +113,7 @@ lma::infrastructure_alerting::grafana_port: <%= @grafana_port %>
 lma::infrastructure_alerting::influxdb_port: <%= @influxdb_port %>
 lma::infrastructure_alerting::cluster_ip: 127.0.0.1
 lma::infrastructure_alerting::apache_dir: <%= @apache_httpd_dir %>
+lma::infrastructure_alerting::apache_ns_gateway: "<%= @apache_ns_gateway %>"
 lma::infrastructure_alerting::nagios_ui:
   vip: <%= @alerting_ui_vip %>
   tls_enabled: <%= @tls_enabled %>
