@@ -1,19 +1,3 @@
-.. _user_overview:
-
-Overview
-========
-
-The **StackLight Infrastructure Alerting Plugin** is used to install and configure
-Nagios which provides the alerting and escalation functionality of the so-called
-Logging, Monitoring and Alerting Toolchain of Mirantis OpenStack.
-
-Nagios is a key component of the `LMA Toolchain project
-<https://launchpad.net/lma-toolchain>`_ of Mirantis OpenStack.
-as shown in the figure below.
-
-.. image:: ../images/toolchain_map.*
-   :align: center
-
 .. _plugin_requirements:
 
 Requirements
@@ -41,9 +25,3 @@ Requirements
 | Grafana Plugin         | This is optional and only needed if you want to create alarms in Nagios™ for             |
 |                        | time-series stored in InfluxDB.                                                          |
 +------------------------+------------------------------------------------------------------------------------------+
-
-Limitations
------------
-
-* If Nagios is installed on several nodes for high availability, the alerts history will be lost in case of
-  a server failover.

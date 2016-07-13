@@ -1,10 +1,5 @@
-.. _user_installation:
-
-Installation
-============
-
-StackLight Infrastructure Alerting Plugin installation using the RPM file
--------------------------------------------------------------------------
+Install using the RPM file
+--------------------------
 
 To install the StackLight Infrastructure Alerting Plugin using the RPM file of the Fuel Plugins
 Catalog, you need to follow these steps:
@@ -32,8 +27,8 @@ Catalog, you need to follow these steps:
     1  | lma_infrastructure_alerting | 0.10.0   | 4.0.0
 
 
-StackLight Infrastructure Alerting Plugin installation from source
-------------------------------------------------------------------
+Install from source
+-------------------
 
 Alternatively, you may want to build the RPM file of the plugin from source if,
 for example, you want to test the latest features of the master branch or customize the plugin.
@@ -84,16 +79,3 @@ node so that you won't have to copy that file later on.
 
     [root@fuel ~] fuel plugins --install \
     ./fuel-plugin-lma-infrastructure-alerting/*.rpm
-
-StackLight Infrastructure Alerting Plugin software components
--------------------------------------------------------------
-
-List of software components installed by the plugin:
-
-+-----------+---------------------------------------------+
-| Component | Version                                     |
-+===========+=============================================+
-| Nagios    | v3.5.1 for Ubuntu (64-bit)                  |
-+-----------+---------------------------------------------+
-| Apache    | Version coming with the Ubuntu distribution |
-+-----------+---------------------------------------------+
