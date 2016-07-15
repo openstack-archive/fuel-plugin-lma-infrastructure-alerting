@@ -1,10 +1,10 @@
-.. _releases:
+.. _release_notes:
 
-Release Notes
-=============
+Release notes
+-------------
 
 0.10.0
-------
+++++++
 
 * Changes
 
@@ -24,7 +24,7 @@ Release Notes
     <https://bugs.launchpad.net/lma-toolchain/+bug/1552772>`_).
 
 0.9.0
------
++++++
 
 * Changes
 
@@ -39,6 +39,6 @@ Release Notes
     <https://bugs.launchpad.net/lma-toolchain/+bug/1559153>`_).
 
 0.8.0
------
++++++
 
 * Initial release of the plugin.
