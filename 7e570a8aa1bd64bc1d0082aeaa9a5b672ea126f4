@@ -1,0 +1,8 @@
+Code-Review+2: Patrick Petit <ppetit@mirantis.com>
+Workflow+1: Patrick Petit <ppetit@mirantis.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Fri, 15 Jul 2016 17:45:52 +0000
+Reviewed-on: https://review.openstack.org/341519
+Project: openstack/fuel-plugin-lma-infrastructure-alerting
+Branch: refs/heads/master
