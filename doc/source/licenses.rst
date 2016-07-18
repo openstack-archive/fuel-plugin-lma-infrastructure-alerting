@@ -7,7 +7,7 @@ Third-party components
 ++++++++++++++++++++++
 
 +--------------------+-------------------------+-----------+
-| Name               | Project Web Site        | License   |
+| Name               | Project website         | License   |
 +====================+=========================+===========+
 | Nagios             | https://www.nagios.org/ | GPLv2     |
 +--------------------+-------------------------+-----------+
@@ -17,14 +17,14 @@ Third-party components
 Puppet modules
 ++++++++++++++
 
-+-------------------+-------------------------------------------------+-----------+
-| Name              | Project Web Site                                | License   |
-+===================+=================================================+===========+
-| puppetlabs-apache | https://github.com/puppetlabs/puppetlabs-apache | Apache v2 |
-+-------------------+-------------------------------------------------+-----------+
-| puppetlabs-concat | https://github.com/puppetlabs/puppetlabs-concat | Apache v2 |
-+-------------------+-------------------------------------------------+-----------+
-| puppetlabs-stdlib | https://github.com/puppetlabs/puppetlabs-stdlib | Apache v2 |
-+-------------------+-------------------------------------------------+-----------+
-| leinaddm-htpasswd | https://github.com/leinaddm/puppet-htpasswd     | Apache v2 |
-+-------------------+-------------------------------------------------+-----------+
++------------------+-------------------------------------------------+-----------+
+| Name             | Project website                                 | License   |
++==================+=================================================+===========+
+| puppetlabs-apache| https://github.com/puppetlabs/puppetlabs-apache | Apache v2 |
++------------------+-------------------------------------------------+-----------+
+| puppetlabs-concat| https://github.com/puppetlabs/puppetlabs-concat | Apache v2 |
++------------------+-------------------------------------------------+-----------+
+| puppetlabs-stdlib| https://github.com/puppetlabs/puppetlabs-stdlib | Apache v2 |
++------------------+-------------------------------------------------+-----------+
+| leinaddm-htpasswd| https://github.com/leinaddm/puppet-htpasswd     | Apache v2 |
++------------------+-------------------------------------------------+-----------+
