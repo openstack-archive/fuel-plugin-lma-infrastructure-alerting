@@ -171,8 +171,8 @@ if $fuel_version < 9.0 {
     ensure     => present,
     score      => 'INFINITY',
     primitives => [
+      'apache2-nagios',
       'vip__infrastructure_alerting_mgmt_vip',
-      'apache2-nagios'
     ],
     require    => Cs_resource['apache2-nagios'],
   }
@@ -205,8 +205,8 @@ if $fuel_version < 9.0 {
     ensure     => present,
     score      => 'INFINITY',
     primitives => [
+      'nagios3',
       'vip__infrastructure_alerting_mgmt_vip',
-      'nagios3'
     ],
     require    => Cs_resource['nagios3'],
   }
