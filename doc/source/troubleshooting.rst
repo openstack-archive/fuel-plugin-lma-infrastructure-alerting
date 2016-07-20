@@ -1,64 +1,73 @@
 .. _troubleshooting:
 
+.. raw:: latex
+
+   \pagebreak
+
 Troubleshooting
 ---------------
 
-If you cannot access the Nagios web UI, follow these troubleshooting tips.
+If you cannot access the Nagios web UI, use the following troubleshooting tips.
 
-1. Check that the StackLight Collector are able to connect to the Nagios
-   VIP address on port *80*.
+#. Verify that the StackLight Collector is able to connect to the Nagios VIP
+   address on port ``80``.
 
-2. Check that the Nagios configuration is valid::
+#. Verify that the Nagios configuration is valid:
 
-    [root@node-13 ~]# nagios3 -v /etc/nagios3/nagios.cfg
+   .. code-block:: console
 
-       [snip]
+      [root@node-13 ~]# nagios3 -v /etc/nagios3/nagios.cfg
 
-    Total Warnings: 0
-    Total Errors:   0
+         [snip]
 
-  Here, things look okay. No serious problems were detected during the pre-flight check.
+      Total Warnings: 0
+      Total Errors:   0
 
-3. Check that the Nagios server is up and running::
+  No serious problems were detected during the pre-flight check.
 
-    [root@node-13 ~]# crm resource status nagios3
-    resource nagios3 is NOT running
+#. Verify that the Nagios server is up and running:
 
-4. If Nagios is not running, start it::
+   .. code-block:: console
 
-    [root@node-13 ~]# crm resource start nagios3
+      [root@node-13 ~]# crm resource status nagios3
+      resource nagios3 is NOT running
 
-5. Check that Apache is up and running::
+#. If Nagios is not running, start it:
 
-    [root@node-13 ~]# crm resource status apache2-nagios
+   .. code-block:: console
 
-6. If Apache is not running, start it::
+      [root@node-13 ~]# crm resource start nagios3
+
+#. Verify that Apache is up and running:
+
+   .. code-block:: console
+
+      [root@node-13 ~]# crm resource status apache2-nagios
+
+#. If Apache is not running, start it::
 
     [root@node-13 ~]# crm resource start apache2-nagios
 
-7. Look for errors in the Nagios log file:
+#. Look for errors in the Nagios ``/var/nagios/nagios.log`` log file:
 
-   * ``/var/nagios/nagios.log``.
-
-8. Look for errors in the Apache log files:
+#. Look for errors in the Apache log files:
 
    * ``/var/log/apache2/nagios_error.log``
    * ``/var/log/apache2/nagios_wsgi_access.log``
    * ``/var/log/apache2/nagios_wsgi_error.log``
 
-Finally, Nagios may report a host or service state as *UNKNOWN*.
-Two cases can be distinguished:
+Nagios may report a host or service state as *UNKNOWN*, for example:
 
-  * 'UNKNOWN: No datapoint have been received ever',
-  * 'UNKNOWN: No datapoint have been received over the last X seconds'.
+  * 'UNKNOWN: No datapoint have been received ever'
+  * 'UNKNOWN: No datapoint have been received over the last X seconds'
 
-Both cases indicate that Nagios doesn't receive regular passive checks from
-the StackLight Collector. This may be due to different problems:
+Both cases indicate that Nagios does not receive regular passive checks from
+the StackLight Collector. This may be due to different issues, for example:
 
-  * The 'hekad' process fails to communicate with Nagios,
-  * The 'collectd' and/or 'hekad' process have crashed,
-  * One or several alarm rules are misconfigured.
+  * The 'hekad' process fails to communicate with Nagios
+  * The 'collectd' and/or 'hekad' process have crashed
+  * One or several alarm rules are misconfigured
 
-To remedy to the above situations, follow the `troubleshooting tips
+For solutions, see the `Troubleshooting tips
 <http://fuel-plugin-lma-collector.readthedocs.io/en/latest/configuration.html#troubleshooting>`_
 of the *StackLight Collector Plugin User Guide*.
