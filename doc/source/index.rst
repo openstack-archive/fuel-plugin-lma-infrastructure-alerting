@@ -3,7 +3,7 @@ Welcome to the StackLight Infrastructure Alerting plugin for Fuel documentation!
 ================================================================================
 
 Overview
-========
+~~~~~~~~
 
 .. toctree::
    :maxdepth: 1
@@ -16,7 +16,7 @@ Overview
    references
 
 Installing and configuring StackLight Infrastructure Alerting plugin for Fuel
-=============================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. toctree::
    :maxdepth: 1
@@ -27,7 +27,7 @@ Installing and configuring StackLight Infrastructure Alerting plugin for Fuel
    verification
 
 Using StackLight Infrastructure Alerting plugin for Fuel
-========================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. toctree::
    :maxdepth: 1
