@@ -1,81 +1,106 @@
 Install using the RPM file
 --------------------------
 
-To install the StackLight Infrastructure Alerting Plugin using the RPM file of the Fuel Plugins
-Catalog, you need to follow these steps:
+**To install the StackLight Infrastructure Alerting Plugin using the RPM file
+of the Fuel plugins catalog:**
 
-1. Select, using the MONITORING category and Mirantis OpenStack version you are using,
-   the RPM file you want to download from the `Fuel Plugins Catalog
-   <https://www.mirantis.com/validated-solution-integrations/fuel-plugins>`_.
+#. Go to the `Fuel Plugins Catalog <https://www.mirantis.com/validated-solution-integrations/fuel-plugins>`_.
+#. From the :guilabel:`Filter` drop-down menu, select the Mirantis OpenStack
+   version you are using and the :guilabel:`Monitoring` category.
+#. Download the RPM file.
 
-2. Copy the RPM file to the Fuel Master node::
+#. Copy the RPM file to the Fuel Master node:
 
-    [root@home ~]# scp lma_infrastructure_alerting-0.10-0.10.0-0.noarch.rpm \
-    root@<Fuel Master node IP address>:
+   .. code-block:: console
 
-3. Install the plugin using the `Fuel CLI
-   <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide/cli/cli_plugins.html>`_::
+      [root@home ~]# scp lma_infrastructure_alerting-0.10-0.10.0-0.noarch.rpm \
+      root@<Fuel Master node IP address>:
 
-    [root@fuel ~]# fuel plugins --install \
-    lma_infrastructure_alerting-0.10-0.10.0-0.noarch.rpm
+#. Install the plugin using the `Fuel Plugins CLI
+   <http://docs.openstack.org/developer/fuel-docs/userdocs/fuel-user-guide/cli/cli_plugins.html>`_:
 
-4. Verify that the plugin is installed correctly::
+   .. code-block:: console
 
-    [root@fuel ~]# fuel plugins --list
-    id | name                        | version | package_version
-    ---|-----------------------------|---------|----------------
-    1  | lma_infrastructure_alerting | 0.10.0   | 4.0.0
+      [root@fuel ~]# fuel plugins --install \
+      lma_infrastructure_alerting-0.10-0.10.0-0.noarch.rpm
+
+#. Verify that the plugin is installed correctly:
+
+   .. code-block:: console
+
+      [root@fuel ~]# fuel plugins --list
+      id | name                        | version | package_version
+      ---|-----------------------------|---------|----------------
+      1  | lma_infrastructure_alerting | 0.10.0   | 4.0.0
 
 
 Install from source
 -------------------
 
-Alternatively, you may want to build the RPM file of the plugin from source if,
-for example, you want to test the latest features of the master branch or customize the plugin.
+Alternatively, you may want to build the plugin RPM file from source if, for
+example, you want to test the latest features of the master branch or
+customize the plugin.
 
-.. note::Be aware that running a Fuel plugin that you built yourself is at your
+.. note:: Running a Fuel plugin that you built yourself is at your
    own risk and will not be supported.
 
-To install the StackLight Infrastructure Alerting Plugin from source,
-you first need to prepare an environment to build the RPM file.
-The recommended approach is to build the RPM file directly onto the Fuel Master
-node so that you won't have to copy that file later on.
+To install the StackLight Infrastructure Alerting Plugin from source, you
+first need to prepare an environment to build the RPM file. The recommended
+approach is to build the RPM file directly onto the Fuel Master node so that
+you will not have to copy that file later on.
 
-**Prepare an environment for building the plugin on the Fuel Master Node**
+**To prepare an environment:**
 
-1. Install the standard Linux development tools::
+#. Install the standard Linux development tools:
 
-    [root@home ~] yum install createrepo rpm rpm-build dpkg-devel
+   .. code-block:: console
 
-2. Install the Fuel Plugin Builder. To do that, you should first get pip::
+      [root@home ~] yum install createrepo rpm rpm-build dpkg-devel
 
-    [root@home ~] easy_install pip
+#. Install the Fuel Plugin Builder. To do that, first get pip:
 
-3. Then install the Fuel Plugin Builder (the ``fpb`` command line) with ``pip``::
+   .. code-block:: console
 
-    [root@home ~] pip install fuel-plugin-builder
+      [root@home ~] easy_install pip
 
-.. note:: You may also need to build the Fuel Plugin Builder if the package version of the
-   plugin is higher than package version supported by the Fuel Plugin Builder you get from `pypi`.
-   In this case, please refer to the section "Preparing an environment for plugin development"
-   of the `Fuel Plugins wiki <https://wiki.openstack.org/wiki/Fuel/Plugins>`_
-   if you need further instructions about how to build the Fuel Plugin Builder.
+3. Then install the Fuel Plugin Builder (the ``fpb`` command line) with
+   ``pip``:
 
-4. Clone the plugin git repository::
+   .. code-block:: console
 
-    [root@home ~] git clone \
-    https://github.com/openstack/fuel-plugin-lma-infrastructure-alerting.git
+      [root@home ~] pip install fuel-plugin-builder
 
-5. Check that the plugin is valid::
+   .. note:: You may also need to build the Fuel Plugin Builder if the package
+      version of the plugin is higher than package version supported by the
+      Fuel Plugin Builder you get from `pypi`. For instructions on how to
+      build the Fuel Plugin Builder, see the *Preparing an environment for
+      plugin development* section of the
+      `Fuel plugins Wiki <https://wiki.openstack.org/wiki/Fuel/Plugins>`_.
 
-    [root@home ~] fpb --check ./fuel-plugin-lma-infrastructure-alerting
+#. Clone the plugin repository:
 
-6.  And finally, build the plugin::
+   .. code-block:: console
 
-    [root@home ~] fpb --build ./fuel-plugin-lma-infrastructure-alerting
+      [root@home ~] git clone \
+      https://github.com/openstack/fuel-plugin-lma-infrastructure-alerting.git
 
-7. Now that you have created the RPM file, you can install the plugin using the
-   `fuel plugins --install` command::
+#. Verify that the plugin is valid:
 
-    [root@fuel ~] fuel plugins --install \
-    ./fuel-plugin-lma-infrastructure-alerting/*.rpm
+   .. code-block:: console
+
+      [root@home ~] fpb --check ./fuel-plugin-lma-infrastructure-alerting
+
+#. Build the plugin:
+
+   .. code-block:: console
+
+      [root@home ~] fpb --build ./fuel-plugin-lma-infrastructure-alerting
+
+**To install the plugin:**
+
+Now that you have created the RPM file, install the plugin using the
+:command:`fuel plugins --install` command:
+
+.. code-block:: console
+
+   [root@fuel ~] fuel plugins --install ./fuel-plugin-lma-infrastructure-alerting/*.rpm

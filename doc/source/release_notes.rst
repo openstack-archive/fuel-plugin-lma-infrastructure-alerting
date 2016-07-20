@@ -6,39 +6,40 @@ Release notes
 0.10.0
 ++++++
 
-* Changes
+The StackLight Infrastructure Alerting plugin 0.10.0 contains the following
+updates:
 
-  * Add supprt for LDAP(S) authentication to access the Nagios web UI.
-    Note that the *nagiosadmin* user is still created statically
-    and is the only user who has the *admin* priviledges by default.
+  * Added support for LDAP(S) authentication to access the Nagios web UI.
+    The *nagiosadmin* user is still created statically and is the only user
+    who has the *admin* privileges by default.
 
-  * Add Support for TLS encryption to access the Nagios web UI.
-    A PEM file (obtained by concatenating the SSL certificates with
-    the private key) must be provided in the settings of the plugin
-    to configure the TLS termination.
+  * Added Support for TLS encryption to access the Nagios web UI. A PEM file
+    (obtained by concatenating the SSL certificates with the private key) must
+    be provided in the settings of the plugin to configure the TLS termination.
 
-* Bug Fixes
+  * Bug fixes:
 
-  * Apache cannot handle the passive checks workload for large
-    deployments (`1552772
-    <https://bugs.launchpad.net/lma-toolchain/+bug/1552772>`_).
+    * Fixed the issue with Apache that could not handle the passive checks
+      workload for large deployments. See
+      `#1552772 <https://bugs.launchpad.net/lma-toolchain/+bug/1552772>`_.
 
 0.9.0
 +++++
 
-* Changes
+The StackLight Infrastructure Alerting plugin 0.9.0 contains the following
+updates:
 
-  * Support Nagios clustering for high availability.
+  * Added support for Nagios clustering for high availability.
 
-* Bug Fixes
+  * Bug fixes:
 
-  * Specify contact_groups for HTTP checks (`#1559151
-    <https://bugs.launchpad.net/lma-toolchain/+bug/1559151>`_).
+    * Specified contact_groups for HTTP checks.
+      See `#1559151 <https://bugs.launchpad.net/lma-toolchain/+bug/1559151>`_.
 
-  * Specify contact_groups for SSH checks (`#1559153
-    <https://bugs.launchpad.net/lma-toolchain/+bug/1559153>`_).
+    * Specified contact_groups for SSH checks.
+      See `#1559153 <https://bugs.launchpad.net/lma-toolchain/+bug/1559153>`_.
 
 0.8.0
 +++++
 
-* Initial release of the plugin.
+The initial release of the plugin.
