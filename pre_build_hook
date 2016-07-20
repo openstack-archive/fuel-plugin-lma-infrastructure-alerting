@@ -27,7 +27,7 @@ download_packages \
     http://mirrors.kernel.org/ubuntu/pool/main/s/samba/smbclient_${SAMBA_VERSION}_amd64.deb \
     http://mirrors.kernel.org/ubuntu/pool/main/n/nagios-plugins/nagios-plugins-common_${NAGIOS_VERSION}_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/n/nagios-plugins/nagios-plugins-basic_${NAGIOS_VERSION}_amd64.deb\
-    http://mirrors.kernel.org/ubuntu/pool/main/a/apache2/apache2-utils_2.4.7-1ubuntu4.5_amd64.deb\
+    http://mirrors.kernel.org/ubuntu/pool/main/a/apache2/apache2-utils_2.4.7-1ubuntu4.13_amd64.deb\
     http://mirrors.kernel.org/ubuntu/pool/main/p/php5/libapache2-mod-php5_${PHP5_VERSION}_amd64.deb \
     http://mirrors.kernel.org/ubuntu/pool/main/p/php5/php5-common_${PHP5_VERSION}_amd64.deb \
     http://mirrors.kernel.org/ubuntu/pool/main/p/php-json/php5-json_1.3.2-2build1_amd64.deb \
