@@ -170,6 +170,21 @@ if $fuel_version < 9.0 {
     require        => [File['ocf-ns_apache'], Exec['net.ipv4.ip_nonlocal_bind'], Class['lma_infra_alerting::nagios']],
   }
 
+  # Apache needs to start after the VIP interfaces are up and running
+  cs_rsc_order { 'apache2-nagios-after-mgmt-vip':
+    ensure  => present,
+    first   => 'vip__infrastructure_alerting_mgmt_vip',
+    second  => 'apache2-nagios',
+    require => Cs_resource['apache2-nagios'],
+  }
+
+  cs_rsc_order { 'apache2-nagios-after-ui-vip':
+    ensure  => present,
+    first   => 'vip__infrastructure_alerting_ui',
+    second  => 'apache2-nagios',
+    require => Cs_resource['apache2-nagios'],
+  }
+
   cs_rsc_colocation { 'infrastructure_alerting_vip-with-apache2-nagios':
     ensure     => present,
     score      => 'INFINITY',
@@ -215,7 +230,7 @@ if $fuel_version < 9.0 {
   }
 
   # The two VIPs must be colocated
-  # This assumes that the VIPs have already been created
+  # It assumes that the VIPs have already been created at a previous stage
   cs_rsc_colocation { 'ui_vip-with-wsgi_vip':
     ensure     => present,
     score      => 'INFINITY',
@@ -258,6 +273,21 @@ if $fuel_version < 9.0 {
     require => Pacemaker::Service['apache2-nagios'],
   }
 
+  # Apache needs to start after the VIP interfaces are up and running
+  pcmk_order { 'apache2-nagios-after-mgmt-vip':
+    ensure  => present,
+    first   => 'vip__infrastructure_alerting_mgmt_vip',
+    second  => 'apache2-nagios',
+    require => Pacemaker::Service['apache2-nagios'],
+  }
+
+  pcmk_order { 'apache2-nagios-after-ui-vip':
+    ensure  => present,
+    first   => 'vip__infrastructure_alerting_ui',
+    second  => 'apache2-nagios',
+    require => Pacemaker::Service['apache2-nagios'],
+  }
+
   # Nagios resources for Pacemaker
   pacemaker::service { 'nagios3':
     primitive_type => 'ocf-ns_nagios',
@@ -291,7 +321,7 @@ if $fuel_version < 9.0 {
   }
 
   # The two VIPs must be colocated
-  # This assumes VIPs are already created
+  # It assumes that the VIPs have already been created at a previous stage
   pcmk_colocation { 'ui_vip-with-wsgi_vip':
     ensure => present,
     score  => 'INFINITY',
