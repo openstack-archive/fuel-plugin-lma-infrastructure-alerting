@@ -1,3 +1,25 @@
+.. _install:
+
+Introduction
+------------
+
+You can install the StackLight Infrastructure Alerting plugin using one of the
+following options:
+
+* Install using the RPM file
+* Install from source
+
+The following is a list of software components installed by the StackLight
+Infrastructure Alerting plugin:
+
++-----------+---------------------------------------------+
+| Component | Version                                     |
++===========+=============================================+
+| Nagios    | v3.5.1 for Ubuntu (64-bit)                  |
++-----------+---------------------------------------------+
+| Apache    | Version coming with the Ubuntu distribution |
++-----------+---------------------------------------------+
+
 Install using the RPM file
 --------------------------
 
@@ -41,15 +63,15 @@ Alternatively, you may want to build the plugin RPM file from source if, for
 example, you want to test the latest features of the master branch or
 customize the plugin.
 
-.. note:: Running a Fuel plugin that you built yourself is at your
-   own risk and will not be supported.
+.. note:: Running a Fuel plugin that you built yourself is at your own risk
+   and will not be supported.
 
-To install the StackLight Infrastructure Alerting Plugin from source, you
-first need to prepare an environment to build the RPM file. The recommended
-approach is to build the RPM file directly onto the Fuel Master node so that
-you will not have to copy that file later on.
+To install the StackLight Infrastructure Alerting Plugin from source, first
+prepare an environment to build the RPM file. The recommended approach is to
+build the RPM file directly onto the Fuel Master node, so that you will not
+have to copy that file later on.
 
-**To prepare an environment:**
+**To prepare an environment and build the plugin:**
 
 #. Install the standard Linux development tools:
 
@@ -73,9 +95,8 @@ you will not have to copy that file later on.
    .. note:: You may also need to build the Fuel Plugin Builder if the package
       version of the plugin is higher than package version supported by the
       Fuel Plugin Builder you get from `pypi`. For instructions on how to
-      build the Fuel Plugin Builder, see the *Preparing an environment for
-      plugin development* section of the
-      `Fuel plugins Wiki <https://wiki.openstack.org/wiki/Fuel/Plugins>`_.
+      build the Fuel Plugin Builder, see the *Install Fuel Plugin Builder*
+      section of the `Fuel Plugin SDK Guide <http://docs.openstack.org/developer/fuel-docs/plugindocs/fuel-plugin-sdk-guide/create-plugin/install-plugin-builder.html>`_.
 
 #. Clone the plugin repository:
 

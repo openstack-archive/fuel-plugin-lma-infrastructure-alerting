@@ -3,8 +3,8 @@
 Release notes
 -------------
 
-0.10.0
-++++++
+Version 0.10.0
+++++++++++++++
 
 The StackLight Infrastructure Alerting plugin 0.10.0 contains the following
 updates:
@@ -23,8 +23,8 @@ updates:
       workload for large deployments. See
       `#1552772 <https://bugs.launchpad.net/lma-toolchain/+bug/1552772>`_.
 
-0.9.0
-+++++
+Version 0.9.0
++++++++++++++
 
 The StackLight Infrastructure Alerting plugin 0.9.0 contains the following
 updates:
@@ -39,7 +39,7 @@ updates:
     * Specified contact_groups for SSH checks.
       See `#1559153 <https://bugs.launchpad.net/lma-toolchain/+bug/1559153>`_.
 
-0.8.0
-+++++
+Version 0.8.0
++++++++++++++
 
 The initial release of the plugin.
