@@ -29,6 +29,7 @@ requirements:
 | Collector Plugin       |                                                                                          |
 +------------------------+------------------------------------------------------------------------------------------+
 | The StackLight InfluxDB| 0.10                                                                                     |
-| Grafana Plugin         | This is optional and only needed if you want to create alarms in Nagios for              |
+| Grafana Plugin         |                                                                                          |
+|                        | This is optional and only needed if you want to create alarms in Nagios for              |
 |                        | time-series stored in InfluxDB.                                                          |
 +------------------------+------------------------------------------------------------------------------------------+

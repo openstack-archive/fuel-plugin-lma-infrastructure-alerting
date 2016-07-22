@@ -15,8 +15,8 @@ Plugin configuration
 #. In the Fuel web UI, click the :guilabel:`Settings` tab and select the
    :guilabel:`Other` category.
 
-#. Scroll down through the settings until you find the StackLight
-   Infrastructure Alerting Plugin section.
+#. Scroll down through the settings until you find
+   :guilabel:`The StackLight Infrastructure Alerting Plugin` section.
 
 #. Select :guilabel:`The StackLight Infrastructure Alerting Plugin` and fill
    in the required fields as indicated below.
