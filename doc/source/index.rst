@@ -21,7 +21,6 @@ Installing and configuring StackLight Infrastructure Alerting plugin for Fuel
 .. toctree::
    :maxdepth: 1
 
-   install_intro
    install
    configure
    verification

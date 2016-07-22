@@ -8,7 +8,7 @@ Plugin verification
 -------------------
 
 Depending on the number of nodes and deployment setup, deploying a Mirantis
-OpenStack environment may take between 20 minutes to several hours. Once your
+OpenStack environment may take 20 minutes to several hours. Once the
 deployment is complete, you should see a deployment success notification
 message with a link to the Nagios web UI as shown below.
 
