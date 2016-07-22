@@ -70,6 +70,6 @@ the StackLight Collector. This may be due to different issues, for example:
   * The 'collectd' and/or 'hekad' process have crashed
   * One or several alarm rules are misconfigured
 
-For solutions, see the `Troubleshooting tips
-<http://fuel-plugin-lma-collector.readthedocs.io/en/latest/configuration.html#troubleshooting>`_
-of the *StackLight Collector Plugin User Guide*.
+For solutions, see the `Troubleshooting` section in the
+`StackLight Collector plugin documentation
+<http://fuel-plugin-lma-collector.readthedocs.io/en/latest/>`_.

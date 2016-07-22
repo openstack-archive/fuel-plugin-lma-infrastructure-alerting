@@ -50,17 +50,18 @@ condition affecting the overall health status of the global cluster entities.
       :width: 450pt
 
 There is a direct dependency between the configuration of the passive checks in
-Nagios and the `configuration of the alarms in the Collectors
-<http://fuel-plugin-lma-collector.readthedocs.io/en/latest/alarms.html>`_.
+Nagios and the configuration of the alarms in the Collectors. For details, see
+the `Configuring alarms` section in the
+`LMA Collector documentation <http://fuel-plugin-lma-collector.readthedocs.org/en/latest/>`_.
 A change in ``/etc/hiera/override/alarming.yaml`` or
 ``/etc/hiera/override/gse_filters.yaml`` on any of the nodes monitored by
-StackLight would require to reconfigure Nagios. It also implies that these two
+StackLight would require reconfiguring Nagios. It also implies that these two
 files should be maintained rigorously identical on all the nodes of the
 environment **including those where Nagios is installed**. StackLight provides
 Puppet artifacts to help you out with that task. To reconfigure the passive
 checks in Nagios when ``/etc/hiera/override/alarming.yaml`` or
-``/etc/hiera/override/gse_filters.yaml`` are modified,
-run the following command on all the nodes where Nagios is installed:
+``/etc/hiera/override/gse_filters.yaml`` are modified, run the following
+command on all the nodes where Nagios is installed:
 
 .. code-block:: console
 
@@ -164,9 +165,9 @@ Nagios configuration after the deployment of your environment.
 
 #. Log in to the *LMA Infrastructure Alerting* node.
 
-#. Edit the
-   ``/etc/nagios3/conf.d/cmd_notify-service-by-smtp-with-long-service-output.cfg``
-   file to add the ``-S smtp-use-starttls`` option to the :command:`mail`
+#. Open the ``cmd_notify-service-by-smtp-with-long-service-output.cfg`` file
+   in the ``/etc/nagios3/conf.d/`` directory for editing.
+#. Add the ``-S smtp-use-starttls`` option to the :command:`mail`
    command. For example::
 
     define command{
