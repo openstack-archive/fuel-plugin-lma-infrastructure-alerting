@@ -3,7 +3,7 @@ name: lma_infrastructure_alerting
 # Human-readable name for your plugin
 title: The StackLight Infrastructure Alerting Plugin
 # Plugin version
-version: '0.10.0'
+version: '1.0.0'
 # Description
 description: Deploy tools to send alerts concerning the OpenStack infrastructure.
 # Required fuel version
