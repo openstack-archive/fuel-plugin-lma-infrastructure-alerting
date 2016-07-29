@@ -35,11 +35,13 @@ SERVICE_NAME="Apache"
 OCF_RESKEY_binary_default="/usr/sbin/apache2"
 OCF_RESKEY_config_default="/etc/apache2/apache2.conf"
 OCF_RESKEY_ns_default=
+OCF_RESKEY_ns_gateway_default=
 OCF_RESKEY_status_url_default="http://localhost/status-server"
 
 : ${OCF_RESKEY_binary=${OCF_RESKEY_binary_default}}
 : ${OCF_RESKEY_config=${OCF_RESKEY_config_default}}
 : ${OCF_RESKEY_ns=${OCF_RESKEY_ns_default}}
+: ${OCF_RESKEY_ns_gateway=${OCF_RESKEY_ns_gateway_default}}
 : ${OCF_RESKEY_status_url=${OCF_RESKEY_status_url_default}}
 
 RUN_IN_NS="ip netns exec $OCF_RESKEY_ns "
@@ -103,6 +105,14 @@ Network namespace in which Apache will be run
 </longdesc>
 <shortdesc lang="en">Apache namespace</shortdesc>
 <content type="string" default="${OCF_RESKEY_ns_default}" />
+</parameter>
+
+<parameter name="ns_gateway" unique="0" required="0">
+<longdesc lang="en">
+Gateway address associated to the network namespace
+</longdesc>
+<shortdesc lang="en">Namespace gateway</shortdesc>
+<content type="string" default="${OCF_RESKEY_ns_gateway_default}" />
 </parameter>
 
 <parameter name="status_url" unique="0" required="0">
@@ -207,6 +217,10 @@ service_start() {
     if [ $rc -eq "$OCF_SUCCESS" ]; then
         ocf_log info "${SERVICE_NAME} is already running"
         return "$OCF_SUCCESS"
+    fi
+
+    if [ -n "${OCF_RESKEY_ns_gateway}" ] ; then
+        ocf_run ${RUN} ip route replace default via ${OCF_RESKEY_ns_gateway}
     fi
 
     ocf_run ${RUN} bash -c ". /etc/apache2/envvars && ${OCF_RESKEY_binary} -k start"

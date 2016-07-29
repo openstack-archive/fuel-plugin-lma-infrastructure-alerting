@@ -94,6 +94,7 @@ pacemaker_wrappers::service { 'apache2':
   parameters     => {
     'ns'         => 'infrastructure_alerting',
     'status_url' => 'http://localhost:8001/server-status',
+    'ns_gateway' => hiera('lma::infrastructure_alerting::apache_ns_gateway')
   },
   metadata       => {
     'migration-threshold' => '3',

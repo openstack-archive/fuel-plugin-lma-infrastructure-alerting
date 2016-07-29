@@ -16,6 +16,12 @@ $hiera_dir        = '/etc/hiera/plugins'
 $plugin_name      = 'lma_infrastructure_alerting'
 $network_metadata = hiera('network_metadata')
 $alerting_vip     = $network_metadata['vips']['infrastructure_alerting_mgmt_vip']['ipaddr']
+$network_scheme   = hiera_hash('network_scheme')
+prepare_network_config($network_scheme)
+
+$vip_networks = get_routable_networks_for_network_role($network_scheme, 'infrastructure_alerting')
+
+$apache_ns_gateway = hiera('management_vrouter_vip')
 
 $calculated_content = inline_template('
 ---
@@ -24,6 +30,7 @@ lma::corosync_roles:
   - primary-infrastructure_alerting
 lma::infrastructure_alerting::vip: <%= @alerting_vip %>
 lma::infrastructure_alerting::vip_ns: infrastructure_alerting
+lma::infrastructure_alerting::apache_ns_gateway: <%= @apache_ns_gateway %>
 ')
 
 file { "${hiera_dir}/${plugin_name}.yaml":
