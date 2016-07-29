@@ -130,6 +130,17 @@
     puppet_modules: /etc/puppet/modules
     timeout: 600
 
+- id: lma-alerting-ntp-client
+  type: puppet
+  version: 2.0.0
+  role: [primary-infrastructure_alerting, infrastructure_alerting]
+  requires: [lma-alerting-dns-client]
+  required_for: [post_deployment_end]
+  parameters:
+    puppet_manifest: /etc/puppet/modules/osnailyfacter/modular/ntp/ntp-client.pp
+    puppet_modules: /etc/puppet/modules
+    timeout: 600
+
 # This task needs to be reexecuted to reconfigure the no-quorum-policy every
 # time the cluster is scaled up or down
 - id: lma-alerting-enable-quorum
