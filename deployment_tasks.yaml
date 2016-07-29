@@ -10,7 +10,7 @@
     - globals
     - tools
     - logging
-    - netconfig
+    - lma-alerting-netconfig
     - hosts
     - lma-alerting-hiera
     - lma-alerting-validate-certificate
@@ -34,7 +34,7 @@
     - globals
     - tools
     - logging
-    - netconfig
+    - lma-alerting-netconfig
     - hosts
     - lma-alerting-hiera
     - lma-alerting-firewall
@@ -58,6 +58,20 @@
     puppet_modules: puppet/modules:/etc/puppet/modules
     timeout: 120
 
+# We cannot use the legacy 'netconfig' task because it won't create the proper
+# dependency on the virtual management router task.
+- id: lma-alerting-netconfig
+  type: puppet
+  version: 2.0.0
+  requires: [lma-alerting-hiera, virtual_ips]
+  required_for: [deploy_end, hosts]
+  parameters:
+    puppet_manifest: "/etc/puppet/modules/osnailyfacter/modular/netconfig/netconfig.pp"
+    puppet_modules: /etc/puppet/modules
+    timeout: 600
+  reexecute_on:
+    - deploy_changes
+
 - id: lma-alerting-validate-certificate
   type: puppet
   version: 2.0.0
@@ -74,7 +88,7 @@
 - id: lma-alerting-firewall
   type: puppet
   version: 2.0.0
-  requires: [netconfig, lma-alerting-hiera]
+  requires: [lma-alerting-netconfig, lma-alerting-hiera]
   required_for: [deploy_end]
   parameters:
     puppet_manifest: "puppet/manifests/firewall.pp"
@@ -104,6 +118,20 @@
     timeout: 600
 
 # Tasks definitions for post-deployment
+
+# Configure the default gateway (required for MOS 8 only)
+- id: lma-alerting-configure-default-route
+  type: puppet
+  version: 2.0.0
+  role: [primary-infrastructure_alerting, infrastructure_alerting]
+  requires: [post_deployment_start]
+  required_for: [post_deployment_end]
+  parameters:
+    puppet_manifest: "puppet/manifests/configure_default_route.pp"
+    puppet_modules: /etc/puppet/modules
+    timeout: 120
+  reexecute_on:
+    - deploy_changes
 
 # This task needs to be reexecuted to reconfigure the no-quorum-policy every
 # time the cluster is scaled up or down
