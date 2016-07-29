@@ -105,6 +105,20 @@
 
 # Tasks definitions for post-deployment
 
+# Configure the default gateway (required for MOS 8 only)
+- id: lma-alerting-configure-default-route
+  type: puppet
+  version: 2.0.0
+  role: [primary-infrastructure_alerting, infrastructure_alerting]
+  requires: [post_deployment_start]
+  required_for: [post_deployment_end]
+  parameters:
+    puppet_manifest: "puppet/manifests/configure_default_route.pp"
+    puppet_modules: /etc/puppet/modules
+    timeout: 120
+  reexecute_on:
+    - deploy_changes
+
 # This task needs to be reexecuted to reconfigure the no-quorum-policy every
 # time the cluster is scaled up or down
 - id: lma-alerting-enable-quorum
