@@ -10,7 +10,7 @@ STDLIB_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/puppetlabs-stdlib-4
 FIREWALL_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/puppetlabs-firewall-1.7.0.tar.gz"
 
 NAGIOS_VERSION="1.5-3ubuntu1"
-PHP5_VERSION="5.5.9+dfsg-1ubuntu4.17"
+PHP5_VERSION="5.5.9+dfsg-1ubuntu4.19"
 SAMBA_VERSION="4.3.9+dfsg-0ubuntu0.14.04.3"
 
 download_packages \
