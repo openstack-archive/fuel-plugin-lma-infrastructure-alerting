@@ -71,7 +71,7 @@ $influxdb_port = hiera('lma::influxdb::influxdb_port', 8086)
 $password = $plugin['nagios_password']
 
 $ldap_enabled               = $plugin['ldap_enabled'] or false
-$ldap_protocol              = $plugin['ldap_protocol']
+$ldap_protocol              = $plugin['ldap_protocol_for_nagios']
 $ldap_servers               = split($plugin['ldap_servers'], '\s+')
 $ldap_bind_dn               = $plugin['ldap_bind_dn']
 $ldap_bind_password         = $plugin['ldap_bind_password']
