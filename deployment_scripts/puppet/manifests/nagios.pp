@@ -81,7 +81,7 @@ class { 'lma_infra_alerting::nagios':
   ui_certificate_filename    => $nagios_ui['ssl_cert_path'],
   ui_certificate_hostname    => $nagios_ui['hostname'],
   ldap_enabled               => $nagios_authnz['ldap_enabled'],
-  ldap_protocol              => $nagios_authnz['ldap_protocol'],
+  ldap_protocol              => $nagios_authnz['ldap_protocol_for_nagios'],
   ldap_servers               => $nagios_authnz['ldap_servers'],
   ldap_port                  => $nagios_authnz['ldap_port'],
   ldap_bind_dn               => $nagios_authnz['ldap_bind_dn'],
