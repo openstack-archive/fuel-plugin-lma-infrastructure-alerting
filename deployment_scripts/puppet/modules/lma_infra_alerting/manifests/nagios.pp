@@ -18,12 +18,12 @@
 #
 
 class lma_infra_alerting::nagios (
-  $http_user = $lma_infra_alerting::params::http_user,
-  $httpd_service_name = 'httpd',
   $http_password,
   $http_port,
   $nagios_ui_address,
   $nagios_address,
+  $http_user = $lma_infra_alerting::params::http_user,
+  $httpd_service_name = 'httpd',
   $ui_tls_enabled = false,
   $ui_certificate_filename = undef,
   $ui_certificate_hostname = undef,
