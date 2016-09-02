@@ -4,7 +4,6 @@
 # This split will help to enable HTTPS for the Nagios UI and deploy it on
 # another network while LMA collectors continue to use HTTP over the
 # "monitoring" network.
-
 - id: "infrastructure_alerting"
   default_mapping: "management"
   properties:
@@ -19,7 +18,7 @@
            - "infrastructure_alerting"
 
 - id: "infrastructure_alerting_ui"
-  default_mapping: "management"
+  default_mapping: "public"
   properties:
     subnet: true
     gateway: false

@@ -2,7 +2,8 @@ infrastructure_alerting:
   name: 'StackLight Infrastructure Alerting'
   description: 'Install services for the infrastructure alerting'
   has_primary: true
-  public_ip_required: false
+  # A public IP address is required when Nagios is deployed on the public network
+  public_ip_required: true
   weight: 100
   limits:
     max: 3
