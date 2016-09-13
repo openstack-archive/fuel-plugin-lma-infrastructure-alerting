@@ -56,17 +56,26 @@ $tls_enabled = $nagios_ui['tls_enabled']
 
 $lma_collector = hiera_hash('lma_collector', {})
 
-if $lma_collector['gse_cluster_global'] {
-  $service_clusters = keys($lma_collector['gse_cluster_global']['clusters'])
+if $lma_collector['gse_cluster_global'] and $lma_collector['gse_cluster_global']['activate_alerting'] {
+  $global_clusters = keys($lma_collector['gse_cluster_global']['clusters'])
+  $notification_for_global_clusters = $lma_collector['gse_cluster_global']['enable_notification']
+}else{
+  $global_clusters = []
+}
+
+if $lma_collector['gse_cluster_node'] and $lma_collector['gse_cluster_node']['activate_alerting'] {
+  $node_clusters = keys($lma_collector['gse_cluster_node']['clusters'])
+  $notification_for_node_clusters = $lma_collector['gse_cluster_node']['enable_notification']
+}else{
+  $node_clusters = []
+}
+if $lma_collector['gse_cluster_service'] and $lma_collector['gse_cluster_service']['activate_alerting'] {
+  $service_clusters = keys($lma_collector['gse_cluster_service']['clusters'])
+  $notification_for_service_clusters = $lma_collector['gse_cluster_service']['enable_notification']
 }else{
   $service_clusters = []
 }
 
-if $lma_collector['gse_cluster_node'] {
-  $node_clusters = keys($lma_collector['gse_cluster_node']['clusters'])
-}else{
-  $node_clusters = []
-}
 
 # Install and configure nagios server for StackLight
 class { 'lma_infra_alerting::nagios':
@@ -96,11 +105,15 @@ class { 'lma_infra_alerting::nagios':
 }
 
 class { 'lma_infra_alerting::nagios::vhost':
-  openstack_deployment_name => $env_id,
-  openstack_management_vip  => $cluster_ip,
-  global_clusters           => $service_clusters,
-  node_clusters             => $node_clusters,
-  require                   => Class['lma_infra_alerting::nagios'],
+  openstack_deployment_name         => $env_id,
+  openstack_management_vip          => $cluster_ip,
+  global_clusters                   => $global_clusters,
+  notification_for_global_clusters  => $notification_for_global_clusters,
+  node_clusters                     => $node_clusters,
+  notification_for_service_clusters => $notification_for_service_clusters,
+  service_clusters                  => $service_clusters,
+  notification_for_node_clusters    => $notification_for_node_clusters,
+  require                           => Class['lma_infra_alerting::nagios'],
 }
 
 $configure_arp_filter_for_vip = '/usr/local/bin/configure_arp_filter_for_vip'
