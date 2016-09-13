@@ -1,13 +1,26 @@
 #!/bin/bash
 
+if [ -z "$1" ]; then
+  echo "The name of the plugin is empty"
+  exit 1
+fi
+
+if [ -z "$2" ]; then
+  echo "The version of the plugin is empty"
+  exit 1
+fi
+
 PLUGIN_NAME=$1
+PLUGIN_VERSION=$2
+PLUGIN_MAJOR=$(echo "$PLUGIN_VERSION" | cut -d. -f1)
+PLUGIN_MINOR=$(echo "$PLUGIN_VERSION" | cut -d. -f2)
 
 MANIFEST=nagios.pp
 CONFIG_DIR=/etc/nagios3/conf.d
 PREFIX_FILENAMES=lma_
 EXTENSION_FILENAMES=.cfg
 PUPPET=$(which puppet)
-PLUGIN_PUPPET_DIR=$(ls -d /etc/fuel/plugins/"$PLUGIN_NAME"*/puppet)
+PLUGIN_PUPPET_DIR=$(ls -d /etc/fuel/plugins/"$PLUGIN_NAME-$PLUGIN_MAJOR.$PLUGIN_MINOR"/puppet)
 LAST_CHECK=/var/cache/lma_last_astute_yaml.md5sum
 LAST_CHECK_NODES=/var/cache/lma_last_nodes_yaml.md5sum
 CURRENT_CHECK=/var/cache/lma_current_astute_yaml.md5sum

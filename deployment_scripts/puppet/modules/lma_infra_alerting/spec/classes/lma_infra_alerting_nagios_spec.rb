@@ -24,12 +24,14 @@ describe 'lma_infra_alerting::nagios' do
         let(:params) do
             {:http_password => 'foo', :http_port => '999',
              :nagios_ui_address => '1.1.1.1',
-             :nagios_address => '2.3.3.3'
+             :nagios_address => '2.3.3.3',
+             :plugin_version => '1.2.3',
             }
         end
         it { should contain_class('nagios') }
         it { should create_class('nagios::cgi') }
-        it { should create_cron('update lma infra alerting') }
+        it { should create_cron('update lma infra alerting').
+             with_command("/usr/bin/flock -n /tmp/lma.lock -c \"/usr/local/bin/update-lma-configuration lma_infrastructure_alerting 1.2.3\"") }
         it { should create_file('/usr/local/bin/update-lma-configuration') }
     end
 end
