@@ -24,7 +24,8 @@ describe 'lma_infra_alerting::nagios' do
         let(:params) do
             {:http_password => 'foo', :http_port => '999',
              :nagios_ui_address => '1.1.1.1',
-             :nagios_address => '2.3.3.3'
+             :nagios_address => '2.3.3.3',
+             :plugin_version => '1.2.3',
             }
         end
         it { should contain_class('nagios') }

@@ -40,6 +40,7 @@ class lma_infra_alerting::nagios (
   $ldap_group_attribute = undef,
   $ldap_admin_group_dn = undef,
   $httpd_dir = '/etc/apache2',
+  $plugin_version = undef,
 ) inherits lma_infra_alerting::params {
 
   include nagios::params
@@ -104,7 +105,7 @@ class lma_infra_alerting::nagios (
   $prefix = $lma_infra_alerting::params::nagios_config_filename_prefix
   cron { 'update lma infra alerting':
     ensure   => present,
-    command  => "/usr/bin/flock -n /tmp/lma.lock -c \"${cron_bin} lma_infrastructure_alerting\"",
+    command  => "/usr/bin/flock -n /tmp/lma.lock -c \"${cron_bin} lma_infrastructure_alerting\ ${plugin_version}"",
     minute   => '*',
     hour     => '*',
     month    => '*',

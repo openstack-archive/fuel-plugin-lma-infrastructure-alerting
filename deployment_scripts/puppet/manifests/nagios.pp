@@ -19,6 +19,7 @@ $env_id = hiera('deployment_id')
 $fuel_version = 0 + hiera('fuel_version')
 
 $plugin = hiera('lma_infrastructure_alerting')
+$plugin_version = $plugin['metadata']['plugin_version']
 $nagios_authnz = hiera('lma::infrastructure_alerting::authnz')
 $password = $nagios_authnz['password']
 if $notify_warning == false and
@@ -92,6 +93,7 @@ class { 'lma_infra_alerting::nagios':
   ldap_authorization_enabled => $nagios_authnz['ldap_authorization_enabled'],
   ldap_group_attribute       => $nagios_authnz['ldap_group_attribute'],
   ldap_admin_group_dn        => $nagios_authnz['ldap_admin_group_dn'],
+  plugin_version             => $plugin_version,
   notify                     => Service['apache2-nagios'],
 }
 
