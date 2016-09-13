@@ -58,16 +58,28 @@ describe 'afds_to_nagios_services' do
      "swift_zone" => "2",
      "uid" => "2",
      "user_node_name" => "slave-02_compute_cinder"},
+    {"fqdn" => "node-42.test.domain.local",
+     "internal_address" => "10.109.2.42",
+     "internal_netmask" => "255.255.255.0",
+     "name" => "node-2",
+     "node_roles" => ["foo-role"],
+     "storage_address" => "10.109.4.42",
+     "storage_netmask" => "255.255.255.0",
+     "swift_zone" => "2",
+     "uid" => "42",
+     "user_node_name" => "slave-42_foo-role"},
     ]
 
     role_to_cluster = {
         "controller" => {"roles" => ["primary-controller", "controller"]},
         "compute" => {"roles" => ["compute"]},
-        "storage" => {"roles" => ["cinder", "ceph-osd"]}
+        "storage" => {"roles" => ["cinder", "ceph-osd"]},
+        "foo" => {"roles" => ["foo-role"]}
     }
     afds = {
         "controller" => {
             "apply_to_node" => "controller",
+            "enable_notification" => true,
             "alarms" => {
                 "system-ctrl" => ["cpu-critical-controller", "cpu-warning-controller"],
                 "fs" => ["fs-critical", "fs-warning"]
@@ -75,6 +87,7 @@ describe 'afds_to_nagios_services' do
         },
         "compute" => {
             "apply_to_node" => "compute",
+            "enable_notification" => true,
             "alarms" => {
                 "system-compute" => ["cpu-critical-compute", "cpu-warning-compute"],
                 "fs" => ["fs-critical", "fs-critical-compute", "fs-warning"]
@@ -82,6 +95,7 @@ describe 'afds_to_nagios_services' do
         },
         "storage" => {
             "apply_to_node" => "storage",
+            "enable_notification" => true,
             "alarms" => {
                 "system-storage" => ["cpu-critical-storage", "cpu-warning-storage"],
                 "fs" => ["fs-critical-storage", "fs-warning-storage"]
@@ -89,6 +103,15 @@ describe 'afds_to_nagios_services' do
         },
         "default" => {
             "apply_to_node" => "default",
+            "activate_alerting" => true,
+            "alarms" => {
+                "cpu" => ["cpu-critical-default"],
+                "fs" => ["fs-critical", "fs-warning"]
+            }
+        },
+        "foo-cluster" => {
+            "apply_to_node" => "foo",
+            "activate_alerting" => false,
             "alarms" => {
                 "cpu" => ["cpu-critical-default"],
                 "fs" => ["fs-critical", "fs-warning"]
@@ -100,30 +123,40 @@ describe 'afds_to_nagios_services' do
            {
                "default checks for node-1" => {
                 "hostname" => "node-1",
+                "notifications_enabled" => 0,
                 "services" => {
                     "node-1.default.cpu" => "default.cpu",
                     "node-1.default.fs" => "default.fs",
                 }},
             "controller checks for node-3" => {
                 "hostname" => "node-3",
+                "notifications_enabled" => 1,
                 "services" => {
                     "node-3.controller.fs" => "controller.fs",
                     "node-3.controller.system-ctrl" => "controller.system-ctrl"
                 }},
             "default checks for node-4" => {
                 "hostname" => "node-4",
+                "notifications_enabled" => 0,
                 "services" => {
                     "node-4.default.cpu" => "default.cpu",
                     "node-4.default.fs" => "default.fs"
                 }},
-            "compute, storage checks for node-2" => {
+            "compute checks for node-2" => {
                 "hostname" => "node-2",
+                "notifications_enabled" => 1,
                 "services" => {
                     "node-2.compute.fs" => "compute.fs",
                     "node-2.compute.system-compute" => "compute.system-compute",
+                }},
+            "storage checks for node-2" => {
+                "hostname" => "node-2",
+                "notifications_enabled" => 1,
+                "services" => {
                     "node-2.storage.fs" => "storage.fs",
                     "node-2.storage.system-storage" => "storage.system-storage"
-                }}})
+                }}
+           })
         }
     end
 end
