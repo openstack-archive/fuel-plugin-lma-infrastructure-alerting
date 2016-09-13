@@ -21,14 +21,15 @@ It expects 5 arguments:
 2. The key containing the node's name.
 3. The key containing the node's role.
 4. The mapping between AFD profiles and node's roles
-4. The mapping between AFD profiles and alarms
+5. The mapping between AFD profiles and alarms
 
 *Examples:*
 
   $hash = afds_to_nagios_services(
     [{'name' => 'node-1', node_roles => ['primary-controller']}, {'name' => 'node-2', node_roles => ['controller']}],
-    'name', 'node_roles',
-    {'control_nodes' => ['primary-controller', 'controller']},
+    'name',
+    'node_roles',
+    {'control_nodes' => {'roles' => ['primary-controller', 'controller']}},
     {'control_nodes' => {'cpu' => ['alarm1'], 'fs' => ['alarm1']}}
   )
 
@@ -66,7 +67,7 @@ Would return:
             node_clusters[node_name] = Set.new([])
         end
         role_to_cluster.each do |cluster, roles|
-            node_clusters[node_name] << cluster if (roles & node[role_key]).length > 0
+            node_clusters[node_name] << cluster if (roles['roles'] & node[role_key]).length > 0
         end
     end
 
@@ -76,8 +77,11 @@ Would return:
 
         node_services = {}
         clusters.each do |cluster|
-            (afds[cluster] || {}).keys.each do |source|
-                node_services["#{node}.#{cluster}.#{source}"] = "#{ cluster }.#{ source }".gsub(/\s+/, '_')
+            afds_map = afds.select {|c, a| a.has_key?('apply_to_node') and a['apply_to_node'] == cluster}
+            afds_map.each do |c, a|
+                a['alarms'].keys.each do |source|
+                     node_services["#{node}.#{cluster}.#{source}"] = "#{ cluster }.#{ source }".gsub(/\s+/, '_')
+                end
             end
         end
 

@@ -344,15 +344,20 @@ class { 'lma_infra_alerting::nagios::contact':
   require         => Class['lma_infra_alerting::nagios'],
 }
 
-if $lma_collector['node_cluster_roles'] {
-  $node_cluster_roles = $lma_collector['node_cluster_roles']
+if $lma_collector['node_profiles'] {
+  $node_profiles = $lma_collector['node_profiles']
 } else {
-  $node_cluster_roles = {}
+  $node_profiles = {}
 }
 if $lma_collector['node_cluster_alarms'] {
   $node_cluster_alarms = $lma_collector['node_cluster_alarms']
 } else {
   $node_cluster_alarms = {}
+}
+if $lma_collector['service_cluster_alarms'] {
+  $service_cluster_alarms = $lma_collector['service_cluster_alarms']
+} else {
+  $service_cluster_alarms = {}
 }
 
 $network_metadata  = hiera_hash('network_metadata')
@@ -363,8 +368,9 @@ class { 'lma_infra_alerting::nagios::hosts':
   role_key               => 'node_roles',
   host_display_name_keys => ['name', 'user_node_name'],
   host_custom_vars_keys  => ['fqdn', 'node_roles'],
-  node_cluster_roles     => $node_cluster_roles,
+  node_profiles          => $node_profiles,
   node_cluster_alarms    => $node_cluster_alarms,
+  service_cluster_alarms => $service_cluster_alarms,
   require                => Class['lma_infra_alerting::nagios'],
 }
 
