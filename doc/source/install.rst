@@ -35,7 +35,7 @@ of the Fuel plugins catalog:**
 
    .. code-block:: console
 
-      [root@home ~]# scp lma_infrastructure_alerting-0.10-0.10.0-0.noarch.rpm \
+      [root@home ~]# scp lma_infrastructure_alerting-0.10-0.10.1-1.noarch.rpm \
       root@<Fuel Master node IP address>:
 
 #. Install the plugin using the `Fuel Plugins CLI
@@ -44,7 +44,7 @@ of the Fuel plugins catalog:**
    .. code-block:: console
 
       [root@fuel ~]# fuel plugins --install \
-      lma_infrastructure_alerting-0.10-0.10.0-0.noarch.rpm
+      lma_infrastructure_alerting-0.10-0.10.1-1.noarch.rpm
 
 #. Verify that the plugin is installed correctly:
 
@@ -53,7 +53,7 @@ of the Fuel plugins catalog:**
       [root@fuel ~]# fuel plugins --list
       id | name                        | version | package_version
       ---|-----------------------------|---------|----------------
-      1  | lma_infrastructure_alerting | 0.10.0   | 4.0.0
+      1  | lma_infrastructure_alerting | 0.10.1  | 4.0.0
 
 
 Install from source
@@ -119,9 +119,17 @@ have to copy that file later on.
 
 **To install the plugin:**
 
-Now that you have created the RPM file, install the plugin using the
-:command:`fuel plugins --install` command:
+#. Once you create the RPM file, install the plugin:
 
-.. code-block:: console
+   .. code-block:: console
 
-   [root@fuel ~] fuel plugins --install ./fuel-plugin-lma-infrastructure-alerting/*.rpm
+      [root@fuel ~] fuel plugins --install ./fuel-plugin-lma-infrastructure-alerting/*.rpm
+
+#. Verify that the plugin is installed correctly:
+
+   .. code-block:: console
+
+      [root@fuel ~]# fuel plugins --list
+      id | name                        | version | package_version
+      ---|-----------------------------|---------|----------------
+      1  | lma_infrastructure_alerting | 0.10.1  | 4.0.0
