@@ -74,16 +74,14 @@ class lma_infra_alerting::nagios::hosts (
                                         $role_key,
                                         $node_profiles,
                                         $node_cluster_alarms)
-  #$afd_service_defaults = {'notifications_enabled' => 0}
-  create_resources(lma_infra_alerting::nagios::services, $afd_nodes, {})
+  create_resources(lma_infra_alerting::nagios::services, $afd_nodes)
 
   $afd_services = afds_to_nagios_services($hosts,
                                           $host_name_key,
                                           $role_key,
                                           $node_profiles,
                                           $service_cluster_alarms)
-  $afd_service_defaults = {'notifications_enabled' => 0}
-  create_resources(lma_infra_alerting::nagios::services, $afd_services, $afd_service_defaults)
+  create_resources(lma_infra_alerting::nagios::services, $afd_services)
 
   if empty($node_profiles) and empty($node_cluster_alarms) {
     $node_uid= hiera('uid')

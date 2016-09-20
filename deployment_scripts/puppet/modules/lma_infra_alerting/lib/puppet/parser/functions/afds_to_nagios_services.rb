@@ -75,21 +75,36 @@ Would return:
     node_clusters.each do |node, clusters|
         clusters << "default" if clusters.empty?
 
-        node_services = {}
         clusters.each do |cluster|
+            notifications_enabled = 0
             afds_map = afds.select {|c, a| a.has_key?('apply_to_node') and a['apply_to_node'] == cluster}
-            afds_map.each do |c, a|
-                a['alarms'].keys.each do |source|
-                     node_services["#{node}.#{cluster}.#{source}"] = "#{ cluster }.#{ source }".gsub(/\s+/, '_')
+            afds_map.each do |logical_cluster, a|
+                node_services = {}
+                if not a.has_key?('activate_alerting')
+                    configure=true
+                elsif a['activate_alerting'] == true
+                    configure=true
+                else
+                    configure=false
+                end
+
+                if configure
+                    if a.has_key?('enable_notification') and a['enable_notification'] == true
+                        notifications_enabled = 1
+                    end
+                    a['alarms'].keys.each do |source|
+                         node_services["#{node}.#{logical_cluster}.#{source}"] = "#{ logical_cluster }.#{ source }".gsub(/\s+/, '_')
+                    end
+                end
+
+                unless node_services.empty? then
+                    result["#{ logical_cluster } checks for #{ node }"] = {
+                        'hostname' => node,
+                        'services' => node_services,
+                        'notifications_enabled' => notifications_enabled,
+                    }
                 end
             end
-        end
-
-        unless node_services.empty? then
-            result["#{ clusters.to_a.sort.join(', ') } checks for #{ node }"] = {
-                'hostname' => node,
-                'services' => node_services
-            }
         end
     end
 
