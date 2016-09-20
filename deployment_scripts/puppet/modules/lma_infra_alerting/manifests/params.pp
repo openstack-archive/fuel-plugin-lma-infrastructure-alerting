@@ -88,6 +88,7 @@ class lma_infra_alerting::params {
   # The numeric prefix is used to fix the display order in the Nagios UI
   $nagios_global_vhostname_prefix = '00-global-clusters'
   $nagios_node_vhostname_prefix = '00-node-clusters'
+  $nagios_service_vhostname_prefix = '00-service-clusters'
 
   # TCP ports of LMA backends and dashboards
   $influxdb_port = 8086

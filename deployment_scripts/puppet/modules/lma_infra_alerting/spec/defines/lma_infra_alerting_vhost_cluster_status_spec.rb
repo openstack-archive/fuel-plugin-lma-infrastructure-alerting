@@ -28,8 +28,8 @@ describe 'lma_infra_alerting::nagios::vhost_cluster_status' do
     describe 'with 2 services' do
         it { should contain_nagios__host('foohost') }
         it { should contain_lma_infra_alerting__nagios__services('footitle for foohost') }
-        it { should contain_nagios__service('a') }
-        it { should contain_nagios__service('b') }
+        it { should contain_nagios__service('footitle a') }
+        it { should contain_nagios__service('footitle b') }
     end
 end
 
