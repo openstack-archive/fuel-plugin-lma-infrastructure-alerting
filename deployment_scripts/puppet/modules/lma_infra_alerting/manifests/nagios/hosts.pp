@@ -30,15 +30,16 @@ class lma_infra_alerting::nagios::hosts (
   $host_display_name_keys = [],
   $host_custom_vars_keys = [],
   $role_key = undef,
-  $node_cluster_roles = {},
+  $node_profiles = {},
   $node_cluster_alarms = {},
+  $service_cluster_alarms = {},
 ){
 
   include lma_infra_alerting::params
 
   validate_string($host_name_key, $network_role_key)
   validate_array($hosts, $host_display_name_keys, $host_custom_vars_keys)
-  validate_hash($node_cluster_roles, $node_cluster_alarms)
+  validate_hash($node_profiles, $node_cluster_alarms)
 
   $nagios_hosts = nodes_to_nagios_hosts($hosts,
                                         $host_name_key,
@@ -68,15 +69,23 @@ class lma_infra_alerting::nagios::hosts (
   create_resources(nagios::hostgroup, $nagios_hostgroups, $hostgroup_defaults)
 
   # Configure AFD-based service checks
+  $afd_nodes = afds_to_nagios_services($hosts,
+                                        $host_name_key,
+                                        $role_key,
+                                        $node_profiles,
+                                        $node_cluster_alarms)
+  #$afd_service_defaults = {'notifications_enabled' => 0}
+  create_resources(lma_infra_alerting::nagios::services, $afd_nodes, {})
+
   $afd_services = afds_to_nagios_services($hosts,
                                           $host_name_key,
                                           $role_key,
-                                          $node_cluster_roles,
-                                          $node_cluster_alarms)
+                                          $node_profiles,
+                                          $service_cluster_alarms)
   $afd_service_defaults = {'notifications_enabled' => 0}
   create_resources(lma_infra_alerting::nagios::services, $afd_services, $afd_service_defaults)
 
-  if empty($node_cluster_roles) and empty($node_cluster_alarms) {
+  if empty($node_profiles) and empty($node_cluster_alarms) {
     $node_uid= hiera('uid')
     nagios::service { 'dummy-check-for-ci':
       prefix                 => $lma_infra_alerting::params::nagios_config_filename_prefix,

@@ -61,27 +61,44 @@ describe 'afds_to_nagios_services' do
     ]
 
     role_to_cluster = {
-        "controller" => ["primary-controller", "controller"],
-        "compute" => ["compute"],
-        "storage" => ["cinder", "ceph-osd"]
+        "controller" => {"roles" => ["primary-controller", "controller"]},
+        "compute" => {"roles" => ["compute"]},
+        "storage" => {"roles" => ["cinder", "ceph-osd"]}
     }
     afds = {
         "controller" => {
-            "system" => ["cpu-critical-controller", "cpu-warning-controller"],
-            "fs" => ["fs-critical", "fs-warning"]},
+            "apply_to_node" => "controller",
+            "alarms" => {
+                "system-ctrl" => ["cpu-critical-controller", "cpu-warning-controller"],
+                "fs" => ["fs-critical", "fs-warning"]
+            }
+        },
         "compute" => {
-            "system" => ["cpu-critical-compute", "cpu-warning-compute"],
-            "fs" => ["fs-critical", "fs-critical-compute", "fs-warning"]},
+            "apply_to_node" => "compute",
+            "alarms" => {
+                "system-compute" => ["cpu-critical-compute", "cpu-warning-compute"],
+                "fs" => ["fs-critical", "fs-critical-compute", "fs-warning"]
+            }
+        },
         "storage" => {
-            "system" => ["cpu-critical-storage", "cpu-warning-storage"],
-            "fs" => ["fs-critical-storage", "fs-warning-storage"]},
+            "apply_to_node" => "storage",
+            "alarms" => {
+                "system-storage" => ["cpu-critical-storage", "cpu-warning-storage"],
+                "fs" => ["fs-critical-storage", "fs-warning-storage"]
+            }
+        },
         "default" => {
-            "cpu" => ["cpu-critical-default"],
-            "fs" => ["fs-critical", "fs-warning"]}
+            "apply_to_node" => "default",
+            "alarms" => {
+                "cpu" => ["cpu-critical-default"],
+                "fs" => ["fs-critical", "fs-warning"]
+            }
+        }
     }
     describe 'with arguments' do
         it { should run.with_params(all_nodes, 'name', 'node_roles', role_to_cluster, afds).and_return(
-           {"default checks for node-1" => {
+           {
+               "default checks for node-1" => {
                 "hostname" => "node-1",
                 "services" => {
                     "node-1.default.cpu" => "default.cpu",
@@ -91,7 +108,7 @@ describe 'afds_to_nagios_services' do
                 "hostname" => "node-3",
                 "services" => {
                     "node-3.controller.fs" => "controller.fs",
-                    "node-3.controller.system" => "controller.system"
+                    "node-3.controller.system-ctrl" => "controller.system-ctrl"
                 }},
             "default checks for node-4" => {
                 "hostname" => "node-4",
@@ -103,9 +120,9 @@ describe 'afds_to_nagios_services' do
                 "hostname" => "node-2",
                 "services" => {
                     "node-2.compute.fs" => "compute.fs",
-                    "node-2.compute.system" => "compute.system",
+                    "node-2.compute.system-compute" => "compute.system-compute",
                     "node-2.storage.fs" => "storage.fs",
-                    "node-2.storage.system" => "storage.system"
+                    "node-2.storage.system-storage" => "storage.system-storage"
                 }}})
         }
     end
