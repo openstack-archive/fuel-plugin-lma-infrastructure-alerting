@@ -51,6 +51,6 @@ define lma_infra_alerting::nagios::vhost_cluster_status(
     hostname              => $hostname,
     notifications_enabled => $notifications_enabled,
     contact_group         => $contact_group,
-    services              => prefix($services, "${title} "),
+    services              => prefix($services, "${title}-"),
   }
 }
