@@ -3,7 +3,7 @@
 Limitations
 -----------
 
-The StackLight Infrastructure Alerting plugin 0.10.1 has the following
+The StackLight Infrastructure Alerting plugin 0.10.2 has the following
 limitation:
 
 * If Nagios is installed on several nodes for high availability, the alerts
