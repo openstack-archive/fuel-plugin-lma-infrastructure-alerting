@@ -27,22 +27,52 @@ describe 'nagios::cgi' do
              :user => 'nagiosuser',
             }
         end
-        it { should contain_class('apache') }
-        it { should contain_file('/tmp/htpass') }
-        it { should contain_htpasswd('nagiosuser') }
-        it { should contain_apache__custom_config('nagios-ui') }
+        it {
+            should contain_class('apache')
+            should contain_file('/tmp/htpass')
+            should contain_htpasswd('nagiosuser')
+            should contain_apache__custom_config('nagios-ui')
+        }
     end
+
     describe 'with default' do
         let(:params) do
             {:vhost_listen_ip => '1.1.1.1',
              :wsgi_vhost_listen_ip => '2.2.2.2',
             }
         end
-        it { should contain_class('apache') }
-        it { should contain_apache__custom_config('nagios-ui') }
-        it { should contain_apache__custom_config('nagios-wsgi') }
-        it { should contain_file('wsgi_process_service_checks_script') }
+        it {
+            should contain_class('apache')
+            should contain_apache__custom_config('nagios-ui')
+            should contain_apache__custom_config('nagios-wsgi')
+            should contain_file('wsgi_process_service_checks_script')
+        }
     end
+
+    describe 'with serveral ldap servers' do
+        let(:params) do
+            {:vhost_listen_ip => '1.1.1.1',
+             :wsgi_vhost_listen_ip => '2.2.2.2',
+             :ldap_enabled => true,
+             :ldap_protocol => 'ldap',
+             :ldap_servers => ['ldap.foo1.fr', 'ldap.foo2.fr'],
+             :ldap_port => 389,
+             :ldap_bind_dn => 'cn=admin,dc=example,dc=com',
+             :ldap_bind_password => 'foopass',
+             :ldap_user_search_base_dns => 'ou=groups,dc=example,dc=com',
+             :ldap_user_search_filter => '(&(objectClass=posixGroup)(memberUid=%s))',
+             :ldap_user_attribute => 'uid',
+            }
+        end
+        it {
+            should contain_class('apache')
+            should contain_apache__custom_config('nagios-ui').
+                with_content(/ldap:\/\/ldap.foo1.fr:389 ldap.foo2.fr:389/)
+            should contain_apache__custom_config('nagios-wsgi')
+            should contain_file('wsgi_process_service_checks_script')
+        }
+    end
+
     describe 'with default httpd_dir' do
         let(:params) do
             {:vhost_listen_ip => '1.1.1.1',
