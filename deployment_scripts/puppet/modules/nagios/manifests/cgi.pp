@@ -68,9 +68,8 @@ class nagios::cgi (
     }
     $ldap_apache_modules = ['ldap', 'authnz_ldap']
     # LDAP url is used in apache::custom_config
-    $ldap_urls = suffix($ldap_servers, ":${ldap_port}/${ldap_user_search_base_dns}?${ldap_user_attribute}?sub?${ldap_user_search_filter}")
-
-    $ldap_url = join($ldap_urls, ' ')
+    $ldap_servers_list = join($ldap_servers, ' ')
+    $ldap_url = "${ldap_servers_list}:${ldap_port}/${ldap_user_search_base_dns}?${ldap_user_attribute}?sub?${ldap_user_search_filter}"
   } else {
     $ldap_apache_modules = []
   }
