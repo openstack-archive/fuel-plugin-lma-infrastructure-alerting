@@ -3,6 +3,18 @@
 Release notes
 -------------
 
+Version 0.10.2
+++++++++++++++
+
+The StackLight Infrastructure Alerting plugin 0.10.2 contains the following
+updates:
+
+* Fixed issue to allow the configuration of a list of LDAP servers. See
+  `#1624002 <https://bugs.launchpad.net/lma-toolchain/+bug/1624002>`_.
+
+* Modify the cron job to use specific version of the plugin. See
+  `#1622628 <https://bugs.launchpad.net/lma-toolchain/+bug/1622628>`_.
+
 Version 0.10.1
 ++++++++++++++
 
