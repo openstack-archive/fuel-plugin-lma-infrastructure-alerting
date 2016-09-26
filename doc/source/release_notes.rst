@@ -3,6 +3,15 @@
 Release notes
 -------------
 
+Version 0.10.2
+++++++++++++++
+
+The StackLight Infrastructure Alerting plugin 0.10.1 contains the following
+updates:
+
+* Modify the cron job to use specific version of the plugin. See
+  `#1622628 <https://bugs.launchpad.net/lma-toolchain/+bug/1622628>`_.
+
 Version 0.10.1
 ++++++++++++++
 
