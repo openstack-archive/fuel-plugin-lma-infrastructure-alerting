@@ -11,7 +11,7 @@ FIREWALL_TARBALL_URL="https://forgeapi.puppetlabs.com/v3/files/puppetlabs-firewa
 
 NAGIOS_VERSION="1.5-3ubuntu1"
 PHP5_VERSION="5.5.9+dfsg-1ubuntu4.19"
-SAMBA_VERSION="4.3.9+dfsg-0ubuntu0.14.04.3"
+SAMBA_VERSION="4.3.11+dfsg-0ubuntu0.14.04.1"
 
 download_packages \
     http://mirrors.kernel.org/ubuntu/pool/main/t/talloc/libtalloc2_2.1.0-1_amd64.deb\
