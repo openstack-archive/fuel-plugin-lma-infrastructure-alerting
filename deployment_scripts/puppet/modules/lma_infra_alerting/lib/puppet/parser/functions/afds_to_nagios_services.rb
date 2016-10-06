@@ -80,16 +80,14 @@ Would return:
             afds_map = afds.select {|c, a| a.has_key?('apply_to_node') and a['apply_to_node'] == cluster}
             afds_map.each do |logical_cluster, a|
                 node_services = {}
-                if not a.has_key?('activate_alerting')
-                    configure=true
-                elsif a['activate_alerting'] == true
+                if a.has_key?('alerting') and a['alerting'] != 'disabled'
                     configure=true
                 else
                     configure=false
                 end
 
                 if configure
-                    if a.has_key?('enable_notification') and a['enable_notification'] == true
+                    if a['alerting'] == 'enabled_with_notification'
                         notifications_enabled = 1
                     end
                     a['alarms'].keys.each do |source|

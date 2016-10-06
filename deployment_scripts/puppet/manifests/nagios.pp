@@ -57,22 +57,22 @@ $tls_enabled = $nagios_ui['tls_enabled']
 
 $lma_collector = hiera_hash('lma_collector', {})
 
-if $lma_collector['gse_cluster_global'] and $lma_collector['gse_cluster_global']['activate_alerting'] {
+if $lma_collector['gse_cluster_global'] and $lma_collector['gse_cluster_global']['alerting'] != 'disabled' {
   $global_clusters = keys($lma_collector['gse_cluster_global']['clusters'])
-  $notification_for_global_clusters = $lma_collector['gse_cluster_global']['enable_notification']
+  $notification_for_global_clusters = $lma_collector['gse_cluster_global']['alerting'] == 'enabled_with_notification'
 }else{
   $global_clusters = []
 }
 
-if $lma_collector['gse_cluster_node'] and $lma_collector['gse_cluster_node']['activate_alerting'] {
+if $lma_collector['gse_cluster_node'] and $lma_collector['gse_cluster_node']['alerting'] != 'disabled' {
   $node_clusters = keys($lma_collector['gse_cluster_node']['clusters'])
-  $notification_for_node_clusters = $lma_collector['gse_cluster_node']['enable_notification']
+  $notification_for_node_clusters = $lma_collector['gse_cluster_node']['alerting'] == 'enabled_with_notification'
 }else{
   $node_clusters = []
 }
-if $lma_collector['gse_cluster_service'] and $lma_collector['gse_cluster_service']['activate_alerting'] {
+if $lma_collector['gse_cluster_service'] and $lma_collector['gse_cluster_service']['alerting'] != 'disabled' {
   $service_clusters = keys($lma_collector['gse_cluster_service']['clusters'])
-  $notification_for_service_clusters = $lma_collector['gse_cluster_service']['enable_notification']
+  $notification_for_service_clusters = $lma_collector['gse_cluster_service']['alerting'] == 'enabled_with_notification'
 }else{
   $service_clusters = []
 }

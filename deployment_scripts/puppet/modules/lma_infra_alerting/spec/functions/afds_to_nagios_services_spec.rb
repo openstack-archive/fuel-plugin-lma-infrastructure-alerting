@@ -90,7 +90,7 @@ describe 'afds_to_nagios_services' do
     afds = {
         "controller" => {
             "apply_to_node" => "controller",
-            "enable_notification" => true,
+            "alerting" => "enabled_with_notification",
             "alarms" => {
                 "system-ctrl" => ["cpu-critical-controller", "cpu-warning-controller"],
                 "fs" => ["fs-critical", "fs-warning"]
@@ -98,7 +98,7 @@ describe 'afds_to_nagios_services' do
         },
         "compute" => {
             "apply_to_node" => "compute",
-            "enable_notification" => true,
+            "alerting" => "enabled_with_notification",
             "alarms" => {
                 "system-compute" => ["cpu-critical-compute", "cpu-warning-compute"],
                 "fs" => ["fs-critical", "fs-critical-compute", "fs-warning"]
@@ -106,7 +106,7 @@ describe 'afds_to_nagios_services' do
         },
         "storage" => {
             "apply_to_node" => "storage",
-            "enable_notification" => true,
+            "alerting" => "enabled_with_notification",
             "alarms" => {
                 "system-storage" => ["cpu-critical-storage", "cpu-warning-storage"],
                 "fs" => ["fs-critical-storage", "fs-warning-storage"]
@@ -114,7 +114,7 @@ describe 'afds_to_nagios_services' do
         },
         "elasticsearch-cluster" => {
             "apply_to_node" => "elasticsearch",
-            "activate_alerting" => true,
+            "alerting" => "enabled",
             "alarms" => {
                 "cpu" => ["cpu-critical-es"],
                 "fs" => ["fs-critical-es", "fs-warning-es"]
@@ -122,7 +122,7 @@ describe 'afds_to_nagios_services' do
         },
         "default" => {
             "apply_to_node" => "default",
-            "activate_alerting" => true,
+            "alerting" => "enabled",
             "alarms" => {
                 "cpu" => ["cpu-critical-default"],
                 "fs" => ["fs-critical", "fs-warning"]
@@ -130,7 +130,7 @@ describe 'afds_to_nagios_services' do
         },
         "bar-cluster" => {
             "apply_to_node" => "bar",
-            "activate_alerting" => false,
+            "alerting" => "disabled",
             "alarms" => {
                 "cpu" => ["cpu-critical-default"],
                 "fs" => ["fs-critical", "fs-warning"]
