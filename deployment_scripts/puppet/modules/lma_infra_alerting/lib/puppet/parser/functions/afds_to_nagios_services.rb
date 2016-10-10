@@ -85,48 +85,48 @@ Would return:
             notifications_enabled = 0
             afds_map = afds.select {|c, a| a.has_key?('apply_to_node') and a['apply_to_node'] == cluster}
             afds_map.each do |logical_cluster, a|
-                node_services = {}
                 if a.has_key?('alerting') and a['alerting'] != 'disabled'
                     configure=true
+                    if a['alerting'] == 'enabled_with_notification'
+                        notifications_enabled = 1
+                    end
                 else
                     configure=false
                 end
 
-                if configure
-                    if a['alerting'] == 'enabled_with_notification'
-                        notifications_enabled = 1
-                    end
-                    a['alarms'].each do |source, afd|
-                        # collect metric names
-                        m = Set.new([])
-                        afd.each do |alarm|
-                            # find metric definition
-                            alarm_def = alarms.select {|defi| defi['name'] == alarm}
-                            next if alarm_def.empty?
-                            alarm_def[0]['trigger']['rules'].each do |r|
-                                m << r['metric']
-                            end
-                        end
-                        matches = true
-                        m.each do |metric_name|
-                            if metrics.has_key?(metric_name) and metrics[metric_name]['collected_on'] == 'aggregator'
-                                matches = false
-                            end
-
-                        end
-                        # skip the source if collected_on differs
-                        if matches
-                            node_services["#{node}.#{logical_cluster}.#{source}"] = "#{ logical_cluster }.#{ source }".gsub(/\s+/, '_')
+                a['members'].each do |source, afd|
+                    # collect metric names
+                    m = Set.new([])
+                    if afd.has_key?('alerting') and afd['alerting'] != 'disabled'
+                        configure = true
+                        if afd['alerting'] == 'enabled_with_notification'
+                            notifications_enabled = 1
                         end
                     end
-                end
+                    afd['alarms'].each do |alarm|
+                        # find metric definition
+                        alarm_def = alarms.select {|defi| defi['name'] == alarm}
+                        next if alarm_def.empty?
+                        alarm_def[0]['trigger']['rules'].each do |r|
+                            m << r['metric']
+                        end
+                    end
+                    matches = true
+                    m.each do |metric_name|
+                        if metrics.has_key?(metric_name) and metrics[metric_name]['collected_on'] == 'aggregator'
+                            # skip the source if one metric is collected on 'aggregator'
+                            matches = false
+                        end
 
-                unless node_services.empty? then
-                    result["#{ logical_cluster } checks for #{ node }"] = {
-                        'hostname' => node,
-                        'services' => node_services,
-                        'notifications_enabled' => notifications_enabled,
-                    }
+                    end
+                    if configure and matches
+                        result["#{ logical_cluster }.#{source} checks for #{ node } notif #{notifications_enabled}"] = {
+                            'hostname' => node,
+                            'services' => {"#{node}.#{logical_cluster}.#{source}" => "#{ logical_cluster }.#{ source }".gsub(/\s+/, '_')},
+
+                            'notifications_enabled' => notifications_enabled,
+                        }
+                    end
                 end
             end
         end
