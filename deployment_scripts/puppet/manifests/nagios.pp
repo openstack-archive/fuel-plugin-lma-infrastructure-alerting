@@ -386,6 +386,8 @@ class { 'lma_infra_alerting::nagios::hosts':
   node_profiles          => $node_profiles,
   node_cluster_alarms    => $node_cluster_alarms,
   service_cluster_alarms => $service_cluster_alarms,
+  alarms                 => $lma_collector['alarms'],
+  metrics                => $lma_collector['metrics'],
   require                => Class['lma_infra_alerting::nagios'],
 }
 

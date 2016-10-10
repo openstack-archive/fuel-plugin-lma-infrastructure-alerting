@@ -32,14 +32,16 @@ class lma_infra_alerting::nagios::hosts (
   $role_key = undef,
   $node_profiles = {},
   $node_cluster_alarms = {},
+  $alarms = [],
+  $metrics = {},
   $service_cluster_alarms = {},
 ){
 
   include lma_infra_alerting::params
 
   validate_string($host_name_key, $network_role_key)
-  validate_array($hosts, $host_display_name_keys, $host_custom_vars_keys)
-  validate_hash($node_profiles, $node_cluster_alarms)
+  validate_array($hosts, $host_display_name_keys, $host_custom_vars_keys, $alarms)
+  validate_hash($node_profiles, $node_cluster_alarms, $metrics)
 
   $nagios_hosts = nodes_to_nagios_hosts($hosts,
                                         $host_name_key,
@@ -73,14 +75,20 @@ class lma_infra_alerting::nagios::hosts (
                                         $host_name_key,
                                         $role_key,
                                         $node_profiles,
-                                        $node_cluster_alarms)
+                                        $node_cluster_alarms,
+                                        $alarms,
+                                        $metrics
+                                        )
   create_resources(lma_infra_alerting::nagios::services, $afd_nodes)
 
   $afd_services = afds_to_nagios_services($hosts,
                                           $host_name_key,
                                           $role_key,
                                           $node_profiles,
-                                          $service_cluster_alarms)
+                                          $service_cluster_alarms,
+                                          $alarms,
+                                          $metrics
+                                          )
   create_resources(lma_infra_alerting::nagios::services, $afd_services)
 
   if empty($node_profiles) and empty($node_cluster_alarms) {

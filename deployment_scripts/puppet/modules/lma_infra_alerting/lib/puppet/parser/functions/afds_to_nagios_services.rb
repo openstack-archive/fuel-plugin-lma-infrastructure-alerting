@@ -22,6 +22,8 @@ It expects 5 arguments:
 3. The key containing the node's role.
 4. The mapping between AFD profiles and node's roles
 5. The mapping between AFD profiles and alarms
+6. Array of alarm definitions
+7. Hash table mapping metric names to the place where there are collected
 
 *Examples:*
 
@@ -45,7 +47,7 @@ Would return:
  ) do |arguments|
 
     raise(Puppet::ParseError, "afds_to_nagios_services(): Wrong number of arguments " +
-      "given (#{arguments.size} expecting 5") if arguments.size != 5
+      "given (#{arguments.size} expecting 7") if arguments.size != 7
 
     nodes = arguments[0]
     raise(Puppet::ParseError, "arg0 isn't an array!") if ! nodes.is_a?(Array)
@@ -56,6 +58,10 @@ Would return:
     raise(Puppet::ParseError, "arg3 isn't a hash!") if ! role_to_cluster.is_a?(Hash)
     afds = arguments[4]
     raise(Puppet::ParseError, "arg4 isn't a hash!") if ! afds.is_a?(Hash)
+    alarms = arguments[5]
+    alarms = [] if ! alarms.is_a?(Array)
+    metrics = arguments[6]
+    metrics = {} if ! metrics.is_a?(Hash)
 
     result = {}
 
@@ -90,8 +96,28 @@ Would return:
                     if a['alerting'] == 'enabled_with_notification'
                         notifications_enabled = 1
                     end
-                    a['alarms'].keys.each do |source|
-                         node_services["#{node}.#{logical_cluster}.#{source}"] = "#{ logical_cluster }.#{ source }".gsub(/\s+/, '_')
+                    a['alarms'].each do |source, afd|
+                        # collect metric names
+                        m = Set.new([])
+                        afd.each do |alarm|
+                            # find metric definition
+                            alarm_def = alarms.select {|defi| defi['name'] == alarm}
+                            next if alarm_def.empty?
+                            alarm_def[0]['trigger']['rules'].each do |r|
+                                m << r['metric']
+                            end
+                        end
+                        matches = true
+                        m.each do |metric_name|
+                            if metrics.has_key?(metric_name) and metrics[metric_name]['collected_on'] == 'aggregator'
+                                matches = false
+                            end
+
+                        end
+                        # skip the source if collected_on differs
+                        if matches
+                            node_services["#{node}.#{logical_cluster}.#{source}"] = "#{ logical_cluster }.#{ source }".gsub(/\s+/, '_')
+                        end
                     end
                 end
 

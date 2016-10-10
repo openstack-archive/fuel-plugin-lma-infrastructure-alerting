@@ -93,7 +93,8 @@ describe 'afds_to_nagios_services' do
             "alerting" => "enabled_with_notification",
             "alarms" => {
                 "system-ctrl" => ["cpu-critical-controller", "cpu-warning-controller"],
-                "fs" => ["fs-critical", "fs-warning"]
+                "fs" => ["fs-critical", "fs-warning"],
+                "rabbitmq" => ["rabbitmq-cluster-warning"]
             }
         },
         "compute" => {
@@ -137,8 +138,27 @@ describe 'afds_to_nagios_services' do
             }
         }
     }
+    alarms_services = [
+        {"name"=>"rabbitmq-cluster-warning",
+         "description"=>"The RabbitMQ cluster is degraded because some RabbitMQ nodes are missing",
+         "severity"=>"warning",
+         "trigger"=>
+          {"logical_operator"=>"or",
+           "rules"=>
+            [{"metric"=>"pacemaker_resource_percent",
+              "relational_operator"=>"<",
+              "threshold"=>50,
+              "window"=>60,
+              "periods"=>0,
+              "function"=>"last"}]}},
+    ]
+    metrics = {
+        "pacemaker_resource_percent" => {
+            "collected_on" => "aggregator"
+        }
+    }
     describe 'with arguments' do
-        it { should run.with_params(all_nodes, 'name', 'node_roles', role_to_cluster, afds).and_return(
+        it { should run.with_params(all_nodes, 'name', 'node_roles', role_to_cluster, afds, alarms_services, metrics).and_return(
            {
                "default checks for node-1" => {
                 "hostname" => "node-1",
