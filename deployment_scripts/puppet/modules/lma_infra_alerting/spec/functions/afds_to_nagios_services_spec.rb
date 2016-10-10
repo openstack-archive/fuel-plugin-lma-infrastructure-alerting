@@ -91,50 +91,78 @@ describe 'afds_to_nagios_services' do
         "controller" => {
             "apply_to_node" => "controller",
             "alerting" => "enabled_with_notification",
-            "alarms" => {
-                "system-ctrl" => ["cpu-critical-controller", "cpu-warning-controller"],
-                "fs" => ["fs-critical", "fs-warning"],
-                "rabbitmq" => ["rabbitmq-cluster-warning"]
+            "members" => {
+                "system-ctrl" => {
+                    "alarms" => ["cpu-critical-controller", "cpu-warning-controller"],
+                },
+                "fs" => {
+                    "alarms" => ["fs-critical", "fs-warning"],
+                },
+                "rabbitmq" => {
+                    "alarms" => ["rabbitmq-cluster-warning"]
+                }
             }
         },
         "compute" => {
             "apply_to_node" => "compute",
             "alerting" => "enabled_with_notification",
-            "alarms" => {
-                "system-compute" => ["cpu-critical-compute", "cpu-warning-compute"],
-                "fs" => ["fs-critical", "fs-critical-compute", "fs-warning"]
+            "members" => {
+                "system-compute" => {
+                    "alarms" => ["cpu-critical-compute", "cpu-warning-compute"],
+                },
+                "fs" => {
+                    "alarms" => ["fs-critical", "fs-critical-compute", "fs-warning"]
+                }
             }
         },
         "storage" => {
             "apply_to_node" => "storage",
             "alerting" => "enabled_with_notification",
-            "alarms" => {
-                "system-storage" => ["cpu-critical-storage", "cpu-warning-storage"],
-                "fs" => ["fs-critical-storage", "fs-warning-storage"]
+            "members" => {
+                "system-storage" => {
+                    "alarms" => ["cpu-critical-storage", "cpu-warning-storage"],
+                },
+                "fs" => {
+                    "alarms" => ["fs-critical-storage", "fs-warning-storage"]
+                }
             }
         },
         "elasticsearch-cluster" => {
             "apply_to_node" => "elasticsearch",
             "alerting" => "enabled",
-            "alarms" => {
-                "cpu" => ["cpu-critical-es"],
-                "fs" => ["fs-critical-es", "fs-warning-es"]
+            "members" => {
+                "cpu" => {
+                    "alarms" => ["cpu-critical-es"],
+                },
+                "fs" => {
+                    "alarms" => ["fs-critical-es", "fs-warning-es"]
+                }
             }
         },
         "default" => {
             "apply_to_node" => "default",
             "alerting" => "enabled",
-            "alarms" => {
-                "cpu" => ["cpu-critical-default"],
-                "fs" => ["fs-critical", "fs-warning"]
+            "members" => {
+                "cpu" => {
+                    "alarms" => ["cpu-critical-default"],
+                },
+                "fs" => {
+                    # override alerting attribute
+                    "alerting" => "enabled_with_notification",
+                    "alarms" => ["fs-critical", "fs-warning"]
+                }
             }
         },
         "bar-cluster" => {
             "apply_to_node" => "bar",
             "alerting" => "disabled",
-            "alarms" => {
-                "cpu" => ["cpu-critical-default"],
-                "fs" => ["fs-critical", "fs-warning"]
+            "members" => {
+                "cpu" => {
+                    "alarms" => ["cpu-critical-default"],
+                },
+                "fs" => {
+                    "alarms" => ["fs-critical", "fs-warning"]
+                }
             }
         }
     }
@@ -160,46 +188,76 @@ describe 'afds_to_nagios_services' do
     describe 'with arguments' do
         it { should run.with_params(all_nodes, 'name', 'node_roles', role_to_cluster, afds, alarms_services, metrics).and_return(
            {
-               "default checks for node-1" => {
+               "default.cpu checks for node-1 notif 0" => {
                 "hostname" => "node-1",
                 "notifications_enabled" => 0,
                 "services" => {
                     "node-1.default.cpu" => "default.cpu",
+                }},
+               "default.fs checks for node-1 notif 1" => {
+                "hostname" => "node-1",
+                "notifications_enabled" => 1,
+                "services" => {
                     "node-1.default.fs" => "default.fs",
                 }},
-            "controller checks for node-3" => {
+            "controller.fs checks for node-3 notif 1" => {
                 "hostname" => "node-3",
                 "notifications_enabled" => 1,
                 "services" => {
                     "node-3.controller.fs" => "controller.fs",
+                }},
+            "controller.system-ctrl checks for node-3 notif 1" => {
+                "hostname" => "node-3",
+                "notifications_enabled" => 1,
+                "services" => {
                     "node-3.controller.system-ctrl" => "controller.system-ctrl"
                 }},
-            "elasticsearch-cluster checks for node-4" => {
+            "elasticsearch-cluster.cpu checks for node-4 notif 0" => {
                 "hostname" => "node-4",
                 "notifications_enabled" => 0,
                 "services" => {
                     "node-4.elasticsearch-cluster.cpu" => "elasticsearch-cluster.cpu",
+                }},
+            "elasticsearch-cluster.fs checks for node-4 notif 0" => {
+                "hostname" => "node-4",
+                "notifications_enabled" => 0,
+                "services" => {
                     "node-4.elasticsearch-cluster.fs" => "elasticsearch-cluster.fs"
                 }},
-            "elasticsearch-cluster checks for node-5" => {
+            "elasticsearch-cluster.cpu checks for node-5 notif 0" => {
                 "hostname" => "node-5",
                 "notifications_enabled" => 0,
                 "services" => {
                     "node-5.elasticsearch-cluster.cpu" => "elasticsearch-cluster.cpu",
+                }},
+            "elasticsearch-cluster.fs checks for node-5 notif 0" => {
+                "hostname" => "node-5",
+                "notifications_enabled" => 0,
+                "services" => {
                     "node-5.elasticsearch-cluster.fs" => "elasticsearch-cluster.fs"
                 }},
-            "compute checks for node-2" => {
+            "compute.fs checks for node-2 notif 1" => {
                 "hostname" => "node-2",
                 "notifications_enabled" => 1,
                 "services" => {
                     "node-2.compute.fs" => "compute.fs",
+                }},
+            "compute.system-compute checks for node-2 notif 1" => {
+                "hostname" => "node-2",
+                "notifications_enabled" => 1,
+                "services" => {
                     "node-2.compute.system-compute" => "compute.system-compute",
                 }},
-            "storage checks for node-2" => {
+            "storage.fs checks for node-2 notif 1" => {
                 "hostname" => "node-2",
                 "notifications_enabled" => 1,
                 "services" => {
                     "node-2.storage.fs" => "storage.fs",
+                }},
+            "storage.system-storage checks for node-2 notif 1" => {
+                "hostname" => "node-2",
+                "notifications_enabled" => 1,
+                "services" => {
                     "node-2.storage.system-storage" => "storage.system-storage"
                 }}
            })
