@@ -6,6 +6,18 @@ Release notes
 Version 1.0.0
 +++++++++++++
 
+The StackLight Infrastructure Alerting plugin 1.0.0 contains the following
+updates:
+
+* Fixed an issue to allow the configuration of a list of LDAP servers. See
+  `#1624002 <https://bugs.launchpad.net/lma-toolchain/+bug/1624002>`_.
+* Modified the cron job to use a specific version of the plugin. See
+  `#1622628 <https://bugs.launchpad.net/lma-toolchain/+bug/1622628>`_.
+* Added support for wildcard SSL certificates. See
+  `#1608665 <https://bugs.launchpad.net/lma-toolchain/+bug/1608665>`_.
+* Fixed the UI issue with the LDAP protocol radio button. See
+  `#1599778 <https://bugs.launchpad.net/lma-toolchain/+bug/1599778>`_.
+
 Version 0.10.0
 ++++++++++++++
 
