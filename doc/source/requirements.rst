@@ -23,12 +23,12 @@ requirements:
 |                        | A typical setup would at least require a quad-core server with 8 GB of RAM and fast disks|
 |                        | (ideally, SSDs).                                                                         |
 +------------------------+------------------------------------------------------------------------------------------+
-| Mirantis OpenStack     | 8.0, 9.0                                                                                 |
+| Mirantis OpenStack     | 8.0, 9.x                                                                                 |
 +------------------------+------------------------------------------------------------------------------------------+
-| The StackLight         | 0.10                                                                                     |
+| The StackLight         | 1.0                                                                                      |
 | Collector Plugin       |                                                                                          |
 +------------------------+------------------------------------------------------------------------------------------+
-| The StackLight InfluxDB| 0.10                                                                                     |
+| The StackLight InfluxDB| 1.0                                                                                      |
 | Grafana Plugin         |                                                                                          |
 |                        | This is optional and only needed if you want to create alarms in Nagios for              |
 |                        | time-series stored in InfluxDB.                                                          |
