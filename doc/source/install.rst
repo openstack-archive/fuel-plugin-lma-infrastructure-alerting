@@ -23,7 +23,7 @@ Infrastructure Alerting plugin:
 Install using the RPM file
 --------------------------
 
-**To install the StackLight Infrastructure Alerting Plugin using the RPM file
+**To install the StackLight Infrastructure Alerting plugin using the RPM file
 of the Fuel plugins catalog:**
 
 #. Go to the `Fuel Plugins Catalog <https://www.mirantis.com/validated-solution-integrations/fuel-plugins>`_.
@@ -66,7 +66,7 @@ customize the plugin.
 .. note:: Running a Fuel plugin that you built yourself is at your own risk
    and will not be supported.
 
-To install the StackLight Infrastructure Alerting Plugin from source, first
+To install the StackLight Infrastructure Alerting plugin from source, first
 prepare an environment to build the RPM file. The recommended approach is to
 build the RPM file directly onto the Fuel Master node, so that you will not
 have to copy that file later on.
@@ -119,9 +119,17 @@ have to copy that file later on.
 
 **To install the plugin:**
 
-Now that you have created the RPM file, install the plugin using the
-:command:`fuel plugins --install` command:
+#. Once you have created the RPM file, install the plugin:
 
-.. code-block:: console
+   .. code-block:: console
 
-   [root@fuel ~] fuel plugins --install ./fuel-plugin-lma-infrastructure-alerting/*.rpm
+      [root@fuel ~] fuel plugins --install ./fuel-plugin-lma-infrastructure-alerting/*.rpm
+
+#. Verify that the plugin is installed correctly:
+
+   .. code-block:: console
+
+      [root@fuel ~]# fuel plugins --list
+      id | name                        | version | package_version
+      ---|-----------------------------|---------|----------------
+      1  | lma_infrastructure_alerting | 1.0.0   | 4.0.0
