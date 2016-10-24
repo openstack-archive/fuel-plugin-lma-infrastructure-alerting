@@ -25,7 +25,7 @@
      require valid-user
   </Location>
 
-  ErrorLog "/var/log/apache2/nagios_wsgi_error.log"
+  ErrorLog "<%= @log_dir %>/nagios_wsgi_error.log"
   ServerSignature Off
-  CustomLog "/var/log/apache2/nagios_wsgi_access.log" combined
+  CustomLog "<%= @log_dir %>/nagios_wsgi_access.log" combined
 </VirtualHost>
