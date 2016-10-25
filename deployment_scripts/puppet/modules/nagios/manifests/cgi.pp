@@ -133,16 +133,34 @@ class nagios::cgi (
   apache::custom_config { 'nagios-ui':
     content        => template("nagios/${nagios::params::apache_ui_vhost_config_tpl}"),
     verify_command => $verify_command,
+    notify         => Class['apache::service'],
     require        => Class['apache'],
   }
   if $wsgi_vhost_listen_ip {
+    $log_dir = "${nagios::params::data_dir}/log"
+    file { $log_dir:
+      ensure  => directory,
+      mode    => '0650',
+      require => Class['apache'],
+      notify  => Class['apache::service'],
+    }
+    $logrotate_conf = '/etc/logrotate.d/nagios_wsgi.conf'
+    file { $logrotate_conf:
+      ensure  => present,
+      content => template('nagios/logrotate.conf.erb'),
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      require => File[$log_dir],
+    }
     # Template uses these variables: cgi_htpasswd_file
     # nagios_command_file, wsgi_vhost_listen_ip, wsgi_processes, wsgi_threads,
     # wsgi_process_service_checks_script, wsgi_process_service_checks_location
+    # log_dir
     apache::custom_config { 'nagios-wsgi':
       content        => template("nagios/${nagios::params::apache_wsgi_vhost_config_tpl}"),
       verify_command => $verify_command,
-      require        => Class['apache'],
+      require        => [Class['apache'], File[$log_dir]],
     }
     file { 'wsgi_process_service_checks_script':
       ensure  => present,
