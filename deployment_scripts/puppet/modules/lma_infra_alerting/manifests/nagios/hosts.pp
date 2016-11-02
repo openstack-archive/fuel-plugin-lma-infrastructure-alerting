@@ -91,5 +91,11 @@ class lma_infra_alerting::nagios::hosts (
         'hostgroup_name' => 'primary-infrastructure_alerting'
       }
     }
+  } else {
+    include nagios::server_service
+    file { "${nagios::params::config_dir}/${lma_infra_alerting::params::nagios_config_filename_prefix}service_dummy-check-for-ci.cfg":
+      ensure => absent,
+      notify => Class['nagios::server_service'],
+    }
   }
 }
