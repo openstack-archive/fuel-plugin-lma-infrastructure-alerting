@@ -17,6 +17,8 @@ updates:
   `#1608665 <https://bugs.launchpad.net/lma-toolchain/+bug/1608665>`_.
 * Fixed the UI issue with the LDAP protocol radio button. See
   `#1599778 <https://bugs.launchpad.net/lma-toolchain/+bug/1599778>`_.
+* Fixed wrong log rotation of Nagios WSGI application logs. See
+  `#1635222 <https://bugs.launchpad.net/lma-toolchain/+bug/1635222>`_.
 
 Version 0.10.0
 ++++++++++++++
