@@ -62,7 +62,7 @@ define nagios::host (
 
   $final_params = merge($properties, $opts)
   if ! empty($custom_vars){
-    # overide inheritence
+    # overide inheritance
     $new_use = "custom-vars-${host_name}"
     if $final_params['use']{
       $original_use = $final_params['use']
