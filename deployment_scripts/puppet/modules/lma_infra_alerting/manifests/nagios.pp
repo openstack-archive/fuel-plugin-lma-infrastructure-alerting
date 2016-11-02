@@ -54,7 +54,7 @@ class lma_infra_alerting::nagios (
     command_check_interval        => $lma_infra_alerting::params::nagios_command_check_interval,
     interval_length               => $lma_infra_alerting::params::nagios_interval_length,
 
-    # Not required to set these parameters but either usefull or better for LMA
+    # Not required to set these parameters but either useful or better for LMA
     accept_passive_host_checks    => $lma_infra_alerting::params::nagios_accept_passive_host_checks,
     use_syslog                    => $lma_infra_alerting::params::nagios_use_syslog,
     log_external_commands         => $lma_infra_alerting::params::nagios_log_external_commands,
