@@ -7,7 +7,7 @@
 Requirements
 ------------
 
-The StackLight Infrastructure Alerting plugin 0.10.2 has the following
+The StackLight Infrastructure Alerting plugin 0.10.3 has the following
 requirements:
 
 +------------------------+------------------------------------------------------------------------------------------+
