@@ -7,7 +7,7 @@
 Requirements
 ------------
 
-The StackLight Infrastructure Alerting plugin 0.10.2 has the following
+The StackLight Infrastructure Alerting plugin 0.10.3 has the following
 requirements:
 
 +------------------------+------------------------------------------------------------------------------------------+
@@ -23,12 +23,12 @@ requirements:
 |                        | A typical setup would at least require a quad-core server with 8 GB of RAM and fast disks|
 |                        | (ideally, SSDs).                                                                         |
 +------------------------+------------------------------------------------------------------------------------------+
-| Mirantis OpenStack     | 8.0, 9.0                                                                                 |
+| Mirantis OpenStack     | 8.0, 9.x                                                                                 |
 +------------------------+------------------------------------------------------------------------------------------+
-| The StackLight         | 0.10                                                                                     |
+| The StackLight         | 0.10.x                                                                                   |
 | Collector Plugin       |                                                                                          |
 +------------------------+------------------------------------------------------------------------------------------+
-| The StackLight InfluxDB| 0.10                                                                                     |
+| The StackLight InfluxDB| 0.10.x                                                                                   |
 | Grafana Plugin         |                                                                                          |
 |                        | This is optional and only needed if you want to create alarms in Nagios for              |
 |                        | time-series stored in InfluxDB.                                                          |

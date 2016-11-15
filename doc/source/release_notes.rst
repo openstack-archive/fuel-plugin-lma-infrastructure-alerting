@@ -3,7 +3,14 @@
 Release notes
 -------------
 
-Version 0.10.2
+Version 0.10.3
+++++++++++++++
+
+* Fixed wrong log rotation of Nagios WSGI application logs.
+  See `#1635222 <https://bugs.launchpad.net/lma-toolchain/+bug/1635222>`_.
+
+
+Versio 0.10.2
 ++++++++++++++
 
 The StackLight Infrastructure Alerting plugin 0.10.2 contains the following
