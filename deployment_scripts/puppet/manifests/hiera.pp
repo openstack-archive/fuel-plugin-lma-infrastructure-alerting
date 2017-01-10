@@ -137,14 +137,21 @@ lma::infrastructure_alerting::authnz:
 <% end -%>
     ldap_protocol: <%= @ldap_protocol %>
     ldap_port: <%= @ldap_port %>
-    ldap_bind_dn: <%= @ldap_bind_dn %>
-    ldap_bind_password: <%= @ldap_bind_password %>
-    ldap_user_search_base_dns: <%= @ldap_user_search_base_dns %>
-    ldap_user_attribute: <%= @ldap_user_attribute %>
-    ldap_user_search_filter: <%= @ldap_user_search_filter %>
-    ldap_group_attribute: <%= @ldap_group_attribute %>
+    ldap_bind_dn: >-
+      <%= @ldap_bind_dn %>
+    ldap_bind_password: >-
+      <%= @ldap_bind_password %>
+    ldap_user_search_base_dns: >-
+      <%= @ldap_user_search_base_dns %>
+    ldap_user_attribute: >-
+      <%= @ldap_user_attribute %>
+    ldap_user_search_filter: >-
+      <%= @ldap_user_search_filter %>
+    ldap_group_attribute: >-
+      <%= @ldap_group_attribute %>
 <% if @ldap_authorization_enabled -%>
-    ldap_admin_group_dn: <%= @ldap_admin_group_dn %>
+    ldap_admin_group_dn: >-
+      <%= @ldap_admin_group_dn %>
 <% end -%>
 <% end -%>
 ')
