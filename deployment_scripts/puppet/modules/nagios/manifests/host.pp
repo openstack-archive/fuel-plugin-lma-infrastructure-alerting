@@ -37,7 +37,7 @@ define nagios::host (
 
   if is_array($properties['contact_groups']){
     $opts['contact_groups'] = join(sort($properties['contact_groups']), ',')
-  }else{
+  }elsif $properties['contact_groups'] {
     $opts['contact_groups'] = $properties['contact_groups']
   }
 
