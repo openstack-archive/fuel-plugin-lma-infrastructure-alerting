@@ -19,6 +19,8 @@ updates:
   `#1599778 <https://bugs.launchpad.net/lma-toolchain/+bug/1599778>`_.
 * Fixed wrong log rotation of Nagios WSGI application logs. See
   `#1635222 <https://bugs.launchpad.net/lma-toolchain/+bug/1635222>`_.
+* Fixed wrong Email address for Nagios hosts. See
+  `#1650543 <https://bugs.launchpad.net/lma-toolchain/+bug/1650543>`_.
 
 Version 0.10.0
 ++++++++++++++
