@@ -164,3 +164,12 @@ file { $hiera_file:
 if $fuel_version >= 9.0 {
   class { '::osnailyfacter::netconfig::hiera_default_route' :}
 }
+
+# Purge the Nagios services from previous 0.10.x version.
+# Nagios will be correctly (re)configured by nagios.pp manifest.
+$purge = prefix(['lma_services.cfg ', 'lma_services_commands.cfg'],
+  '/etc/nagios3/conf.d/')
+file { $purge:
+  ensure => absent,
+  backup => '.bak-version-0.10.x',
+}
