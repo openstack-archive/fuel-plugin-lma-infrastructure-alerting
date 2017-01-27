@@ -31,7 +31,10 @@ if $tls_enabled {
 $nagios_link_data = "{\"title\":\"Nagios\",\
 \"description\":\"${text}\",\
 \"url\":\"${link}\"}"
-$nagios_link_created_file = '/var/cache/nagios_link_created'
+
+$plugin = hiera('lma_infrastructure_alerting')
+$plugin_version = $plugin['metadata']['plugin_version']
+$nagios_link_created_file = "/var/cache/nagios_link_created_${plugin_version}"
 
 exec { 'notify_nagios_url':
   creates => $nagios_link_created_file,
