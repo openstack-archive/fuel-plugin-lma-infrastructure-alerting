@@ -106,7 +106,7 @@ class lma_infra_alerting::nagios (
   cron { 'update lma infra alerting':
     ensure   => present,
     command  => "/usr/bin/flock -n /tmp/lma.lock -c \"${cron_bin} lma_infrastructure_alerting ${plugin_version}\"",
-    minute   => '*',
+    minute   => '*/10',
     hour     => '*',
     month    => '*',
     monthday => '*',
