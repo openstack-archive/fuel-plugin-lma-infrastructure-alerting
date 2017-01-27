@@ -173,3 +173,8 @@ file { $purge:
   ensure => absent,
   backup => '.bak-version-0.10.x',
 }
+
+# Remove the crontab to avoid concurrent execution during an upgrade
+cron { 'update lma infra alerting':
+    ensure   => absent,
+}
