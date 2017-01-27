@@ -31,7 +31,7 @@ if $tls_enabled {
 $nagios_link_data = "{\"title\":\"Nagios\",\
 \"description\":\"${text}\",\
 \"url\":\"${link}\"}"
-$nagios_link_created_file = '/var/cache/nagios_link_created'
+$nagios_link_created_file = '/var/cache/nagios_link_created_up_1.x'
 
 exec { 'notify_nagios_url':
   creates => $nagios_link_created_file,
