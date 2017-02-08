@@ -115,7 +115,7 @@ The steps to create such alarms in Nagios are as follows:
 
      define service {
        service_description Elasticsearch system CPU
-       host                node-13
+       host_name           node-13
        check_command       check_cpu_metric!elasticsearch!30!50:
        use                 generic-service
      }
