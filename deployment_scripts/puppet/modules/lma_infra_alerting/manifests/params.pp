@@ -32,7 +32,7 @@ class lma_infra_alerting::params {
   # We must enable external command and and its frequency must be coherent with
   # the service status forwarded by the LMA collector.
   $nagios_check_external_commands = true
-  $nagios_command_check_interval = '10s'
+  $nagios_command_check_interval = '-1'
   # The 'time unit' for all check_interval and check_retry (service and host).
   $nagios_interval_length = '60'
   $nagios_check_service_freshness = true
