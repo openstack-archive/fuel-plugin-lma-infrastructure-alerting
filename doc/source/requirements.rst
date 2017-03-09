@@ -7,7 +7,7 @@
 Requirements
 ------------
 
-The StackLight Infrastructure Alerting plugin 1.0.0 has the following
+The StackLight Infrastructure Alerting plugin 1.1.0 has the following
 requirements:
 
 +------------------------+------------------------------------------------------------------------------------------+
@@ -25,10 +25,10 @@ requirements:
 +------------------------+------------------------------------------------------------------------------------------+
 | Mirantis OpenStack     | 8.0, 9.x                                                                                 |
 +------------------------+------------------------------------------------------------------------------------------+
-| The StackLight         | 1.0                                                                                      |
+| The StackLight         | 1.1                                                                                      |
 | Collector Plugin       |                                                                                          |
 +------------------------+------------------------------------------------------------------------------------------+
-| The StackLight InfluxDB| 1.0                                                                                      |
+| The StackLight InfluxDB| 1.1                                                                                      |
 | Grafana Plugin         |                                                                                          |
 |                        | This is optional and only needed if you want to create alarms in Nagios for              |
 |                        | time-series stored in InfluxDB.                                                          |
