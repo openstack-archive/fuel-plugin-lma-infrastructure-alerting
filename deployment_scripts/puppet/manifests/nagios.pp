@@ -154,6 +154,7 @@ exec { 'net.ipv4.ip_nonlocal_bind':
 
 $apache_parameters = {
   'ns'         => 'infrastructure_alerting',
+  'ns_haproxy' => 'haproxy',
   'status_url' => "http://${nagios_vip}/server-status",
   'config'     => "${apache_config_dir}/apache2.conf",
   'ns_gateway' => hiera('lma::infrastructure_alerting::apache_ns_gateway')

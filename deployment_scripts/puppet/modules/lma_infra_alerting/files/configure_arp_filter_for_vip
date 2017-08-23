@@ -17,6 +17,9 @@
 # handle ARP requests when several virtual IP addresses are configured on
 # the same subnet.
 
+INTERFACE_KEYWORD=$1
+INTERFACE_COUNT=$2
+
 RETURN_CODE=0
 LAST_TABLE_NUMBER=$(grep -Ev '^#' /etc/iproute2/rt_tables | awk '{print $1}' | grep -Ev '^(255|254|253|0)$' | sort -g | tail -1)
 if [[ "$LAST_TABLE_NUMBER" = "" ]]; then
@@ -24,7 +27,7 @@ if [[ "$LAST_TABLE_NUMBER" = "" ]]; then
 fi
 NIC_CONFIGURED=0
 
-for nic_config in $(ls -d  /proc/sys/net/ipv4/conf/*infra* 2>/dev/null); do
+for nic_config in $(ls -d  /proc/sys/net/ipv4/conf/*${INTERFACE_KEYWORD}* 2>/dev/null); do
   echo 1 > "${nic_config}/arp_filter"
   nic=$(basename $nic_config)
   ip_address=$(ip -f inet -o addr show $nic|cut -d\  -f 7|cut -d/ -f 1)
@@ -51,7 +54,7 @@ for nic_config in $(ls -d  /proc/sys/net/ipv4/conf/*infra* 2>/dev/null); do
   NIC_CONFIGURED=$(($NIC_CONFIGURED+1))
 done
 
-if [ $NIC_CONFIGURED -ne 2 ]; then
+if [ $NIC_CONFIGURED -ne ${INTERFACE_COUNT} ]; then
   RETURN_CODE=2
 fi
 

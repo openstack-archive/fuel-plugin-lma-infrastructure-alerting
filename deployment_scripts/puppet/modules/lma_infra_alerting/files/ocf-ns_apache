@@ -35,12 +35,14 @@ SERVICE_NAME="Apache"
 OCF_RESKEY_binary_default="/usr/sbin/apache2"
 OCF_RESKEY_config_default="/etc/apache2/apache2.conf"
 OCF_RESKEY_ns_default=
+OCF_RESKEY_ns_haproxy_default=
 OCF_RESKEY_ns_gateway_default=
 OCF_RESKEY_status_url_default="http://localhost/status-server"
 
 : ${OCF_RESKEY_binary=${OCF_RESKEY_binary_default}}
 : ${OCF_RESKEY_config=${OCF_RESKEY_config_default}}
 : ${OCF_RESKEY_ns=${OCF_RESKEY_ns_default}}
+: ${OCF_RESKEY_ns_haproxy=${OCF_RESKEY_ns_haproxy_default}}
 : ${OCF_RESKEY_ns_gateway=${OCF_RESKEY_ns_gateway_default}}
 : ${OCF_RESKEY_status_url=${OCF_RESKEY_status_url_default}}
 
@@ -49,6 +51,15 @@ if [ -z "${OCF_RESKEY_ns}" ] ; then
     RUN=''
 else
     RUN="$RUN_IN_NS "
+fi
+
+# RUN_HAPROXY will be  introduced to add source based routing, because 
+# VIP interface in haproxy netns is in the same subnet
+RUN_IN_NS_HAPROXY="ip netns exec $OCF_RESKEY_ns_haproxy "
+if [ -z "${OCF_RESKEY_ns_haproxy}" ] ; then
+    RUN_HAPROXY=''
+else
+    RUN_HAPROXY="$RUN_IN_NS_HAPROXY "
 fi
 
 APACHE_CONFDIR=$(dirname ${OCF_RESKEY_config})
@@ -113,6 +124,14 @@ Network namespace in which Apache will be run
 </longdesc>
 <shortdesc lang="en">Apache namespace</shortdesc>
 <content type="string" default="${OCF_RESKEY_ns_default}" />
+</parameter>
+
+<parameter name="ns" unique="0" required="0">
+<longdesc lang="en">
+Network namespace in which Apache haproxy VIP will be run
+</longdesc>
+<shortdesc lang="en">Apache haproxy namespace</shortdesc>
+<content type="string" default="${OCF_RESKEY_ns_haproxy_default}" />
 </parameter>
 
 <parameter name="ns_gateway" unique="0" required="0">
@@ -227,13 +246,15 @@ service_start() {
         return "$OCF_SUCCESS"
     fi
 
-    ocf_run ${RUN} bash -c "/usr/local/bin/configure_arp_filter_for_vip"
+    ocf_run ${RUN} bash -c "/usr/local/bin/configure_arp_filter_for_vip infra 2"
+    ocf_run ${RUN_HAPROXY} bash -c "/usr/local/bin/configure_arp_filter_for_vip b_ 4"
     rc=$?
     if [ $rc -ne 0 ]; then
       # Try another time to configure ARP filter and adding source-based routes
       # because the VIPs are probably not yet ready hence the sleep.
       sleep 5
-      ocf_run ${RUN} bash -c "/usr/local/bin/configure_arp_filter_for_vip"
+      ocf_run ${RUN} bash -c "/usr/local/bin/configure_arp_filter_for_vip infra 2"
+      ocf_run ${RUN_HAPROXY} bash -c "/usr/local/bin/configure_arp_filter_for_vip b_ 4"
     fi
 
     if [ -n "${OCF_RESKEY_ns_gateway}" ] ; then
