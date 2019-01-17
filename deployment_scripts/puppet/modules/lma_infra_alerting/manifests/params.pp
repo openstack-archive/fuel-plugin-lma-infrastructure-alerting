@@ -93,7 +93,7 @@ class lma_infra_alerting::params {
   # TCP ports of LMA backends and dashboards
   $influxdb_port = 8086
   $grafana_port = 8000
-  $elasticserach_port = 9200
+  $elasticsearch_port = 9200
   $kibana_port = 80
 
   $update_configuration_script = '/usr/local/bin/update-lma-configuration'
