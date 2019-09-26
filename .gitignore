@@ -1,6 +1,0 @@
-*.deb
-*.rpm
-.build
-Gemfile.lock
-.tox
-.bundled_gems
